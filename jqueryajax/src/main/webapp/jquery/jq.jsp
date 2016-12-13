@@ -18,7 +18,7 @@
 
         $("#username").blur(function(){
 
-            var name = $(this).val();
+            var name = $(this).val();//
 
             $.ajax({
                 url : "/ajax",
@@ -32,7 +32,7 @@
 
                 },
                 success : function(data){
-                    $("#text").text(data);
+                    $("#text").text(data);//!!!!
                 },
                 error : function(){
                     alert("服务器异常");
