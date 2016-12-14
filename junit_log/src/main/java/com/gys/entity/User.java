@@ -1,6 +1,10 @@
 package com.gys.entity;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
+
+    private static final Long serialVersionUID = 1L;
 
     private Integer id;
     private String username;
@@ -8,6 +12,16 @@ public class User {
     private String address;
     private String tel;
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", age=" + age +
+                ", address='" + address + '\'' +
+                ", tel='" + tel + '\'' +
+                '}';
+    }
 
     public Integer getId() {
         return id;
