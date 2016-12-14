@@ -3,11 +3,14 @@ package com.gys.util;
 import com.gys.exception.DataAccessException;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
 public class DbHelp {
+
+    private static Logger logger = Logger.getLogger(DbHelp.class);
 
     private static Connection getConnection() {
         return ConnectionManager.getConnection();
@@ -19,8 +22,10 @@ public class DbHelp {
             QueryRunner queryRunner = new QueryRunner(ConnectionManager.getDataSource());
             queryRunner.update(sql, params);
 
-            System.out.println("SQL: " + sql);
+            //System.out.println("SQL: " + sql);
+            logger.debug("SQL:" + sql);
         } catch (SQLException ex) {
+            logger.error("执行" + sql + "异常");
             throw new DataAccessException("执行"+ sql + "异常",ex);
         }
     }
@@ -31,9 +36,11 @@ public class DbHelp {
         try {
             T t = queryRunner.query(sql,handler,params);
 
-            System.out.println("SQL: " + sql);
+            //System.out.println("SQL: " + sql);
+            logger.debug("SQL:" + sql);
             return t;
         } catch (SQLException e) {
+            logger.error("执行" + sql + "异常");
             throw new DataAccessException("执行"+ sql + "异常",e);
         }
     }
@@ -43,6 +50,7 @@ public class DbHelp {
             try {
                 connection.close();
             } catch (SQLException e) {
+                logger.error("关闭connection异常");
                 throw new DataAccessException("关闭Connection异常",e);
             }
         }

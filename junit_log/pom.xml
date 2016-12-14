@@ -14,6 +14,7 @@
       <mysql-version>5.1.38</mysql-version>
       <dbcp2-version>2.1.1</dbcp2-version>
       <dbutils-version>1.6</dbutils-version>
+      <log4j-version>1.2.17</log4j-version>
   </properties>
 
   <dependencies>
@@ -46,6 +47,13 @@
           <artifactId>commons-dbutils</artifactId>
           <version>${dbutils-version}</version>
       </dependency>
+
+      <dependency>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+          <version>${log4j-version}</version>
+      </dependency>
+
 
 
 
