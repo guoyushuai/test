@@ -15,6 +15,7 @@ public class DbHelp {
     //private static Logger logger = Logger.getLogger(DbHelp.class);//log4j
     private static Logger logger = LoggerFactory.getLogger(DbHelp.class);//slf4j
 
+    //一般情况下通过数据库连接池获取连接，不再直接获取数据库连接，连接池达到连接上限且超过等待最长时间后直接连接数据库
     private static Connection getConnection() {
         return ConnectionManager.getConnection();
     }
@@ -59,7 +60,6 @@ public class DbHelp {
                 throw new DataAccessException("关闭Connection异常",e);
             }
         }
-
     }
 
 }
