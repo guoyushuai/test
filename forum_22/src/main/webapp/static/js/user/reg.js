@@ -74,7 +74,8 @@ $(function () {
                 },
                 success:function (data) {
                     if(data.state == "success") {
-                        window.location.href = "/login"
+                        alert("注册成功！请登录邮箱查收激活邮件");
+                        window.location.href = "/login";
                     } else {
                         alert(data.message);
                     }

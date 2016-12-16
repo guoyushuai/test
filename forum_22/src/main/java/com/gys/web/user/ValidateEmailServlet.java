@@ -19,7 +19,9 @@ public class ValidateEmailServlet extends BaseServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String email = req.getParameter("email");
-        email = StringUtil.ISOtoUTF8("email");
+        email = StringUtil.ISOtoUTF8(email);
+
+        System.out.println(email);
 
         User user = userService.findByEmail(email);
         if(user == null) {

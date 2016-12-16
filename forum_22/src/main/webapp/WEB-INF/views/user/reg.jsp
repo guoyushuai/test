@@ -29,13 +29,13 @@
             <div class="control-group">
                 <label class="control-label">密码</label>
                 <div class="controls">
-                    <input type="text" name="password" id="password">
+                    <input type="password" name="password" id="password">
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label">重复密码</label>
                 <div class="controls">
-                    <input type="text" name="repassword">
+                    <input type="password" name="repassword">
                 </div>
             </div>
             <div class="control-group">

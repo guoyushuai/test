@@ -40,16 +40,13 @@ public class RegServlet extends BaseServlet {
         user.setPassword(password);
         user.setEmail(email);
         user.setPhone(phone);
+        UserService userService = new UserService();
         userService.save(user);*/
 
-        /*UserService userService = new UserService();
-        userService.save(user);
         //返回JSON键值对对象，1Java中的类，2Map集合
         Map<String,Object> result = Maps.newHashMap();
-        result.put("state","success");*/
 
-        //有可能失败
-        Map<String,Object> result = Maps.newHashMap();
+        //!!!可能失败,这个思路怎么来的？？？强行try catch
         try {
             UserService userService = new UserService();
             userService.save(username,password,email,phone);
@@ -60,6 +57,7 @@ public class RegServlet extends BaseServlet {
             result.put("message","注册失败");
         }
 
+        renderJson(result,resp);
 
         /*//设置相应MIME头，客户端jquery中的$.ajax根据响应头自动将返回数据转换成相应类型
         //text/plain;text/html;text/xml;application/json
@@ -71,6 +69,5 @@ public class RegServlet extends BaseServlet {
         out.flush();
         out.close();*/
 
-        renderJson(result,resp);
     }
 }
