@@ -24,6 +24,8 @@ public class EmailUtil {
         //安全协议transport layer security
         email.setStartTLSEnabled(true);
 
+        System.out.println();
+
         try {
             //发送人
             email.setFrom(Config.get("email.from"));

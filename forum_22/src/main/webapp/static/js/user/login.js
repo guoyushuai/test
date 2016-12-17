@@ -29,7 +29,7 @@ $(function () {
                 type:"post",
                 data:$("#loginForm").serialize(),
                 beforeSend:function () {
-                    $("#btn").append($("<i class='fa fa-refresh' fa-spin></i>")).attr("disabled","disabled")
+                    $("#btn").append($("<i class='fa fa-refresh fa-spin' ></i>")).attr("disabled","disabled")
                 },
                 success:function (data) {
                     if(data.state == "success") {
