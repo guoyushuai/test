@@ -2,12 +2,16 @@ package com.gys.service;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.gys.dao.LoginLogDao;
 import com.gys.dao.UserDao;
+import com.gys.entity.LoginLog;
 import com.gys.entity.User;
 import com.gys.exception.ServiceException;
 import com.gys.util.Config;
 import com.gys.util.EmailUtil;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -17,6 +21,8 @@ import java.util.concurrent.TimeUnit;
 public class UserService {
 
     private UserDao userDao = new UserDao();
+
+    Logger logger = LoggerFactory.getLogger(UserService.class);
 
     //激活邮件的缓存
     private static Cache<String,String> activeCache = CacheBuilder
@@ -137,6 +143,41 @@ public class UserService {
                 //激活完毕，需要将链接无效化，删除缓存token,避免用户多次点击
                 activeCache.invalidate(uuid);
             }
+        }
+
+    }
+
+    /**
+     * 用户登录
+     */
+    public User login(String username, String password, String ip) {
+        User user = userDao.findByUsername(username);
+
+        String psd = DigestUtils.md5Hex(password + Config.get("user.password.salt"));
+
+        if(user != null && user.getPassword().equals(psd)) {
+            //账号密码正确，查看用户状态
+            if(user.getState().equals(User.STATE_ACTIVE)) {
+                //正常，将登陆信息记录到数据库中
+                LoginLog login = new LoginLog();
+                login.setIp(ip);
+                login.setUserid(user.getId());
+
+                LoginLogDao loginLogDao = new LoginLogDao();
+                loginLogDao.save(login);
+
+                //同样要将登录信息记录到系统日志中
+                logger.info("{}在{}登录了系统",username,ip);
+
+                //用户登录后，需要将用户信息放在session中，用以确保用户进行操作时，服务端能辨识是同一个用户
+                return user;
+            } else if(user.getState().equals(User.STATE_UNACTIVE)) {
+                throw new ServiceException("账号还未激活");
+            } else {
+                throw new ServiceException("账号已被禁用");
+            }
+        } else {
+            throw new ServiceException("账号或密码错误");
         }
 
     }

@@ -70,7 +70,7 @@ $(function () {
                 data:$("#regForm").serialize(),
                 beforeSend:function () {
                     /*$("#btn").text("注册中...").attr("disabled","disabled");*/
-                    $("#btn").append($("<li class='fa fa-spinner fa-spin'></li>")).attr("disabled","disabled");
+                    $("#btn").append($("<i class='fa fa-spinner fa-spin'></i>")).attr("disabled","disabled");
                 },
                 success:function (data) {
                     if(data.state == "success") {

@@ -29,6 +29,8 @@ public class ActiveUserServlet extends BaseServlet {
             Map<String,Object> result = Maps.newHashMap();*/
             //！错误 不是往jquery中的$ajax中传递数据，简单的往jsp传
 
+            //业务层各种抛出异常，这里处理下（try catch）以便给客户端合理的响应
+
             try {
                 UserService userService = new UserService();
                 userService.activeUser(uuid);
@@ -38,7 +40,7 @@ public class ActiveUserServlet extends BaseServlet {
                 //token存在，但可能过期(超时或已点击过)或者无效（恶意）
 
                 //往jsp中传值
-                req.setAttribute("message","链接无效或已过期");
+                req.setAttribute("message",e.getMessage());
                 forward("user/active_error",req,resp);
             }
         }
