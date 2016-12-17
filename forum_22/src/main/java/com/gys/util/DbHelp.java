@@ -5,7 +5,6 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-/*import org.apache.log4j.Logger;*/
 
 import java.sql.Connection;
 import java.sql.SQLException;

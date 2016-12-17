@@ -20,4 +20,9 @@ public class UserDao {
         String sql = "insert into t_user(username,password,email,phone,state,avatar) values(?,?,?,?,?,?)";
         DbHelp.update(sql,user.getUsername(),user.getPassword(),user.getEmail(),user.getPhone(),user.getState(),user.getAvatar());
     }
+
+    public void update(User user) {
+        String sql = "update t_user set password=?,email=?,phone=?,state=?,avatar=? where id=?";
+        DbHelp.update(sql,user.getPassword(),user.getEmail(),user.getPhone(),user.getState(),user.getAvatar(),user.getId());
+    }
 }

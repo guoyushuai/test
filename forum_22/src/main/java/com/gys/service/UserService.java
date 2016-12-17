@@ -4,6 +4,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.gys.dao.UserDao;
 import com.gys.entity.User;
+import com.gys.exception.ServiceException;
 import com.gys.util.Config;
 import com.gys.util.EmailUtil;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -17,14 +18,14 @@ public class UserService {
 
     private UserDao userDao = new UserDao();
 
-    //激活邮件的token缓存
+    //激活邮件的缓存
     private static Cache<String,String> activeCache = CacheBuilder
             .newBuilder()
             .expireAfterWrite(6, TimeUnit.HOURS)
             .build();
 
     /**
-     * 判断用户输入的账号名称是否可用
+     * 查询数据库，判断用户输入的账号名称是否可用
      */
     /*public User findByUsername(String username) {
         return userDao.findByUsername(username);
@@ -94,8 +95,11 @@ public class UserService {
                 String uuid = UUID.randomUUID().toString();
                 activeCache.put(uuid,username);
 
-                //用户点击链接后跳转到的激活的页面
-                String url = "http://bbs.kaishengit.com/user/active?_" + uuid;
+                //用户点击链接后跳转到的页面Servlet
+                String url = "http://bbs.kaishengit.com/user/active?_=" + uuid;
+
+                //邮件服务崩溃，手动获取连接
+                System.out.println(url);
 
                 String html = "<h3>亲爱的:"+ username +"<h3>请点击<a href="+ url +">该链接</a>激活您的账号。" ;
 
@@ -104,6 +108,36 @@ public class UserService {
             }
         });
         th.start();
+
+        //发送邮件可能失败，需要给提示没收到？点击选择重新发送
+        //或者在用户登录时显示账号未激活，需要激活，重新发送邮件
+        // TODO: 2016/12/17
+
+    }
+
+    /**
+     * 根据token激活对应的账户
+     */
+    public void activeUser(String uuid) {
+
+        //这个就是发送邮件时,添加到链接后面的uuid(token)
+        String username = activeCache.getIfPresent(uuid);
+        if(username == null) {
+            //缓存过期，或者被伪造.不再是数据连接异常，属于业务异常
+            throw new ServiceException("链接无效或已过期");
+        } else {
+            //根据名字找到对应账户
+            User user = userDao.findByUsername(username);
+            if(user == null) {
+                throw new ServiceException("账户不存在，可能已被注销");
+            } else {
+                //找到对应账号，修改用户状态为激活保存到数据库中
+                user.setState(User.STATE_ACTIVE);
+                userDao.update(user);
+                //激活完毕，需要将链接无效化，删除缓存token,避免用户多次点击
+                activeCache.invalidate(uuid);
+            }
+        }
 
     }
 }

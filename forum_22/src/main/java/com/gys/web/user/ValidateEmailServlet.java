@@ -21,7 +21,7 @@ public class ValidateEmailServlet extends BaseServlet {
         String email = req.getParameter("email");
         email = StringUtil.ISOtoUTF8(email);
 
-        System.out.println(email);
+        //System.out.println(email);
 
         User user = userService.findByEmail(email);
         if(user == null) {

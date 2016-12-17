@@ -46,7 +46,7 @@ public class RegServlet extends BaseServlet {
         //返回JSON键值对对象，1Java中的类，2Map集合
         Map<String,Object> result = Maps.newHashMap();
 
-        //!!!可能失败,这个思路怎么来的？？？强行try catch
+        //!!!可能失败,这个思路怎么来的？？？底层抛出了异常
         try {
             UserService userService = new UserService();
             userService.save(username,password,email,phone);

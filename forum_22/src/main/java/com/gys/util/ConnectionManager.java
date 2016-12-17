@@ -5,10 +5,8 @@ import org.apache.commons.dbcp2.BasicDataSource;
 
 
 import javax.sql.DataSource;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Properties;
 
 public class ConnectionManager {
 
