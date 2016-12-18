@@ -7,6 +7,7 @@ import java.util.Properties;
 
 public class Config {
 
+    //放在static外部
     private static Properties prop = new Properties();
 
     static {

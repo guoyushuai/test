@@ -14,8 +14,6 @@ import java.io.IOException;
 @WebServlet("/validate/user")
 public class ValidateUserServlet extends BaseServlet {
 
-    private UserService userService = new UserService();
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
@@ -29,6 +27,7 @@ public class ValidateUserServlet extends BaseServlet {
         //字符转换与servlet没有太大关系，可写成通用的工具类
         username = StringUtil.ISOtoUTF8(username);
 
+        UserService userService = new UserService();
         //User user = userService.validateUsername(username);
         boolean result = userService.validateUsername(username);
 

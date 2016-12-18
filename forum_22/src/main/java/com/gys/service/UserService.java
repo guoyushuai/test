@@ -9,6 +9,7 @@ import com.gys.entity.User;
 import com.gys.exception.ServiceException;
 import com.gys.util.Config;
 import com.gys.util.EmailUtil;
+import com.gys.util.StringUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,20 +25,32 @@ public class UserService {
 
     Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    //激活邮件的缓存
+    //发送激活邮件的缓存
     private static Cache<String,String> activeCache = CacheBuilder
             .newBuilder()
             .expireAfterWrite(6, TimeUnit.HOURS)
             .build();
 
+    //发送改密邮件的缓存
+    private static Cache<String,String> resetCache = CacheBuilder
+            .newBuilder()
+            .expireAfterWrite(30,TimeUnit.SECONDS)
+            .build();
+
+    //限制用户发送频率的缓存
+    private static Cache<String,String> limitCache = CacheBuilder
+            .newBuilder()
+            .expireAfterWrite(60,TimeUnit.SECONDS)
+            .build();
+
     /**
      * 查询数据库，判断用户输入的账号名称是否可用
      */
-    /*public User findByUsername(String username) {
+    public User findByUsername(String username) {
         return userDao.findByUsername(username);
         //业务需要，某些数据库中没有被占用的名字在现实实际中是不可使用的，俗称保留字
-        //先查找保留表，再读取用户信息表
-    }*/
+        //先查找保留表，再读取用户信息表,使用validateUsername(String username)
+    }
 
     /**
      * 判断用户输入的账号名称是否是保留名，并查询数据库该名称是否已被他人注册
@@ -55,6 +68,8 @@ public class UserService {
         if(nameList.contains(username)) {
             return false;
         } else {
+            //User user = userDao.findByUsername(username);
+
             //return userDao.findByUsername(username) == null ? true : false;
             return userDao.findByUsername(username) == null;
         }
@@ -101,7 +116,7 @@ public class UserService {
                 String uuid = UUID.randomUUID().toString();
                 activeCache.put(uuid,username);
 
-                //用户点击链接后跳转到的页面Servlet
+                //用户点击链接后跳转到的页面地址
                 String url = "http://bbs.kaishengit.com/user/active?_=" + uuid;
 
                 //邮件服务崩溃，手动获取连接
@@ -116,7 +131,7 @@ public class UserService {
         th.start();
 
         //发送邮件可能失败，需要给提示没收到？点击选择重新发送
-        //或者在用户登录时显示账号未激活，需要激活，重新发送邮件
+        //或者在用户登录时显示账号未激活，需要激活，重新发送邮件?
         // TODO: 2016/12/17
 
     }
@@ -178,6 +193,56 @@ public class UserService {
             }
         } else {
             throw new ServiceException("账号或密码错误");
+        }
+
+    }
+
+    /**
+     *
+     */
+    //public void foundPassword(String type, String value) {
+    public void foundPassword(String sessionId,String type, String value) {
+        //对用户点击提交发送服务进行限制，防止发送频率过快，普通的按钮倒计时low
+        //若同一用户用不同邮箱注册多个账号，用同一浏览器申请重置不同账号密码，依然会提示频率过快
+        //同一用户用不同浏览器重置同一账号密码，这个限制请求频率的缓存没用
+        if(limitCache.getIfPresent(sessionId) == null) {
+            if("email".equals(type)) {
+                User user = userDao.findByEmail(value);
+                if(user != null) {
+                    //向已注册用户发送邮件
+                    Thread th = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //一一对应
+                            String uuid = UUID.randomUUID().toString();
+                            resetCache.put(uuid,user.getUsername());
+
+                            //用户点击链接后跳转到的界面地址
+                            String url = "http://bbs.kaishengit.com/user/resetPassword?_=" + uuid;
+
+                            //邮件服务崩溃，手动获取连接
+                            System.out.println(url);
+
+                            String html = "<h3>亲爱的:"+ user.getUsername() +"</h3>请点击<a href="+ url +">该链接</a>重置您的密码，链接有效期30分钟。";
+
+                            EmailUtil.sendHtmlEmail("密码重置邮件",html,value);
+                        }
+                    });
+                    th.start();
+
+                }
+                /*//非本站注册账户，不发送邮件
+                else {
+                    throw new ServiceException("无对应邮箱");
+                    //不安全，用户会试哪个邮箱注册了，什么都不做比较好
+                }*/
+            } else if("phone".equals(type)) {
+                // TODO: 2016/12/18
+            }
+            //将客户端的sessionid放入相应的缓存中
+            limitCache.put(sessionId,"xxx");
+        } else {
+            throw new ServiceException("发送频率过快，请稍后再试！");
         }
 
     }

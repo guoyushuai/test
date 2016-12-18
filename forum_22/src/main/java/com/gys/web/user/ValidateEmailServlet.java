@@ -14,14 +14,14 @@ import java.io.IOException;
 @WebServlet("/validate/email")
 public class ValidateEmailServlet extends BaseServlet {
 
-    private UserService userService = new UserService();
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String email = req.getParameter("email");
         email = StringUtil.ISOtoUTF8(email);
 
         //System.out.println(email);
+
+        UserService userService = new UserService();
 
         User user = userService.findByEmail(email);
         if(user == null) {

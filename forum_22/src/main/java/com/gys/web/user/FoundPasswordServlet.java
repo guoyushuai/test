@@ -1,7 +1,6 @@
 package com.gys.web.user;
 
 import com.google.common.collect.Maps;
-import com.gys.entity.User;
 import com.gys.exception.ServiceException;
 import com.gys.service.UserService;
 import com.gys.web.BaseServlet;
@@ -10,43 +9,50 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Map;
 
-@WebServlet("/login")
-public class LoginServlet extends BaseServlet {
+@WebServlet("/foundPassword")
+public class FoundPasswordServlet extends BaseServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        forward("/user/login",req,resp);
+
+        forward("user/foundPassword",req,resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String username = req.getParameter("username");
-        String password = req.getParameter("password");
+        //获取找回方式
+        String type = req.getParameter("type");
+        //获取输入框的值
+        String value = req.getParameter("value");
+        
+        /*//处理业务逻辑应该放在service层
+        if("email".equals(type)) {
 
-        //获取登录客户端的ip地址
-        String ip = req.getRemoteAddr();
+        } else if("phone".equals(type)) {
+
+        }*/
+
+        //获取客户端的sessionID,都行
+        String sessionId = req.getRequestedSessionId();
+        String sessionID = req.getSession().getId();
+
+        /*System.out.println(sessionId);
+        System.out.println(sessionID);*/
 
         Map<String,Object> result = Maps.newHashMap();
 
         UserService userService = new UserService();
         try {
-            User user = userService.login(username, password, ip);
-
-            //用户登录成功，需要将用户信息放入session中，
-            HttpSession session = req.getSession();
-            session.setAttribute("current_user",user);
-
+            //userService.foundPassword(type,value);
+            userService.foundPassword(sessionId,type,value);
             result.put("state","success");
-        } catch(ServiceException e) {
+        } catch (ServiceException e) {
             result.put("state","error");
             result.put("message",e.getMessage());
         }
-
         renderJson(result,resp);
-
     }
 }

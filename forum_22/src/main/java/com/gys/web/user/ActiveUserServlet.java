@@ -31,8 +31,8 @@ public class ActiveUserServlet extends BaseServlet {
 
             //业务层各种抛出异常，这里处理下（try catch）以便给客户端合理的响应
 
+            UserService userService = new UserService();
             try {
-                UserService userService = new UserService();
                 userService.activeUser(uuid);
 
                 forward("user/active_success",req,resp);

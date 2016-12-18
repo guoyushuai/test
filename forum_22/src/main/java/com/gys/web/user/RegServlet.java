@@ -47,11 +47,12 @@ public class RegServlet extends BaseServlet {
         Map<String,Object> result = Maps.newHashMap();
 
         //!!!可能失败,这个思路怎么来的？？？底层抛出了异常
+        UserService userService = new UserService();
         try {
-            UserService userService = new UserService();
             userService.save(username,password,email,phone);
             result.put("state","success");
         } catch(Exception e) {
+            //catch的不只是DataAccessException
             e.printStackTrace();
             result.put("state","error");
             result.put("message","注册失败");

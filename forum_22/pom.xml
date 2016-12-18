@@ -6,8 +6,8 @@
     <packaging>war</packaging>
     <version>1.0-SNAPSHOT</version>
 
-    <name>bbs Maven Webapp</name>
-    <url>http://www.kaishengit.com</url>
+    <name>BBS论坛</name>
+    <url>http://bbs.kaishengit.com</url>
 
     <properties>
         <junit-version>4.12</junit-version>

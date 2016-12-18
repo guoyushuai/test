@@ -21,8 +21,8 @@ public class BaseServlet extends HttpServlet {
         /*//响应字符编码，可写入过滤器
         resp.setCharacterEncoding("UTF-8");*/
         resp.setContentType("text/plain;charset=UTF-8");
-        PrintWriter out = resp.getWriter();
 
+        PrintWriter out = resp.getWriter();
         out.print(str);
         out.flush();
         out.close();
@@ -30,7 +30,9 @@ public class BaseServlet extends HttpServlet {
 
     public void renderJson(Object obj,HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json;charset=UTF-8");
+
         String json = new Gson().toJson(obj);
+
         PrintWriter out = resp.getWriter();
         out.print(json);
         out.flush();
