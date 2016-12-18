@@ -9,11 +9,11 @@ $(function () {
         }
     });
 
-    $("#btn").click(function () {
-        $("#foundPasswordForm").submit();
+    $("#foundBtn").click(function () {
+        $("#foundForm").submit();
     });
 
-    $("#foundPasswordForm").validate({
+    $("#foundForm").validate({
         errorElement:"span",
         errorClass:"text-error",
         rules:{
@@ -31,7 +31,7 @@ $(function () {
             $.ajax({
                 url:"/foundPassword",
                 type:"post",
-                data:$("#foundPasswordForm").serialize(),
+                data:$("#foundForm").serialize(),
                 beforeSend:function () {
                     $("#btn").append($("<i class='fa fa-spinner fa-spin'></i>")).attr("disabled","disabled");
                 },

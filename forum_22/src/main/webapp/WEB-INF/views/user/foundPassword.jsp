@@ -18,7 +18,7 @@
             <span class="title">找回密码</span>
         </div>
 
-        <form action="" class="form-horizontal" id="foundPasswordForm">
+        <form action="" class="form-horizontal" id="foundForm">
             
             <div class="control-group">
                 <label class="control-label">请选择找回方式</label>
@@ -38,7 +38,7 @@
                 </div>
             </div>
             <div class="form-actions">
-                <button class="btn btn-primary" type="button" id="btn">提交</button>
+                <button class="btn btn-primary" type="button" id="foundBtn">提交</button>
             </div>
 
         </form>

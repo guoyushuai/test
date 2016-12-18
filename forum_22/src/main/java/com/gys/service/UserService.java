@@ -34,7 +34,7 @@ public class UserService {
     //发送改密邮件的缓存
     private static Cache<String,String> resetCache = CacheBuilder
             .newBuilder()
-            .expireAfterWrite(30,TimeUnit.SECONDS)
+            .expireAfterWrite(30,TimeUnit.MINUTES)
             .build();
 
     //限制用户发送频率的缓存
@@ -85,7 +85,7 @@ public class UserService {
 
 
     /**
-     * 新用户注册，并将其基本资料存入数据库中
+     * 新用户注册，并将其基本资料存入数据库中,并向其注册邮箱发送激活邮件
      */
     public void save(String username,String password,String email,String phone) {
         User user = new User();
@@ -198,7 +198,7 @@ public class UserService {
     }
 
     /**
-     *
+     *向忘记密码的用户发送找回密码的邮件
      */
     //public void foundPassword(String type, String value) {
     public void foundPassword(String sessionId,String type, String value) {
@@ -215,15 +215,18 @@ public class UserService {
                         public void run() {
                             //一一对应
                             String uuid = UUID.randomUUID().toString();
+
+                            //缓存设置时的键值对都是字符串String类型
                             resetCache.put(uuid,user.getUsername());
 
-                            //用户点击链接后跳转到的界面地址
-                            String url = "http://bbs.kaishengit.com/user/resetPassword?_=" + uuid;
+                            //用户点击链接后跳转到的界面地址，参数token=uuid
+                            String url = "http://bbs.kaishengit.com/resetPassword?token=" + uuid;
 
                             //邮件服务崩溃，手动获取连接
                             System.out.println(url);
 
                             String html = "<h3>亲爱的:"+ user.getUsername() +"</h3>请点击<a href="+ url +">该链接</a>重置您的密码，链接有效期30分钟。";
+                            //30分钟内多次点击该连接都有效，即使重置过密码，依然有效，可以再次重置
 
                             EmailUtil.sendHtmlEmail("密码重置邮件",html,value);
                         }
@@ -245,5 +248,50 @@ public class UserService {
             throw new ServiceException("发送频率过快，请稍后再试！");
         }
 
+    }
+
+    /**
+     *根据连接找到需要重置密码的用户
+     */
+    public User findUserByToken(String token) {
+
+        //token-username-user放入缓存的时候键值都是String类型
+        //token就是url中的参数，等于uuid
+        String username = resetCache.getIfPresent(token);
+
+        if(StringUtil.isEmpty(username)) {
+            throw new ServiceException("token无效或已过期");
+        } else {
+            User user = userDao.findByUsername(username);
+            if(user == null) {
+                throw new ServiceException("未找到对应账号");
+            } else {
+                //暂时不能删除token
+                return user;
+            }
+        }
+    }
+
+    /**
+     *重置密码
+     */
+    public void resetPassword(String id, String password, String token) {
+
+        //再次判断token,防止用户拿到url,for循环{post请求,id从头到尾把password都修改掉}
+        //if(resetCache.getIfPresent(token) == null)
+        String username = resetCache.getIfPresent(token);
+        if(StringUtil.isEmpty(username)) {
+            throw new ServiceException("token无效或已过期");
+        } else {
+            //根据id找到对应账户，未找到对应账号的抛异常在上一步已经解决了
+            User user = userDao.findById(Integer.valueOf(id));
+
+            //将密码加盐加密更新数据库中对应账户的信息
+            user.setPassword(DigestUtils.md5Hex(password+Config.get("user.password.salt")));
+            userDao.update(user);
+            //记录日志
+            logger.info("{}修改了密码",user.getUsername());
+            resetCache.invalidate(token);
+        }
     }
 }

@@ -15,7 +15,7 @@
 <div class="container">
     <div class="box">
         <div class="box-header">
-            <span class="title"><i class="fa fa-sign-in"></i>系统提示</span>
+            <span class="title"></i>系统提示</span>
         </div>
         <div class="box-padding">
             <%--获取servlet中的数据 EL表达式是jsp自带的重要组成部分--%>

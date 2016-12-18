@@ -7,7 +7,7 @@ import java.util.Properties;
 
 public class Config {
 
-    //放在static外部
+    //放在static外部，map集合的特殊实现类，键值都是字符串
     private static Properties prop = new Properties();
 
     static {

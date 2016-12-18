@@ -46,17 +46,21 @@ public class RegServlet extends BaseServlet {
         //返回JSON键值对对象，1Java中的类，2Map集合
         Map<String,Object> result = Maps.newHashMap();
 
-        //!!!可能失败,这个思路怎么来的？？？底层抛出了异常
+        //!!!可能失败,这个思路怎么来的？？？底层抛出了异常：数据库挂了，sql拼错
         UserService userService = new UserService();
-        try {
+    //    try {
             userService.save(username,password,email,phone);
             result.put("state","success");
-        } catch(Exception e) {
-            //catch的不只是DataAccessException
-            e.printStackTrace();
-            result.put("state","error");
-            result.put("message","注册失败");
-        }
+    //    } catch(Exception e) {
+            //catch了所有异常
+            //相应的service层并没有throw抛出ServiceException异常，
+            //catch掉了DbHelp中抛的DataAccessException异常，却并没有处理
+    //        e.printStackTrace();
+    //        result.put("state","error");
+    //        result.put("message","注册失败");
+            //不能result.put("message",e.getMessage());jsp中接收后在javaScript中alert弹框出来了，会将一大串错误详细信息打印出来
+            //alert只弹业务异常ServiceException
+    //    }
 
         renderJson(result,resp);
 
