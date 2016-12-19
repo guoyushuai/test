@@ -4,6 +4,7 @@ import com.gys.entity.User;
 import com.gys.util.DbHelp;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 
+/*数据访问对象*/
 public class UserDao {
 
     public User findByUsername(String username) {

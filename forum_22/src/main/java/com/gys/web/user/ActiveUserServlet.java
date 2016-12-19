@@ -18,8 +18,9 @@ public class ActiveUserServlet extends BaseServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String uuid = req.getParameter("_");
-        if(StringUtil.isEmpty(uuid)) {
+        //token是url中附加的参数_的uuid的值，是通过UUID生成的一个随机字符串
+        String token = req.getParameter("_");
+        if(StringUtil.isEmpty(token)) {
             //token不存在,恶意
             resp.sendError(404);
         } else {
@@ -29,11 +30,11 @@ public class ActiveUserServlet extends BaseServlet {
             Map<String,Object> result = Maps.newHashMap();*/
             //！错误 不是往jquery中的$ajax中传递数据，简单的往jsp传
 
-            //业务层各种抛出异常，这里处理下（try catch）以便给客户端合理的响应
+            //业务层各种抛出异常（用户导致的），这里处理下（try catch）以便给客户端合理的响应
 
             UserService userService = new UserService();
             try {
-                userService.activeUser(uuid);
+                userService.activeUser(token);
 
                 forward("user/active_success",req,resp);
             } catch (ServiceException e) {

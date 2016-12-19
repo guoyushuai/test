@@ -75,7 +75,7 @@ $(function () {
                 success:function (data) {
                     if(data.state == "success") {
                         alert("注册成功！请登录邮箱查收激活邮件");
-                        //页面跳转，如果邮件发送失败怎么办？？？
+                        //页面跳转，如果邮件发送失败怎么办,点击重新发送
                         window.location.href = "/login";
                     } else {
                         alert(data.message);

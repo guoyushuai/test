@@ -19,6 +19,11 @@ public class LoginServlet extends BaseServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        //用户登录成功后将当前用户存到了session中，用户修改密码后，重定向到登录页面，需要将当前用户从session中删除，否则导航条的状态依然是有有用户登录的状态
+        //req.getSession().invalidate();杀伤力太大，session无效化，服务器需要重新给客户端一个sessionId
+        req.getSession().removeAttribute("current_user");
+
         forward("/user/login",req,resp);
     }
 

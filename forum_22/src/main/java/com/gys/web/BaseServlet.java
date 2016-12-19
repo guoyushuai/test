@@ -1,11 +1,13 @@
 package com.gys.web;
 
 import com.google.gson.Gson;
+import com.gys.entity.User;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 /*import java.io.UnsupportedEncodingException;*/
@@ -22,6 +24,7 @@ public class BaseServlet extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");*/
         resp.setContentType("text/plain;charset=UTF-8");
 
+        //romote要求服务端返回字符串类型的（true|false）,也就是str只有这两个值
         PrintWriter out = resp.getWriter();
         out.print(str);
         out.flush();
@@ -37,6 +40,19 @@ public class BaseServlet extends HttpServlet {
         out.print(json);
         out.flush();
         out.close();
+    }
+
+    public User getCurrentUser(HttpServletRequest request) {
+
+        //要想获得httpsession对象，需要request对象，所以需要传入参数req
+        HttpSession session = request.getSession();
+        //session中可能没有值，不能直接强制转换
+        if(session.getAttribute("current_user") != null) {
+            return (User) session.getAttribute("current_user");
+        } else {
+            return null;
+        }
+
     }
 
 }

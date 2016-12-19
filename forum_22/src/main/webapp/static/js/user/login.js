@@ -37,6 +37,10 @@ $(function () {
                         window.location.href = "/home";
                     } else {
                         alert(data.message);
+                        /*if(data.message == "账号还未激活") {
+                            //1请到邮箱中激活账号
+                            //2链接已过期或者邮件发送失败点击按钮重新发送邮件（ajax请求）
+                        }*/
                     }
                 },
                 error:function () {

@@ -130,8 +130,8 @@ public class UserService {
         });
         th.start();
 
-        //发送邮件可能失败，需要给提示没收到？点击选择重新发送
-        //或者在用户登录时显示账号未激活，需要激活，重新发送邮件?
+        //发送邮件可能失败，但是直接跳转到登录页面了
+        //在用户登录时显示账号未激活，需要激活，login.jsp中点击重新发送邮件
         // TODO: 2016/12/17
 
     }
@@ -139,12 +139,13 @@ public class UserService {
     /**
      * 根据token激活对应的账户
      */
-    public void activeUser(String uuid) {
+    public void activeUser(String token) {
 
-        //这个就是发送邮件时,添加到链接后面的uuid(token)
-        String username = activeCache.getIfPresent(uuid);
+        //这个就是发送邮件时,添加到url链接后面附加参数_的uuid(token)的值：一个随机字符串
+        //用这个随机字符串作为键去缓存中查找对应的缓存中的值（将这个url中的token值与设置时存入缓存中的token值进行对比）
+        String username = activeCache.getIfPresent(token);
         if(username == null) {
-            //缓存过期，或者被伪造.不再是数据连接异常，属于业务异常
+            //缓存过期，或者被伪造.不再是数据连接异常，用户导致的属于业务异常
             throw new ServiceException("链接无效或已过期");
         } else {
             //根据名字找到对应账户
@@ -156,7 +157,7 @@ public class UserService {
                 user.setState(User.STATE_ACTIVE);
                 userDao.update(user);
                 //激活完毕，需要将链接无效化，删除缓存token,避免用户多次点击
-                activeCache.invalidate(uuid);
+                activeCache.invalidate(token);
             }
         }
 
@@ -184,7 +185,7 @@ public class UserService {
                 //同样要将登录信息记录到系统日志中
                 logger.info("{}在{}登录了系统",username,ip);
 
-                //用户登录后，需要将用户信息放在session中，用以确保用户进行操作时，服务端能辨识是同一个用户
+                //用户登录后，需要将用户信息放在session中（servlet中完成），用以确保用户进行其他操作时，服务端能辨识是同一个用户
                 return user;
             } else if(user.getState().equals(User.STATE_UNACTIVE)) {
                 throw new ServiceException("账号还未激活");
@@ -216,17 +217,18 @@ public class UserService {
                             //一一对应
                             String uuid = UUID.randomUUID().toString();
 
-                            //缓存设置时的键值对都是字符串String类型
+                            //缓存设置时的键值对都是字符串String类型，键名不是uuid,而是uuid的值：一个随机字符串
                             resetCache.put(uuid,user.getUsername());
+                            //有效期30分钟
 
                             //用户点击链接后跳转到的界面地址，参数token=uuid
                             String url = "http://bbs.kaishengit.com/resetPassword?token=" + uuid;
 
-                            //邮件服务崩溃，手动获取连接
+                            //邮件服务崩溃，手动获取连接//跳转到登录页面后，添加重新发送邮件功能
                             System.out.println(url);
 
                             String html = "<h3>亲爱的:"+ user.getUsername() +"</h3>请点击<a href="+ url +">该链接</a>重置您的密码，链接有效期30分钟。";
-                            //30分钟内多次点击该连接都有效，即使重置过密码，依然有效，可以再次重置
+                            //30分钟内多次点击该连接都有效，即使重置过密码，依然有效，可以再次重置，删除token就好
 
                             EmailUtil.sendHtmlEmail("密码重置邮件",html,value);
                         }
@@ -255,8 +257,8 @@ public class UserService {
      */
     public User findUserByToken(String token) {
 
-        //token-username-user放入缓存的时候键值都是String类型
-        //token就是url中的参数，等于uuid
+        //token-username-user放入缓存的时候键值都是String类型，不能放入user对象，如果其他业务对缓存进行修改的话，会造成缓存中的对象与数据库中的对象数据不一致的情况
+        //token就是url中附加的参数，等于uuid
         String username = resetCache.getIfPresent(token);
 
         if(StringUtil.isEmpty(username)) {
@@ -266,14 +268,14 @@ public class UserService {
             if(user == null) {
                 throw new ServiceException("未找到对应账号");
             } else {
-                //暂时不能删除token
+                //暂时不能删除token。。。下一步post提交修改密码时，再次验证token,防止用户恶意刷密码
                 return user;
             }
         }
     }
 
     /**
-     *重置密码
+     *重置密码(与修改密码性质不同)
      */
     public void resetPassword(String id, String password, String token) {
 
@@ -283,15 +285,56 @@ public class UserService {
         if(StringUtil.isEmpty(username)) {
             throw new ServiceException("token无效或已过期");
         } else {
-            //根据id找到对应账户，未找到对应账号的抛异常在上一步已经解决了
-            User user = userDao.findById(Integer.valueOf(id));
+            /*//根据id找到对应账户，对未找到对应账号可以处理也可以不处理，在数据库中只是查询，并没有危害到数据库的数据安全
+            User user = userDao.findById(Integer.valueOf(id));*/
+
+            //可以使用缓存中以token（uuid）的值作为键存入的键值对缓存，通过键找到当时设置的值username来进一步查找对应用户，
+            //缓存有效期30分钟，既然进else来了，就说明该缓存一定存在
+            // 这样在jsp中只设置token的隐藏域不用再设置id的缓存域
+            User user = userDao.findByUsername(username);
 
             //将密码加盐加密更新数据库中对应账户的信息
             user.setPassword(DigestUtils.md5Hex(password+Config.get("user.password.salt")));
             userDao.update(user);
-            //记录日志
-            logger.info("{}修改了密码",user.getUsername());
+
+            //重置成功，删除缓存中的token
             resetCache.invalidate(token);
+
+            //记录日志
+            logger.info("{}重置了密码",user.getUsername());
         }
+    }
+
+    /**
+     * 修改电子邮件
+     */
+    public void updateEmail(User user, String email) {
+
+        //用servlet从session中获取当前账户并作为参数传递过来，servlet中不做业务逻辑
+        user.setEmail(email);
+
+        //重置邮箱后，修改账户状态为未激活，需要重新发送激活邮件激活账户
+        //user.setState(User.STATE_UNACTIVE);
+        // TODO: 2016/12/19
+        userDao.update(user);
+
+        logger.info("{}修改了电子邮件",user.getUsername());
+    }
+
+
+    /**
+     * 修改账户密码（不是忘记密码的重置密码）
+     */
+    public void updatePassword(User user, String oldpassword, String newpassword) {
+        //获得配置文件中的盐值
+        String salt = Config.get("user.password.salt");
+        if(user.getPassword().equals(DigestUtils.md5Hex(oldpassword + salt))) {
+            user.setPassword(DigestUtils.md5Hex(newpassword + salt));
+            userDao.update(user);
+            logger.info("{}修改了密码",user.getUsername());
+        } else {
+            throw new ServiceException("原始密码错误");
+        }
+
     }
 }

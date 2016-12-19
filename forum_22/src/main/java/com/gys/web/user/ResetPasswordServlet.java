@@ -58,7 +58,7 @@ public class ResetPasswordServlet extends BaseServlet {
             userService.resetPassword(id,password,token);
             result.put("state","success");
         } catch (ServiceException e) {
-            result.put("atate","error");
+            result.put("state","error");
             result.put("message",e.getMessage());
         }
         renderJson(result,resp);

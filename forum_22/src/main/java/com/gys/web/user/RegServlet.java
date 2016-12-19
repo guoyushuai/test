@@ -3,6 +3,7 @@ package com.gys.web.user;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.gys.entity.User;
+import com.gys.exception.ServiceException;
 import com.gys.service.UserService;
 import com.gys.web.BaseServlet;
 
@@ -44,17 +45,20 @@ public class RegServlet extends BaseServlet {
         userService.save(user);*/
 
         //返回JSON键值对对象，1Java中的类，2Map集合
-        Map<String,Object> result = Maps.newHashMap();
+        Map<String, Object> result = Maps.newHashMap();
 
         //!!!可能失败,这个思路怎么来的？？？底层抛出了异常：数据库挂了，sql拼错
         UserService userService = new UserService();
-    //    try {
-            userService.save(username,password,email,phone);
-            result.put("state","success");
-    //    } catch(Exception e) {
-            //catch了所有异常
-            //相应的service层并没有throw抛出ServiceException异常，
-            //catch掉了DbHelp中抛的DataAccessException异常，却并没有处理
+        //    try {
+        userService.save(username, password, email, phone);
+        result.put("state", "success");
+    //  } catch(Exception e) {
+        //catch了所有异常(catch掉了DbHelp中抛的DataAccessException异常，却并没有处理)
+        //应该只catch业务异常,其他异常是程序员应该做的事，不是用户的错
+
+    //  } catch(ServiceException) {
+        //相应的service层并没有throw抛出ServiceException业务异常，不用try catch
+
     //        e.printStackTrace();
     //        result.put("state","error");
     //        result.put("message","注册失败");
