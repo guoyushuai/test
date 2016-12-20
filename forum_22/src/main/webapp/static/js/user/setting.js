@@ -97,14 +97,24 @@ $(function () {
                 },
                 success:function (data) {
                     if(data.state == "success") {
-                        /*swal({
-                            title: "修改成功，重新登录",
-                            text: "五秒后自动前往",
-                            timer: 5000,
-                            showConfirmButton: true
-                        });*/
-                        swal("Good job!", "修改成功请重新登录", "success");
-                        window.location.href = "/login";
+                        swal({
+                                title: "修改成功",
+                                text: "重新登陆或回到主页",
+                                type: "success",
+                                showCancelButton: true,
+                                confirmButtonColor: "#4285F4",
+                                confirmButtonText: "重新登录",
+                                cancelButtonText: "回到主页",
+                                closeOnConfirm: false,
+                                closeOnCancel: false
+                            },
+                            function(isConfirm){
+                                if (isConfirm) {
+                                    window.location.href = "/login";
+                                } else {
+                                    window.location.href = "/home";
+                                }
+                            });
                     } else {
                         swal("Oops!", data.message, "error");
                     }
@@ -118,7 +128,5 @@ $(function () {
             });
         }
     });
-    
-    
 
 });

@@ -337,4 +337,15 @@ public class UserService {
         }
 
     }
+
+    /**
+     * 修改用户头像
+     */
+    public void updateAvatar(User user, String avatarname) {
+
+        //此user与session中的current_user指向的是同一片内存空间，此处修改user的属性，是同步的，不用再刻意修改缓存中的属性
+        user.setAvatar(avatarname);
+        userDao.update(user);
+
+    }
 }

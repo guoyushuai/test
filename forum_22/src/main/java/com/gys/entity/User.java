@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 
 public class User implements Serializable {
 
-    public static final String DEFAULT_AVATAR = "default-avatar";
+    public static final String DEFAULT_AVATAR = "default-avatar.png";
 
     public static final Integer STATE_UNACTIVE = 0;
 

@@ -4,7 +4,9 @@ import com.google.common.collect.Maps;
 import com.gys.entity.User;
 import com.gys.exception.ServiceException;
 import com.gys.service.UserService;
+import com.gys.util.Config;
 import com.gys.web.BaseServlet;
+import com.qiniu.util.Auth;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,6 +20,20 @@ public class SettingServlet extends BaseServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        //获得配置文件中设置好的账号的ak,sk,bucketname
+        String ak = Config.get("qiniu.ak");
+        String sk = Config.get("qiniu.sk");
+        String bucketname = Config.get("qiniu.bucketname");
+
+        //密钥设置
+        Auth auth = Auth.create(ak,sk);
+        //计算token
+        String token = auth.uploadToken(bucketname);
+
+        //将token传递给客户端用于后续上传
+        req.setAttribute("token",token);
+
         forward("user/setting",req,resp);
     }
 
@@ -28,7 +44,25 @@ public class SettingServlet extends BaseServlet {
             updateProfile(req,resp);
         } else if ("password".equals(action)) {
             updatePassword(req,resp);
+        } else if ("avatar".equals(action)) {
+            updateAvatar(req,resp);
         }
+    }
+
+    /**
+     * 修改头像
+     */
+    private void updateAvatar(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String avatarname = req.getParameter("key");
+
+        User user = getCurrentUser(req);
+        UserService userService = new UserService();
+        userService.updateAvatar(user,avatarname);
+
+        Map<String,Object> result = Maps.newHashMap();
+        result.put("state","success");
+        renderJson(result,resp);
+
     }
 
     /**
@@ -71,6 +105,5 @@ public class SettingServlet extends BaseServlet {
         Map<String,Object> result = Maps.newHashMap();
         result.put("state","success");
         renderJson(result,resp);
-
     }
 }
