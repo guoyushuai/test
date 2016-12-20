@@ -1,5 +1,18 @@
 $(function () {
 
+    //类似request.getParameter("key"),根据键找对应的值javaScript中没有内置这个方法
+    function getParameterByName(name, url) {
+        if (!url) {
+            url = window.location.href;
+        }
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
+
     $("#btn").click(function () {
         $("#loginForm").submit();
     });
@@ -34,7 +47,15 @@ $(function () {
                 success:function (data) {
                     if(data.state == "success") {
                         alert("登录成功");
-                        window.location.href = "/home";
+                        //之前表单提交页面刷新是在LoginServlet的dopost中通过获取url中的callback进行判断成功后跳转到原请求界面
+
+                        var uri = getParameterByName("redirect");
+                        if(uri) {
+                            window.location.href = uri;
+                        } else {
+                            window.location.href = "/home";
+                        }
+
                     } else {
                         alert(data.message);
                         /*if(data.message == "账号还未激活") {

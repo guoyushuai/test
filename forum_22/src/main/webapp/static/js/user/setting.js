@@ -99,21 +99,21 @@ $(function () {
                     if(data.state == "success") {
                         swal({
                                 title: "修改成功",
-                                text: "重新登陆或回到主页",
+                                text: "重新登陆",
                                 type: "success",
-                                showCancelButton: true,
+                                showCancelButton: false,
                                 confirmButtonColor: "#4285F4",
-                                confirmButtonText: "重新登录",
-                                cancelButtonText: "回到主页",
+                                confirmButtonText: "",
+                                //cancelButtonText: "回到主页",
                                 closeOnConfirm: false,
-                                closeOnCancel: false
+                                //closeOnCancel: false
                             },
                             function(isConfirm){
                                 if (isConfirm) {
                                     window.location.href = "/login";
-                                } else {
+                                }/* else {
                                     window.location.href = "/home";
-                                }
+                                }*/
                             });
                     } else {
                         swal("Oops!", data.message, "error");

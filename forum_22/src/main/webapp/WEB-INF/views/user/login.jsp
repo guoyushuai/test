@@ -21,8 +21,16 @@
 
         <form action="" class="form-horizontal" id="loginForm">
 
+            <%--<c:if test="${not empty requestScope.message}">
+                <div class="alert alert-success">${requestScope.message}</div>
+            </c:if>--%>
+
             <c:if test="${param.state == 'logout'}">
                 <div class="alert alert-success">你已安全退出</div>
+            </c:if>
+
+            <c:if test="${not empty param.redirect}">
+                <div class="alert alert-success">请登录后再继续</div>
             </c:if>
 
             <div class="control-group">

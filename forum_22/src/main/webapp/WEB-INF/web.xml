@@ -4,6 +4,7 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
 
+    <!--字符集过滤器-->
     <filter>
         <filter-name>EncodingFilter</filter-name>
         <filter-class>com.gys.web.filter.EncodingFilter</filter-class>
@@ -14,6 +15,20 @@
     </filter>
     <filter-mapping>
         <filter-name>EncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <!--登录过滤器-->
+    <filter>
+        <filter-name>LoginFilter</filter-name>
+        <filter-class>com.gys.web.filter.LoginFilter</filter-class>
+        <init-param>
+            <param-name>validateUrl</param-name>
+            <param-value>/setting</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>LoginFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
