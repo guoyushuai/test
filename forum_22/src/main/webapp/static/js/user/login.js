@@ -49,6 +49,7 @@ $(function () {
                         alert("登录成功");
                         //之前表单提交页面刷新是在LoginServlet的dopost中通过获取url中的callback进行判断成功后跳转到原请求界面
 
+                        //不传url,获取当前地址栏，只传name
                         var uri = getParameterByName("redirect");
                         if(uri) {
                             window.location.href = uri;

@@ -3,6 +3,7 @@ package com.gys.util;
 import com.gys.exception.DataAccessException;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +18,20 @@ public class DbHelp {
     //一般情况下通过数据库连接池获取连接，不再直接获取数据库连接，连接池达到连接上限且超过等待最长时间后直接连接数据库
     private static Connection getConnection() {
         return ConnectionManager.getConnection();
+    }
+
+    public static Integer insert(String sql,Object... params) throws DataAccessException {
+
+        try {
+            QueryRunner queryRunner = new QueryRunner(ConnectionManager.getDataSource());
+            //System.out.println("SQL: " + sql);
+            //logger.debug("SQL:" + sql);//log4j
+            logger.debug("SQL:{}",sql);//slf4j
+            return queryRunner.insert(sql,new ScalarHandler<Long>(), params).intValue();
+        } catch (SQLException ex) {
+            logger.error("执行{}异常",sql);
+            throw new DataAccessException("执行"+ sql + "异常",ex);
+        }
     }
 
     public static void update(String sql,Object... params) throws DataAccessException {
