@@ -154,7 +154,7 @@
             $.ajax({
                 url:"/setting?action=avatar",
                 type:"post",
-                data:{"key":data.key},
+                data:{"filekey":data.key},
                 success:function (result) {
                     if(result.state == "success") {
                         swal("Good job!", "设置成功", "success");

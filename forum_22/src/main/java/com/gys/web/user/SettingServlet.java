@@ -53,7 +53,7 @@ public class SettingServlet extends BaseServlet {
      * 修改头像
      */
     private void updateAvatar(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String avatarname = req.getParameter("key");
+        String avatarname = req.getParameter("filekey");
 
         User user = getCurrentUser(req);
         UserService userService = new UserService();

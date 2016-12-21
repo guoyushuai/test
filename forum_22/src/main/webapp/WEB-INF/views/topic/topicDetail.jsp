@@ -6,11 +6,11 @@
     <title>主题页</title>
     <link href="http://cdn.bootcss.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="http://cdn.bootcss.com/bootstrap/2.3.1/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="js/editer/styles/simditor.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/js/editer/styles/simditor.css">
     <style>
         body{
-            background-image: url(img/bg.jpg);
+            background-image: url(/static/img/bg.jpg);
         }
         .simditor .simditor-body {
             min-height: 100px;
@@ -18,47 +18,23 @@
     </style>
 </head>
 <body>
-<div class="header-bar">
-    <div class="container">
-        <a href="#" class="brand">
-            <i class="fa fa-reddit-alien"></i>
-        </a>
-        <ul class="unstyled inline pull-right">
-            <li>
-                <a href="#">
-                    <img src="http://7xp5t4.com1.z0.glb.clouddn.com/Fqb8f9uDknAt2ilBoY-ipSZRMes-?imageView2/1/w/20/h/20" class="img-circle" alt="">
-                </a>
-            </li>
-            <li>
-                <a href=""><i class="fa fa-plus"></i></a>
-            </li>
-            <li>
-                <a href="#"><i class="fa fa-bell"></i></a>
-            </li>
-            <li>
-                <a href="setting.html"><i class="fa fa-cog"></i></a>
-            </li>
-            <li>
-                <a href="#"><i class="fa fa-sign-out"></i></a>
-            </li>
-        </ul>
-    </div>
-</div>
+
+<%@ include file="../include/navbar.jsp"%>
+
 <!--header-bar end-->
 <div class="container">
     <div class="box">
         <ul class="breadcrumb" style="background-color: #fff;margin-bottom: 0px;">
-            <li><a href="#">首页</a> <span class="divider">/</span></li>
-            <li class="active">问与答</li>
+            <li><a href="/home">首页</a> <span class="divider">/</span></li>
+            <li class="active">${requestScope.topic.node.nodename}</li>
         </ul>
         <div class="topic-head">
-            <img class="img-rounded avatar" src="http://7xp5t4.com1.z0.glb.clouddn.com/Fqb8f9uDknAt2ilBoY-ipSZRMes-?imageView2/1/w/60/h/60" alt="">
-            <h3 class="title">你们怎么发 git 的音？</h3>
-            <p class="topic-msg muted"><a href="">fankay</a> · 9小时前</p>
+            <img class="img-rounded avatar" src="http://oi0nv2rk1.bkt.clouddn.com/${requestScope.topic.user.avatar}?imageView2/1/w/60/h/60" alt="">
+            <h3 class="title">${requestScope.topic.title}</h3>
+            <p class="topic-msg muted"><a href="">${requestScope.topic.user.username}</a>${requestScope.topic.createtime}</p>
         </div>
         <div class="topic-body">
-            <p>AngularJS is an MVC framework for building web applications. The core features include HTML enhanced with custom component and data-binding capabilities, dependency injection and strong focus on simplicity, testability, maintainability and boiler-plate reduction.</p>
-            <p>下载之前先检查一下是否准备好了一个代码编辑器(我们推荐使用 Sublime Text 2) ，你是否已经掌握了足够的HTML和CSS知识以开展工作。这里我们不详述源码文件，但是它们可以随时被下载。在这里我们只着重介绍使用已经编译好的Bootstrap文件进行入门讲解。</p>
+            <p>${requestScope.topic.content}</p>
         </div>
         <div class="topic-toolbar">
             <ul class="unstyled inline pull-left">
@@ -67,9 +43,9 @@
                 <li><a href=""></a></li>
             </ul>
             <ul class="unstyled inline pull-right muted">
-                <li>434次点击</li>
-                <li>8人收藏</li>
-                <li>2人感谢</li>
+                <li>${requestScope.topic.clicknum}次点击</li>
+                <li>${requestScope.topic.favnum}人收藏</li>
+                <li>${requestScope.topic.thanksnum}人感谢</li>
             </ul>
         </div>
     </div>

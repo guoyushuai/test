@@ -96,8 +96,8 @@
                     beforeSend: function () {
                         $("#sendBtn").append($("<i class='fa fa-spinner fa-spin'></i>")).attr("disabled", "disabled");
                     },
-                    success: function (data) {
-                        if (data.state == "success") {
+                    success: function (result) {
+                        if (result.state == "success") {
                             swal({
                                     title: "发布成功",
                                     text: "点击前往查看帖子详情",
@@ -110,7 +110,10 @@
                                 },
                                 function (isConfirm) {
                                     if (isConfirm) {
-                                        window.location.href = "/topicDetail";
+                                        //发帖成功，跳转到帖子详情页面
+                                        /*window.location.href = "/topicDetail";*/
+                                        //指定现实哪一条帖子，需要在跳转的同时传递帖子id,/*map<"data",topic>*/是data.id,不是topic.id
+                                        window.location.href = "/topicDetail?topicid=" + result.data.id;
                                     }/* else {
                                         window.location.href = "/home";
                                     }*/
