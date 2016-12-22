@@ -9,6 +9,8 @@
     <link href="http://cdn.bootcss.com/sweetalert/1.1.3/sweetalert.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="stylesheet" href="/static/js/editer/styles/simditor.css">
+    <link rel="stylesheet" href="/static/js/editer/emoji/simditor-emoji.css">
+    <link rel="stylesheet" href="/static/js/editer/highlight/styles/default.css">
 </head>
 <body>
 
@@ -56,12 +58,48 @@
 <script src="/static/js/topic/topic.js"></script>
 <script src="/static/js/jquery.validate.min.js"></script>
 <script src="/static/js/sweetalert.min.js"></script>
+<script src="/static/js/editer/emoji/simditor-emoji.js"></script>
+<script src="/static/js/editer/highlight/highlight.pack.js"></script>
 <script>
     $(function () {
         var editor = new Simditor({
-            textarea: $('#editor')
+            textarea: $('#editor'),
             //optional options
+            toolbar: [
+                'title',
+                'bold',
+                'italic',
+                'underline',
+                'strikethrough',
+                'fontScale',
+                'color',
+                'ol',
+                'ul',
+                'blockquote',
+                'code',
+                'table',
+                'link',
+                'image',
+                'hr',
+                'indent',
+                'outdent',
+                'alignment',
+                'emoji'
+            ],
+            emoji: {
+                imagePath: '/static/js/editer/emoji/emoji/',
+                /*images: [
+                 'smile.png','smiley.png','laughing.png','blush.png','heart_eyes.png','smirk.png','flushed.png','grin.png','wink.png','kissing_closed_eyes.png','stuck_out_tongue_winking_eye.png','stuck_out_tongue.png','sleeping.png','worried.png','expressionless.png','sweat_smile.png','cold_sweat.png','joy.png','sob.png','angry.png','mask.png','scream.png','sunglasses.png','heart.png','broken_heart.png','star.png','anger.png','exclamation.png','question.png','zzz.png','thumbsup.png','thumbsdown.png','ok_hand.png','punch.png','v.png','clap.png','muscle.png','pray.png','skull.png','trollface.png'
+                ]*/
+            },
+            upload:{
+                url:"http://up-z1.qiniu.com/",
+                params:{"token":"${token}"},
+                fileKey:"file"
+            }
         });
+        hljs.initHighlightingOnLoad();
+
 
         //文本域写在外部js中，用不了
 
@@ -114,12 +152,13 @@
                                         /*window.location.href = "/topicDetail";*/
                                         //指定现实哪一条帖子，需要在跳转的同时传递帖子id,/*map<"data",topic>*/是data.id,不是topic.id
                                         window.location.href = "/topicDetail?topicid=" + result.data.id;
-                                    }/* else {
-                                        window.location.href = "/home";
-                                    }*/
+                                    }
+                                    /* else {
+                                     window.location.href = "/home";
+                                     }*/
                                 });
                         } else {
-                            swal("Oops!", "发帖失败", "error");
+                            swal("Oops!",result.message, "error");
                         }
 
                     },

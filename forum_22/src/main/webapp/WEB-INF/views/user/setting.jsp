@@ -148,13 +148,13 @@
             //该token通过/setting的doget方法传递过来
         });
 
-        ////上传成功，File对象,data服务端返回的数据（七牛{hash:"",key:""}）
+        ////上传成功，File对象,data服务端返回的数据（七牛{hash:"",key:""}）data.key服务端存储的文件名
         uploader.on( 'uploadSuccess', function( file,data ) {
             //向服务器发送数据，修改数据库中的值
             $.ajax({
                 url:"/setting?action=avatar",
                 type:"post",
-                data:{"filekey":data.key},
+                data:{"avatarname":data.key},
                 success:function (result) {
                     if(result.state == "success") {
                         swal("Good job!", "设置成功", "success");

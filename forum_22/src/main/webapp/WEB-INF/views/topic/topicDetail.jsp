@@ -8,10 +8,12 @@
     <link href="http://cdn.bootcss.com/bootstrap/2.3.1/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="stylesheet" href="/static/js/editer/styles/simditor.css">
+
     <style>
-        body{
+        body {
             background-image: url(/static/img/bg.jpg);
         }
+
         .simditor .simditor-body {
             min-height: 100px;
         }
@@ -19,7 +21,7 @@
 </head>
 <body>
 
-<%@ include file="../include/navbar.jsp"%>
+<%@ include file="../include/navbar.jsp" %>
 
 <!--header-bar end-->
 <div class="container">
@@ -29,9 +31,11 @@
             <li class="active">${requestScope.topic.node.nodename}</li>
         </ul>
         <div class="topic-head">
-            <img class="img-rounded avatar" src="http://oi0nv2rk1.bkt.clouddn.com/${requestScope.topic.user.avatar}?imageView2/1/w/60/h/60" alt="">
+            <img class="img-rounded avatar"
+                 src="http://oi0nv2rk1.bkt.clouddn.com/${requestScope.topic.user.avatar}?imageView2/1/w/60/h/60" alt="">
             <h3 class="title">${requestScope.topic.title}</h3>
-            <p class="topic-msg muted"><a href="">${requestScope.topic.user.username}</a>${requestScope.topic.createtime}</p>
+            <p class="topic-msg muted"><a
+                    href="">${requestScope.topic.user.username}</a>${requestScope.topic.createtime}</p>
         </div>
         <div class="topic-body">
             <p>${requestScope.topic.content}</p>
@@ -59,10 +63,13 @@
             <table class="talk-table">
                 <tr>
                     <td width="50">
-                        <img class="avatar" src="http://7xp5t4.com1.z0.glb.clouddn.com/Fqb8f9uDknAt2ilBoY-ipSZRMes-?imageView2/1/w/40/h/40" alt="">
+                        <img class="avatar"
+                             src="http://7xp5t4.com1.z0.glb.clouddn.com/Fqb8f9uDknAt2ilBoY-ipSZRMes-?imageView2/1/w/40/h/40"
+                             alt="">
                     </td>
                     <td width="auto">
-                        <a href="" style="font-size: 12px">fankay</a> <span style="font-size: 12px" class="reply">4小时前</span>
+                        <a href="" style="font-size: 12px">fankay</a> <span style="font-size: 12px"
+                                                                            class="reply">4小时前</span>
                         <br>
                         <p style="font-size: 14px">不知道国内有哪些公司开始用 react-native 了呢？我就知道天猫 Pad 版部分</p>
                     </td>
@@ -78,10 +85,13 @@
             <table class="talk-table">
                 <tr>
                     <td width="50">
-                        <img class="avatar" src="http://7xp5t4.com1.z0.glb.clouddn.com/Fqb8f9uDknAt2ilBoY-ipSZRMes-?imageView2/1/w/40/h/40" alt="">
+                        <img class="avatar"
+                             src="http://7xp5t4.com1.z0.glb.clouddn.com/Fqb8f9uDknAt2ilBoY-ipSZRMes-?imageView2/1/w/40/h/40"
+                             alt="">
                     </td>
                     <td width="auto">
-                        <a href="" style="font-size: 12px">fankay</a> <span style="font-size: 12px" class="reply">4小时前</span>
+                        <a href="" style="font-size: 12px">fankay</a> <span style="font-size: 12px"
+                                                                            class="reply">4小时前</span>
                         <br>
                         <p style="font-size: 14px">不知道国内有哪些公司开始用 react-native 了呢？我就知道天猫 Pad 版部分</p>
                     </td>
@@ -97,10 +107,13 @@
             <table class="talk-table">
                 <tr>
                     <td width="50">
-                        <img class="avatar" src="http://7xp5t4.com1.z0.glb.clouddn.com/Fqb8f9uDknAt2ilBoY-ipSZRMes-?imageView2/1/w/40/h/40" alt="">
+                        <img class="avatar"
+                             src="http://7xp5t4.com1.z0.glb.clouddn.com/Fqb8f9uDknAt2ilBoY-ipSZRMes-?imageView2/1/w/40/h/40"
+                             alt="">
                     </td>
                     <td width="auto">
-                        <a href="" style="font-size: 12px">fankay</a> <span style="font-size: 12px" class="reply">4小时前</span>
+                        <a href="" style="font-size: 12px">fankay</a> <span style="font-size: 12px"
+                                                                            class="reply">4小时前</span>
                         <br>
                         <p style="font-size: 14px">不知道国内有哪些公司开始用 react-native 了呢？我就知道天猫 Pad 版部分</p>
                     </td>
@@ -116,10 +129,13 @@
             <table class="talk-table">
                 <tr>
                     <td width="50">
-                        <img class="avatar" src="http://7xp5t4.com1.z0.glb.clouddn.com/Fqb8f9uDknAt2ilBoY-ipSZRMes-?imageView2/1/w/40/h/40" alt="">
+                        <img class="avatar"
+                             src="http://7xp5t4.com1.z0.glb.clouddn.com/Fqb8f9uDknAt2ilBoY-ipSZRMes-?imageView2/1/w/40/h/40"
+                             alt="">
                     </td>
                     <td width="auto">
-                        <a href="" style="font-size: 12px">fankay</a> <span style="font-size: 12px" class="reply">4小时前</span>
+                        <a href="" style="font-size: 12px">fankay</a> <span style="font-size: 12px"
+                                                                            class="reply">4小时前</span>
                         <br>
                         <p style="font-size: 14px">不知道国内有哪些公司开始用 react-native 了呢？我就知道天猫 Pad 版部分</p>
                     </td>
@@ -135,10 +151,13 @@
             <table class="talk-table">
                 <tr>
                     <td width="50">
-                        <img class="avatar" src="http://7xp5t4.com1.z0.glb.clouddn.com/Fqb8f9uDknAt2ilBoY-ipSZRMes-?imageView2/1/w/40/h/40" alt="">
+                        <img class="avatar"
+                             src="http://7xp5t4.com1.z0.glb.clouddn.com/Fqb8f9uDknAt2ilBoY-ipSZRMes-?imageView2/1/w/40/h/40"
+                             alt="">
                     </td>
                     <td width="auto">
-                        <a href="" style="font-size: 12px">fankay</a> <span style="font-size: 12px" class="reply">4小时前</span>
+                        <a href="" style="font-size: 12px">fankay</a> <span style="font-size: 12px"
+                                                                            class="reply">4小时前</span>
                         <br>
                         <p style="font-size: 14px">不知道国内有哪些公司开始用 react-native 了呢？我就知道天猫 Pad 版部分</p>
                     </td>
@@ -166,15 +185,16 @@
 </div>
 <!--container end-->
 <script src="http://cdn.bootcss.com/jquery/1.11.2/jquery.min.js"></script>
-<script src="js/editer/scripts/module.min.js"></script>
-<script src="js/editer/scripts/hotkeys.min.js"></script>
-<script src="js/editer/scripts/uploader.min.js"></script>
-<script src="js/editer/scripts/simditor.min.js"></script>
+<script src="/static/js/editer/scripts/module.min.js"></script>
+<script src="/static/js/editer/scripts/hotkeys.min.js"></script>
+<script src="/static/js/editer/scripts/uploader.min.js"></script>
+<script src="/static/js/editer/scripts/simditor.min.js"></script>
+
 <script>
-    $(function(){
-        var editor = new Simditor({
-            textarea: $('#editor'),
-            toolbar:false
+    $(function () {
+        var editor;
+        editor = new Simditor({
+            textarea: $('#editor')
             //optional options
         });
     });

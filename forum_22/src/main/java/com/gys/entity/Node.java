@@ -6,6 +6,15 @@ public class Node {
     private String nodename;
     private Integer topicnum;
 
+    @Override
+    public String toString() {
+        return "Node{" +
+                "id=" + id +
+                ", nodename='" + nodename + '\'' +
+                ", topicnum=" + topicnum +
+                '}';
+    }
+
     public Integer getId() {
         return id;
     }
