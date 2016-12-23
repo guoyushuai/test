@@ -19,7 +19,7 @@
         </div>
         <div class="box-padding">
             <%--获取servlet中的数据 EL表达式是jsp自带的重要组成部分--%>
-            <h3>404，${requestScope.message}</h3>
+            <h3>404，${requestScope.message}，点击<a href="/home">回到主页</a></h3>
         </div>
     </div>
 </div>

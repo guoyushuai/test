@@ -25,6 +25,7 @@
         <guave-version>20.0</guave-version>
         <gson-version>2.8.0</gson-version>
         <qiniu-version>7.1.0</qiniu-version>
+        <joda-version>2.9.4</joda-version>
     </properties>
 
     <dependencies>
@@ -109,11 +110,19 @@
             <artifactId>gson</artifactId>
             <version>${gson-version}</version>
         </dependency>
+
         <dependency>
             <groupId>com.qiniu</groupId>
             <artifactId>qiniu-java-sdk</artifactId>
             <version>${qiniu-version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>${joda-version}</version>
+        </dependency>
+
 
     </dependencies>
     <build>

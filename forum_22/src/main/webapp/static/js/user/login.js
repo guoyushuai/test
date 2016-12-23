@@ -47,12 +47,19 @@ $(function () {
                 success:function (data) {
                     if(data.state == "success") {
                         alert("登录成功");
-                        //之前表单提交页面刷新是在LoginServlet的dopost中通过获取url中的callback进行判断成功后跳转到原请求界面
+                        //之前表单提交页面刷新是在LoginServlet的dopost中通过获取url中的callback进行判断，登录成功后跳转到原请求界面
 
                         //不传url,获取当前地址栏，只传name
                         var uri = getParameterByName("redirect");
+                        //获取锚标记#后的值，以便于回调后定位到页面指定位置
+                        var reply = location.hash;
                         if(uri) {
-                            window.location.href = uri;
+                            if(reply) {
+                                window.location.href = uri + reply;
+
+                            } else {
+                                window.location.href = uri;
+                            }
                         } else {
                             window.location.href = "/home";
                         }
