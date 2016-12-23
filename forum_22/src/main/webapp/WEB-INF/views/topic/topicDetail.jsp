@@ -44,11 +44,21 @@
             <p>${requestScope.topic.content}</p>
         </div>
         <div class="topic-toolbar">
-            <ul class="unstyled inline pull-left">
-                <li><a href="">加入收藏</a></li>
-                <li><a href="">感谢</a></li>
-                <li><a href=""></a></li>
-            </ul>
+
+            <c:if test="${not empty sessionScope.current_user}">
+            <%--未登录不显示收藏、感谢、编辑按钮--%>
+                <ul class="unstyled inline pull-left">
+                    <li><a href="">加入收藏</a></li>
+                    <li><a href="">感谢</a></li>
+
+                    <c:if test="${sessionScope.current_user.id == requestScope.topic.userid && requestScope.topic.edit}">
+                        <%--没有登录且登录用户非发帖用户不显示编辑按钮，且仅发帖后十分钟内并没有回复可以修改--%>
+                        <%--点击跳转到topicEdit,并把要编辑的帖子id传过去--%>
+                        <li><a href="/topicEdit?topicid=${requestScope.topic.id}" >编辑</a></li>
+                    </c:if>
+            </c:if>
+
+        </ul>
             <ul class="unstyled inline pull-right muted">
                 <li>${requestScope.topic.clicknum}次点击</li>
                 <li>${requestScope.topic.favnum}人收藏</li>
@@ -59,9 +69,13 @@
     <!--box end-->
 
     <div class="box" style="margin-top:20px;">
-        <div class="talk-item muted" style="font-size: 12px">
-            ${fn:length(requestScope.replyList)}个回复 | 直到<span id="lastreplytime">${requestScope.topic.lastreplytime}</span>
-        </div>
+
+        <c:if test="${not empty requestScope.replyList}}">
+            <%--没有回复不显示回复个数及最后回复时间--%>
+            <div class="talk-item muted" style="font-size: 12px">
+                    ${fn:length(requestScope.replyList)}个回复 | 直到<span id="lastreplytime">${requestScope.topic.lastreplytime}</span>
+            </div>
+        </c:if>
 
         <%--//forEach的属性varStatus 能获得迭代的属性 vs.Status第几次迭代--%>
         <c:forEach items="${requestScope.replyList}" var="reply" varStatus="vs">
@@ -136,12 +150,32 @@
 
 <script>
     $(function () {
+        <c:if test="${not empty sessionScope.current_user}">
+        /*未登录时屏蔽了回复功能，同时应该屏蔽编辑框，避免加载编辑框时报错*/
 
         var editor;
         editor = new Simditor({
             textarea: $('#editor')
             //optional options
         });
+
+        //getValue(),setValue()分别获取与设置content中的值
+        $(".replyLink").click(function () {
+            //simditor中$("#editor").text()获取不到值也设置不了值
+            //editor定义为simditor对象，用simditor中的方法，查看文档
+            //获取到当前楼层的rel属性的值，定义时赋值为楼层
+            var count = $(this).attr("rel");
+
+            /*为回复内容添加显示为count的值的锚标记，点击该标记时定位到含a标签name值为count值的楼层*/
+            /*<a href="#count">count</a>*/
+            var html = "<a href='#" + count +"'>#"+count+"</a>"
+            //获取回复框已输入的值，防止后添加回复楼层时，已输入内容被清空
+            editor.setValue(html + editor.getValue());
+
+            //点击楼层中的回复按钮后跳转到回复框内，同登录后再回复指向含a标签name属性值为reply的锚标记的回复框一样
+            window.location.href = "#reply";
+        });
+        </c:if>
 
         $("#replyBtn").click(function () {
             $("#replyForm").submit();
@@ -160,28 +194,6 @@
             /*var replyTime = $(this).text();
             return moment(replyTime).fromNow();*/
         });
-
-
-        //getValue(),setValue()分别获取与设置content中的值
-        $(".replyLink").click(function () {
-            //simditor中$("#editor").text()获取不到值也设置不了值
-
-            //editor定义为simditor对象，用simditor方法，查看文档
-
-            //获取到当前楼层的rel属性的值，定义时赋值为楼层
-            var count = $(this).attr("rel");
-
-            /*为回复内容添加显示为count的值的锚标记，点击该标记时定位到含a标签name值为count的楼层*/
-            /*<a href="#count">count</a>*/
-            var html = "<a href='#" + count +"'>"+count+"</a>"
-            //获取回复框已输入的值，防止后添加回复楼层时，已输入内容被清空
-            editor.setValue(html + editor.getValue());
-
-            //点击楼层中的回复按钮后跳转到回复框内，同登录后再回复指向含a标签name属性值为reply的锚标记的回复框一样
-            window.location.href = "#reply";
-
-        });
-
 
 
         //validate不校验隐藏域
@@ -210,8 +222,8 @@
                     },
                     success:function (result) {
                         if(result.state == "success") {
-                            //等于刷新页面servlet只传了topicid这个属性这里获取不到，只能传
-                            window.location.href = "/topicDetail?topicid=" + ${param.topicid};
+                            //等于刷新页面servlet只传了topicid这个参数进入topicDetail的doget方法根据topicid查找了帖子详情再请求转发到相应
+                            window.location.href = "/topicDetail?topicid=" + result.data;
                         } else {
                             alert(result.message);
                             swal("Oops!",result.message, "error");

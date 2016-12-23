@@ -10,6 +10,7 @@ import com.gys.entity.Topic;
 import com.gys.entity.User;
 import com.gys.exception.ServiceException;
 import com.gys.util.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 
 import java.sql.Timestamp;
@@ -144,5 +145,26 @@ public class TopicService {
         //(根据userid查找用户表user中的username，useravatar)*回复数
         //需要两表联查，不同于显示帖子详情的三表单查
         return replyList;
+    }
+
+    public void updateTopicById(Integer topicid, String title, String content, Integer nodeid) {
+
+        if(StringUtil.isNumeric(topicid.toString())) {
+            Topic topic = topicDao.findTopicById(topicid);
+            if (topic != null) {
+                if(topic.isEdit()) {
+                    topic.setTitle(title);
+                    topic.setContent(content);
+                    topic.setNodeid(nodeid);
+                    topicDao.update(topic);
+                } else {
+                    throw new ServiceException("该帖已不可编辑");
+                }
+            } else {
+                throw new ServiceException("帖子不存在或已被删除");
+            }
+        } else {
+            throw new ServiceException("参数异常");
+        }
     }
 }

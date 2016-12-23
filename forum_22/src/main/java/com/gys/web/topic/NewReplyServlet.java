@@ -36,6 +36,7 @@ public class NewReplyServlet extends BaseServlet {
             *//*result.put("data",topicid);//不行，String类型自动识别成message*/
             JsonResult result = new JsonResult();
             result.setState(SUCCESS);
+            //回复成功后，刷新页面，需要根据帖子id重新获取帖子的内容
             result.setData(topicid);
             renderJson(result,resp);
         } catch (ServiceException e) {

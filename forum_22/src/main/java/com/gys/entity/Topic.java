@@ -1,5 +1,7 @@
 package com.gys.entity;
 
+import org.joda.time.DateTime;
+
 import java.sql.Timestamp;
 
 public class Topic {
@@ -18,6 +20,20 @@ public class Topic {
 
     private User user;
     private Node node;
+
+    //在topic对象中封装了一个是否可以编辑的方法
+    public boolean isEdit() {
+        //获取帖子当前创建时间
+        DateTime dt = new DateTime(getCreatetime());
+
+        //创建时间+10分钟在当前时间之后并且没有回复，可修改
+        if (dt.plusMinutes(10).isAfterNow() && getReplynum() == 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
     public User getUser() {
         return user;
