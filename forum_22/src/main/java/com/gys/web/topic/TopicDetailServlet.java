@@ -1,10 +1,13 @@
 package com.gys.web.topic;
 
 import com.gys.dto.JsonResult;
+import com.gys.entity.Fav;
 import com.gys.entity.Reply;
 import com.gys.entity.Topic;
+import com.gys.entity.User;
 import com.gys.exception.ServiceException;
 import com.gys.service.TopicService;
+import com.gys.util.StringUtil;
 import com.gys.web.BaseServlet;
 
 import javax.servlet.ServletException;
@@ -27,7 +30,20 @@ public class TopicDetailServlet extends BaseServlet {
         try {
             //根据topicid查找对应的帖子
             Topic topic = topicService.findTopicById(Integer.valueOf(topicid));
+
+            //更新数据库topic表中clicknum字段，如果写在service层，每调用一次findTopicById就会刷新一次点击次数不科学
+            //回复时刷新了帖子页面，get请求同样也会触发该事件//
+            topic.setClicknum(topic.getClicknum() + 1);
+            topicService.update(topic);
             req.setAttribute("topic",topic);
+
+            //获得用户是否收藏该帖子
+            User user = getCurrentUser(req);
+            if(user != null && StringUtil.isNumeric(topicid)) {
+                Fav fav = topicService.findFavById(user.getId(),Integer.valueOf(topicid));
+                //查找有结果，代表收藏，数据库中没有查找到，结果为空代表没有收藏
+                req.setAttribute("fav",fav);
+            }
 
             //根据topicid获取帖子对应的回复列表
             List<Reply> replyList = topicService.findAllReplys(Integer.valueOf(topicid));

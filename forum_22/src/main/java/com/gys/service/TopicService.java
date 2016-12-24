@@ -1,18 +1,12 @@
 package com.gys.service;
 
-import com.gys.dao.NodeDao;
-import com.gys.dao.ReplyDao;
-import com.gys.dao.TopicDao;
-import com.gys.dao.UserDao;
-import com.gys.entity.Node;
-import com.gys.entity.Reply;
-import com.gys.entity.Topic;
-import com.gys.entity.User;
+import com.gys.dao.*;
+import com.gys.entity.*;
 import com.gys.exception.ServiceException;
 import com.gys.util.StringUtil;
-import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 
+import java.security.PrivateKey;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -22,6 +16,8 @@ public class TopicService {
     private TopicDao topicDao = new TopicDao();
     private UserDao userDao = new UserDao();
     private ReplyDao replyDao = new ReplyDao();
+
+    private FavDao favDao = new FavDao();
 
     /**
      * 查找所有节点
@@ -52,18 +48,20 @@ public class TopicService {
         //再次封装（将从数据库返回的id封装到topic对象中）
         topic.setId(topicid);
 
-        //根据nodeid查找node表中对应的node对象，并更新表中相应节点的topicnum
+        //根据nodeid查找node表中对应的node对象，
         Node node = nodeDao.findNodeById(nodeid);
 
+
+        //更新表中相应节点的topicnum
         /*Integer a = null;
         int b = a;*/
+        //数据库node表中，topicnum列默认值为null，从数据库中查找出来后附给对象相应属性topicnum值为null,
+        // public Integer getTopicnum(){return topicnum}时将null值附给了Integer包装类,
+        //将Integer类型的null值自动拆箱赋值给int时引起NullPointException
 
         if(node != null) {
-            //数据库node表中，topicnum列默认值为null，从数据库中查找出来后附给对象相应属性topicnum值为null,
-            // public Integer getTopicnum(){return topicnum}时将null值附给了Integer包装类,
-            //将Integer类型的null值自动拆箱赋值给int时引起NullPointException
-            int num = node.getTopicnum();
-            node.setTopicnum(num + 1);
+            int oldtopicnum = node.getTopicnum();
+            node.setTopicnum(oldtopicnum + 1);
             nodeDao.update(node);
         } else {
             throw new ServiceException("节点不存在");
@@ -89,10 +87,7 @@ public class TopicService {
                 topic.setUser(user);
                 topic.setNode(node);
 
-                //更新数据库topic表中clicknum字段，每根据帖子id查找一次帖子，点击数就增加一次
-                topic.setClicknum(topic.getClicknum() + 1);
-                topicDao.update(topic);
-                //回复时刷新了帖子页面，get请求同样也会触发该事件
+
 
                 return topic;
             } else {
@@ -147,15 +142,35 @@ public class TopicService {
         return replyList;
     }
 
-    public void updateTopicById(Integer topicid, String title, String content, Integer nodeid) {
+    /**
+     * 修改帖子后根据topicid更新数据库中帖子信息
+     */
+    public void updateTopicById(Integer topicid, String title, String content, Integer newnodeid) {
 
         if(StringUtil.isNumeric(topicid.toString())) {
             Topic topic = topicDao.findTopicById(topicid);
             if (topic != null) {
                 if(topic.isEdit()) {
+
+                    Integer oldnodeid = topic.getNodeid();
+                    if (!newnodeid.equals(oldnodeid)) {
+                        Node oldnode = nodeDao.findNodeById(oldnodeid);
+                        oldnode.setTopicnum(oldnode.getTopicnum() - 1);
+                        nodeDao.update(oldnode);
+                        Node newnode = nodeDao.findNodeById(newnodeid);
+                        newnode.setTopicnum(newnode.getTopicnum() + 1);
+                        nodeDao.update(newnode);
+                    }
+                    /*Node node = nodeDao.findNodeById(oldnodeid);
+                    if (!nodeid.equals(node.getId())) {
+                        Integer oldtopicnum = node.getTopicnum();
+                        node.setTopicnum(oldtopicnum - 1);
+                    }*/
+
                     topic.setTitle(title);
                     topic.setContent(content);
-                    topic.setNodeid(nodeid);
+                    topic.setNodeid(newnodeid);
+
                     topicDao.update(topic);
                 } else {
                     throw new ServiceException("该帖已不可编辑");
@@ -166,5 +181,50 @@ public class TopicService {
         } else {
             throw new ServiceException("参数异常");
         }
+    }
+
+    /**
+     *更新帖子信息，（点击 次数）
+     */
+    public void update(Topic topic) {
+        topicDao.update(topic);
+    }
+
+    /**
+     * 查询用户对帖子的收藏状态
+     */
+    public Fav findFavById(Integer userid, Integer topicid) {
+        return favDao.findByid(userid,topicid);
+    }
+
+    /**
+     *加入收藏
+     */
+    public void favTopic(Integer userid, Integer topicid) {
+        Fav fav = new Fav();
+        fav.setUserid(userid);
+        fav.setTopicid(topicid);
+        favDao.favTopic(fav);
+
+        //更新数据库中topic表的favnum列的值
+        Topic topic = topicDao.findTopicById(topicid);
+        topic.setFavnum(topic.getFavnum() + 1);
+        topicDao.update(topic);
+
+    }
+
+    /**
+     * 取消收藏
+     */
+    public void unfavTopic(Integer userid, Integer topicid) {
+        Fav fav = new Fav();
+        fav.setUserid(userid);
+        fav.setTopicid(topicid);
+        favDao.unfavTopic(fav);
+
+        //更新数据库中topic表的favnum列的值
+        Topic topic = topicDao.findTopicById(topicid);
+        topic.setFavnum(topic.getFavnum() - 1);
+        topicDao.update(topic);
     }
 }

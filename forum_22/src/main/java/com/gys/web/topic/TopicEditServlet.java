@@ -65,6 +65,8 @@ public class TopicEditServlet extends BaseServlet {
         String content = req.getParameter("content");
         String nodeid = req.getParameter("nodeid");
 
+        /*查找node，更新相应的topicnum*/
+
         TopicService topicService = new TopicService();
         JsonResult result = null;
         try {

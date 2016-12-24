@@ -48,7 +48,16 @@
             <c:if test="${not empty sessionScope.current_user}">
             <%--未登录不显示收藏、感谢、编辑按钮--%>
                 <ul class="unstyled inline pull-left">
-                    <li><a href="">加入收藏</a></li>
+
+                    <c:choose>
+                        <c:when test="${empty fav}">
+                            <li><a href="javascript:;" id="favTopic" rel="fav">加入收藏</a></li>
+                        </c:when>
+                        <c:otherwise>
+                            <li><a href="javascript:;" id="favTopic" rel="unfav">取消收藏</a></li>
+                        </c:otherwise>
+                    </c:choose>
+
                     <li><a href="">感谢</a></li>
 
                     <c:if test="${sessionScope.current_user.id == requestScope.topic.userid && requestScope.topic.edit}">
@@ -61,7 +70,7 @@
         </ul>
             <ul class="unstyled inline pull-right muted">
                 <li>${requestScope.topic.clicknum}次点击</li>
-                <li>${requestScope.topic.favnum}人收藏</li>
+                <li><span id="favnum">${topic.favnum}</span>人收藏</li>
                 <li>${requestScope.topic.thanksnum}人感谢</li>
             </ul>
         </div>
@@ -93,7 +102,7 @@
                             <a href="" style="font-size: 12px">${reply.user.username}</a> <span style="font-size: 12px"
                                                                                 class="replyTime">${reply.createtime}</span>
                             <br>
-                            <%--锚标记，在其他楼层点击回复时带有该楼层链接的标签时时跳转到此标记所在的楼层--%>
+                            <%--锚标记，在其他楼层点击回复时带有该楼层链接的标签a href=#count时跳转到此标记所在的楼层--%>
                             <a name="${vs.count}"></a>
                             <p style="font-size: 14px">${reply.content}</p>
                         </td>
@@ -102,7 +111,7 @@
                             <%--a标签的href=javascript:;不做跳转用--%>
                             <a href="javascript:;" rel="${vs.count}" class="replyLink" title="回复"><i class="fa fa-reply"></i></a>&nbsp;
                             <%--楼层数通过vs.count循环次数来判断--%>
-                            <span class="badge">${vs.count}</span>
+                            <span class="badge">第${vs.count}楼</span>
                         </td>
                     </tr>
                 </table>
@@ -152,29 +161,78 @@
     $(function () {
         <c:if test="${not empty sessionScope.current_user}">
         /*未登录时屏蔽了回复功能，同时应该屏蔽编辑框，避免加载编辑框时报错*/
+            var editor;
+            editor = new Simditor({
+                textarea: $('#editor')
+                //optional options
+            });
 
-        var editor;
-        editor = new Simditor({
-            textarea: $('#editor')
-            //optional options
-        });
+            //getValue(),setValue()分别获取与设置content中的值
+            $(".replyLink").click(function () {
+                //simditor中$("#editor").text()获取不到值也设置不了值
+                //editor定义为simditor对象，用simditor中的方法，查看文档
+                //获取到当前楼层的rel属性的值，定义时赋值为楼层
+                var count = $(this).attr("rel");
 
-        //getValue(),setValue()分别获取与设置content中的值
-        $(".replyLink").click(function () {
-            //simditor中$("#editor").text()获取不到值也设置不了值
-            //editor定义为simditor对象，用simditor中的方法，查看文档
-            //获取到当前楼层的rel属性的值，定义时赋值为楼层
-            var count = $(this).attr("rel");
+                /*为回复内容添加显示为count的值的锚标记，点击该标记时定位到含a标签name值为count值的楼层*/
+                /*<a href="#count">count</a>*/
+                var html = "<a href='#" + count +"'>@"+count+"</a>"
+                //获取回复框已输入的值，防止后添加回复楼层时，已输入内容被清空
+                editor.setValue(html + editor.getValue());
 
-            /*为回复内容添加显示为count的值的锚标记，点击该标记时定位到含a标签name值为count值的楼层*/
-            /*<a href="#count">count</a>*/
-            var html = "<a href='#" + count +"'>#"+count+"</a>"
-            //获取回复框已输入的值，防止后添加回复楼层时，已输入内容被清空
-            editor.setValue(html + editor.getValue());
+                //点击楼层中的回复按钮后跳转到回复框内，同登录后再回复指向含a标签name属性值为reply的锚标记的回复框一样
+                window.location.href = "#reply";
+            });
 
-            //点击楼层中的回复按钮后跳转到回复框内，同登录后再回复指向含a标签name属性值为reply的锚标记的回复框一样
-            window.location.href = "#reply";
-        });
+
+
+
+            $("#favTopic").click(function () {
+                var action = "";
+                if($(this).text() == "加入收藏") {
+                    alert("未收藏需加入");
+                    action = "fav";
+                } else if($(this).text() == "取消收藏") {
+                    alert("已收藏需取消");
+                    action = "unfav";
+                };
+                //需要给客户端传递一个参数，来判断用户是否点击了收藏按钮
+
+                //乱！绕晕了，放弃治疗
+                /*var action = "";
+                if ($(this).attr("rel") == "fav") {
+                    alert("未收藏需加入");
+                    action = "fav";
+                } else if($(this).attr("rel") == "unfav") {
+                    alert("已收藏需取消");
+                    action = "unfav";
+                }*/
+
+                /*$(this)获取不到当前的控件了*/
+                var $this = $(this);
+                $.post("/topicFav",{"topicid":${requestScope.topic.id},"action":action})
+                    .done(function (result) {
+                        if(result.state == "success") {
+                            alert("服务端已更新");
+                            if(action == "fav") {
+                                alert("客户端加入，字面变取消，人数+1");
+                                /*$(this).html("取消收藏");*/
+                                $this.html("取消收藏");
+                            } else if(action == "unfav") {
+                                alert("客户端取消，字面变加入，人数-1");
+                                /*$(this).html("加入收藏");*/
+                                $this.html("加入收藏");
+                            }
+                            //修改页面上的收藏次数
+                            $("#favnum").text(result.data);
+                        } else {
+                            alert(result.message);
+                        }
+                    }).error(function () {
+                        alert("服务器异常");
+                    });
+            });
+
         </c:if>
 
         $("#replyBtn").click(function () {
