@@ -50,15 +50,12 @@ public class TopicService {
 
         //根据nodeid查找node表中对应的node对象，
         Node node = nodeDao.findNodeById(nodeid);
-
-
         //更新表中相应节点的topicnum
         /*Integer a = null;
         int b = a;*/
         //数据库node表中，topicnum列默认值为null，从数据库中查找出来后附给对象相应属性topicnum值为null,
         // public Integer getTopicnum(){return topicnum}时将null值附给了Integer包装类,
         //将Integer类型的null值自动拆箱赋值给int时引起NullPointException
-
         if(node != null) {
             int oldtopicnum = node.getTopicnum();
             node.setTopicnum(oldtopicnum + 1);

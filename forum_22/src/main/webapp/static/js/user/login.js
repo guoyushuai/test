@@ -3,6 +3,7 @@ $(function () {
     //类似request.getParameter("key"),根据键找对应的值javaScript中没有内置这个方法
     function getParameterByName(name, url) {
         if (!url) {
+            //当前地址栏中的url
             url = window.location.href;
         }
         name = name.replace(/[\[\]]/g, "\\$&");

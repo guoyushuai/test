@@ -1,11 +1,12 @@
 package com.gys.web.filter;
 
+import com.gys.exception.ServiceException;
+
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class LoginFilter extends AbstractFilter {
 
@@ -30,12 +31,42 @@ public class LoginFilter extends AbstractFilter {
         //获取用户请求的url
         String uri = request.getRequestURI();
 
+        System.out.println("uri:" + uri);
+
         //不能用StringUtils.isEmaty,因为urlList可能为空
         if(urlList != null && urlList.contains(uri)){
             //非登陆用户不能访问的页面需要被过滤
             if(request.getSession().getAttribute("current_user") != null) {
+                //已登录用户直接通过
                 filterChain.doFilter(request,response);
             } else {
+                //未登录用户跳转到登录页面，并获取跳回的参数
+
+                Map map = request.getParameterMap();
+                Set set = map.entrySet();
+                Iterator iterator = set.iterator();
+                /*Iterator iterator = request.getParameterMap().entrySet().iterator();*/
+                if(iterator.hasNext()) {
+                    uri += "?";
+
+                    while(iterator.hasNext()) {
+                        //不确定map中存放的是什么东西的时候，用map.entry代替键值对对象
+                        Map.Entry entry = (Map.Entry) iterator.next();
+                        Object key = entry.getKey();
+                        Object value = entry.getValue();
+
+                        //值为字符串数组
+                        String valString[] = (String[]) value;
+                        String param = "";
+                        for(int i = 0;i < valString.length;i++) {
+                            param = key + "=" + valString[i] + "&";
+                            uri += param;
+                        }
+                    }
+                    uri = uri.substring(0,uri.length()-1);
+                    System.out.println("uri = " + uri);
+                }
+
                 response.sendRedirect("/login?redirect=" + uri);
             }
         } else {
