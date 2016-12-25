@@ -224,4 +224,15 @@ public class TopicService {
         topic.setFavnum(topic.getFavnum() - 1);
         topicDao.update(topic);
     }
+
+    //未设置分页，未指定nodeid时，查找所有的帖子
+    public List<Topic> findAllTopics() {
+        return topicDao.findAllTopics();
+    }
+    //未设置分页，指定nodeid时，查找对应节点所有的帖子
+    public List<Topic> findAllTopicsByNodeid(Integer nodeid) {
+        return topicDao.findAllTopicsByNodeid(nodeid);
+    }
+
+
 }
