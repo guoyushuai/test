@@ -77,6 +77,8 @@ public class TopicEditServlet extends BaseServlet {
             result.setData(topicid);
         } catch (ServiceException e) {
             result = new JsonResult(e.getMessage());
+            //编辑失败后，跳转到帖子详情页，同样需要帖子topicid
+            result.setData(topicid);
         }
         renderJson(result,resp);
     }

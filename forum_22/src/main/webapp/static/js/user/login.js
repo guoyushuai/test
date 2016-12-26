@@ -18,6 +18,14 @@ $(function () {
         $("#loginForm").submit();
     });
 
+    //回车键，提交表单
+    $("#password").keydown(function () {
+        if(event.keyCode == "13") {
+            /*$("#btn").click();*/
+            $("#loginForm").submit();
+        }
+    });
+
     $("#loginForm").validate({
         errorElement:"span",
         errorClass:"text-error",

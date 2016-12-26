@@ -1,14 +1,16 @@
 package com.gys.service;
 
+import com.google.common.collect.Maps;
 import com.gys.dao.*;
 import com.gys.entity.*;
 import com.gys.exception.ServiceException;
+import com.gys.util.Page;
 import com.gys.util.StringUtil;
 import org.joda.time.DateTime;
 
-import java.security.PrivateKey;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 
 public class TopicService {
 
@@ -225,14 +227,64 @@ public class TopicService {
         topicDao.update(topic);
     }
 
-    //未设置分页，未指定nodeid时，查找所有的帖子
+    /*//未设置分页，未指定nodeid时，查找所有的帖子
     public List<Topic> findAllTopics() {
         return topicDao.findAllTopics();
     }
     //未设置分页，指定nodeid时，查找对应节点所有的帖子
     public List<Topic> findAllTopicsByNodeid(Integer nodeid) {
         return topicDao.findAllTopicsByNodeid(nodeid);
+    }*/
+
+    /**
+     * 根据nodeid,pageno查找对应数据
+     */
+    public Page<Topic> findAllTopicsByNodeid(String nodeid, Integer pageno) {
+        //page中需要totals,pageno连个参数（其余参数page中内置）
+
+        //根据nodeid查找对应节点的帖子总数totals
+        int totals = 0;
+
+        //nodeid不为空且不能转换为数字在servlet中已经处理
+        //nodeid为空去主页
+        if(StringUtil.isEmpty(nodeid)){
+            totals = topicDao.count();
+            /*count = nodeDao.sum();*/
+        } else if (!exitNode(Integer.valueOf(nodeid))){
+            //传递来的nodeid不为空，能转换为数字，但是在node表中不存在,让nodeid强制等于null
+            totals = topicDao.count();
+            nodeid = null;
+        } else {
+            totals = topicDao.countByNodeid(Integer.valueOf(nodeid));
+        }
+
+        /*参数不够，找不到结果
+        Page<Topic> page = topicDao.findAllTopics(totals,pageno);*/
+
+        Page<Topic> topicPage = new Page<>(totals,pageno);
+        Map<String,Object> map = Maps.newHashMap();
+        map.put("nodeid",nodeid);
+        /*select * from t_topic where nodeid = ? limit start,pagesize;*/
+        map.put("start",topicPage.getStart());
+        map.put("pagesize",topicPage.getPageSize());
+
+        //获取页面对应的所有帖子
+        List<Topic> topicList = topicDao.findAllTopics(map);
+        //将帖子集合封装进page对象中
+        topicPage.setItems(topicList);
+
+        return topicPage;
     }
 
-
+    //
+    public boolean exitNode(Integer nodeid) {
+        List<Node> nodeList = nodeDao.findAllNodes();
+        for(int i = 0;i < nodeList.size();i++) {
+            Node node = nodeList.get(i);
+            if (nodeid == node.getId()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

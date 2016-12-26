@@ -4,6 +4,7 @@ import com.gys.entity.Node;
 import com.gys.util.DbHelp;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
+import org.apache.commons.dbutils.handlers.ScalarHandler;
 
 import java.util.List;
 
@@ -23,4 +24,10 @@ public class NodeDao {
         String sql = "update t_node set nodename=?,topicnum=? where id = ?";
         DbHelp.update(sql,node.getNodename(),node.getTopicnum(),node.getId());
     }
+
+    public int sum() {
+        String sql = "select sum(topicnum) from t_node";
+        return DbHelp.query(sql,new ScalarHandler<>());
+    }
+
 }

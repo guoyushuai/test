@@ -27,7 +27,7 @@
             </ul>
         </div>
 
-        <c:forEach items="${requestScope.topicList}" var="topic">
+        <c:forEach items="${requestScope.page.items}" var="topic">
             <div class="talk-item">
                 <table class="talk-table">
                     <tr>
@@ -38,6 +38,7 @@
                             <a href="">${topic.user.username}</a>
                         </td>
                         <td width="auto">
+                            <%--{topic.id显示的是user.id}--%>
                             <a href="/topicDetail?topicid=${topic.id}">${topic.title}</a>
                         </td>
                         <td width="50" align="center">
@@ -48,6 +49,10 @@
             </div>
         </c:forEach>
 
+        <%--页签--%>
+        <div class="pagination pagination-mini pagination-centered">
+            <ul id="pagination" style="margin-bottom:20px;"></ul>
+        </div>
 
     </div>
     <!--box end-->
@@ -58,5 +63,20 @@
         Copyright © 2016 kaishengit
     </div>
 </div>
+<script src="/static/js/jquery-1.11.1.js"></script>
+<script src="/static/js/jquery.twbsPagination.min.js"></script>
+<script>
+    $(function () {
+        $("#pagination").twbsPagination({
+            totalPages:${page.totalPage},
+            visiblePages:5,
+            first:'首页',
+            last:'末页',
+            prev:'上一页',
+            next:'下一页',
+            href: '?p={{number}}&nodeid=${param.nodeid}'
+        });
+    });
+</script>
 </body>
 </html>

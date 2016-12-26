@@ -31,7 +31,7 @@ public class LoginFilter extends AbstractFilter {
         //获取用户请求的url
         String uri = request.getRequestURI();
 
-        System.out.println("uri:" + uri);
+        System.out.println("获取uri:" + uri);
 
         //不能用StringUtils.isEmaty,因为urlList可能为空
         if(urlList != null && urlList.contains(uri)){
@@ -40,8 +40,8 @@ public class LoginFilter extends AbstractFilter {
                 //已登录用户直接通过
                 filterChain.doFilter(request,response);
             } else {
-                //未登录用户跳转到登录页面，并获取跳回的参数
 
+                //未登录用户跳转到登录页面，并获取跳回的参数
                 Map map = request.getParameterMap();
                 Set set = map.entrySet();
                 Iterator iterator = set.iterator();
@@ -50,7 +50,7 @@ public class LoginFilter extends AbstractFilter {
                     uri += "?";
 
                     while(iterator.hasNext()) {
-                        //不确定map中存放的是什么东西的时候，用map.entry代替键值对对象
+                        //不确定map中存放的是什么东西的时候，用键值对视图map.entry代替键值对对象
                         Map.Entry entry = (Map.Entry) iterator.next();
                         Object key = entry.getKey();
                         Object value = entry.getValue();
@@ -63,10 +63,12 @@ public class LoginFilter extends AbstractFilter {
                             uri += param;
                         }
                     }
+                    //把拼接好的uri最后的那个$去掉
                     uri = uri.substring(0,uri.length()-1);
-                    System.out.println("uri = " + uri);
+                    System.out.println("拼接uri = " + uri);
                 }
 
+                //未登录用户
                 response.sendRedirect("/login?redirect=" + uri);
             }
         } else {

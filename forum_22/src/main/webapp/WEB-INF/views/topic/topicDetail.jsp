@@ -63,11 +63,12 @@
                     <c:if test="${sessionScope.current_user.id == requestScope.topic.userid && requestScope.topic.edit}">
                         <%--没有登录且登录用户非发帖用户不显示编辑按钮，且仅发帖后十分钟内并没有回复可以修改--%>
                         <%--点击跳转到topicEdit,并把要编辑的帖子id传过去--%>
-                        <li><a href="/topicEdit?topicid=${requestScope.topic.id}" >编辑</a></li>
+                        <li><a href="/topicEdit?topicid=${requestScope.topic.id}">编辑</a></li>
                     </c:if>
+
+                </ul>
             </c:if>
 
-        </ul>
             <ul class="unstyled inline pull-right muted">
                 <li>${requestScope.topic.clicknum}次点击</li>
                 <li><span id="favnum">${topic.favnum}</span>人收藏</li>
@@ -79,7 +80,7 @@
 
     <div class="box" style="margin-top:20px;">
 
-        <c:if test="${not empty requestScope.replyList}}">
+        <c:if test="${not empty requestScope.replyList}">
             <%--没有回复不显示回复个数及最后回复时间--%>
             <div class="talk-item muted" style="font-size: 12px">
                     ${fn:length(requestScope.replyList)}个回复 | 直到<span id="lastreplytime">${requestScope.topic.lastreplytime}</span>
@@ -89,6 +90,9 @@
         <%--//forEach的属性varStatus 能获得迭代的属性 vs.Status第几次迭代--%>
         <c:forEach items="${requestScope.replyList}" var="reply" varStatus="vs">
             <%--${requestScope.reply.user.xxx}获取不到信息，在此reply非循环list中获得的reply--%>
+
+            <%--锚标记，在其他楼层点击回复时带有该楼层链接的标签a href=#count时跳转到此标记所在的楼层--%>
+            <a name="${vs.count}"></a>
 
             <div class="talk-item">
                 <table class="talk-table">
@@ -102,8 +106,6 @@
                             <a href="" style="font-size: 12px">${reply.user.username}</a> <span style="font-size: 12px"
                                                                                 class="replyTime">${reply.createtime}</span>
                             <br>
-                            <%--锚标记，在其他楼层点击回复时带有该楼层链接的标签a href=#count时跳转到此标记所在的楼层--%>
-                            <a name="${vs.count}"></a>
                             <p style="font-size: 14px">${reply.content}</p>
                         </td>
                         <td width="70" align="right" style="font-size: 12px">
@@ -111,7 +113,7 @@
                             <%--a标签的href=javascript:;不做跳转用--%>
                             <a href="javascript:;" rel="${vs.count}" class="replyLink" title="回复"><i class="fa fa-reply"></i></a>&nbsp;
                             <%--楼层数通过vs.count循环次数来判断--%>
-                            <span class="badge">第${vs.count}楼</span>
+                            <span class="badge">${vs.count}楼</span>
                         </td>
                     </tr>
                 </table>
@@ -120,11 +122,11 @@
         </c:forEach>
 
     </div>
+    <%--锚标记--%><%--a标签，name属性，先标记再通过#使用.登录后通过该标记，页面直接跳转到该回复界面--%>
+    <a name="reply"></a>
     <c:choose>
         <c:when test="${not empty sessionScope.current_user}">
             <div class="box" style="margin:20px 0px;">
-                <%--锚标记--%><%--a标签，name属性，先标记再通过#使用.登录后通过该标记，页面直接跳转到该回复界面--%>
-                <a name="reply"></a>
                 <div class="talk-item muted" style="font-size: 12px"><i class="fa fa-plus"></i> 添加一条新回复</div>
                 <form id="replyForm" action="" style="padding: 15px;margin-bottom:0px;">
                     <input name="topicid" type="hidden" value="${requestScope.topic.id}">
@@ -170,7 +172,7 @@
             //getValue(),setValue()分别获取与设置content中的值
             $(".replyLink").click(function () {
                 //simditor中$("#editor").text()获取不到值也设置不了值
-                //editor定义为simditor对象，用simditor中的方法，查看文档
+                //editor定义为simditor对象，用simditor中的方法，(查看文档)
                 //获取到当前楼层的rel属性的值，定义时赋值为楼层
                 var count = $(this).attr("rel");
 
@@ -280,8 +282,9 @@
                     },
                     success:function (result) {
                         if(result.state == "success") {
-                            //等于刷新页面servlet只传了topicid这个参数进入topicDetail的doget方法根据topicid查找了帖子详情再请求转发到相应
-                            window.location.href = "/topicDetail?topicid=" + result.data;
+                            //等于刷新页面servlet只传了topicid这个参数进入topicDetail的doget方法根据topicid查找了帖子详情再请求转发到相应jsp
+                            //暂时回复后定位到回复框，不能定位到自己刚回复的楼层
+                            window.location.href = "/topicDetail?topicid=" + result.data + "#reply";
                         } else {
                             alert(result.message);
                             swal("Oops!",result.message, "error");

@@ -11,16 +11,18 @@ public class Page<T> {
     private int totalPage;
     //当前页码
     private int pageNo;
-    //当前页数据
+    //当前页数据!!!!!将页面数据封装到page中
     private List<T> items;
+
     //总条数
     private int totals;
     //每页显示的数据量
-    private int pageSize = 2;
+    private int pageSize = 5;
     //当前页的起始行号
     private int start;
 
     public Page(int totals,int pageNo) {
+        //页码小于1，定位到第一页
         if(pageNo < 1) {
             pageNo = 1;
         }
@@ -28,10 +30,12 @@ public class Page<T> {
 
         //获取总页数
         totalPage = totals / pageSize;
+        //如果有余数，最大页数加1
         if(totals % pageSize != 0) {
             totalPage++;
         }
 
+        //页码大于最大页数，定位到最后一页
         if(pageNo > totalPage) {
             pageNo = totalPage;
         }
