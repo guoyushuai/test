@@ -50,7 +50,11 @@
             /*NotifyServlet已有get方法*/
             $.post("/notify").done(function (result) {
                 if(result.state == "success") {
-                    $("#unreadnum").text(result.data)
+                    if(result.data == "0") {
+                        $("#unreadnum").text("");
+                    } else {
+                        $("#unreadnum").text(result.data);
+                    }
                 }
             });
         };
@@ -58,8 +62,8 @@
 
         //防止没有登录时，依然在无限轮询，被过滤器过滤后又会返回登陆页的HTML
         var login = $("#islogin").text();
-        if(login == "success") {
-            setInterval(loadNotify,1*1000);
+        if(login == "login") {
+            setInterval(loadNotify,3*1000);
         }
 
     });

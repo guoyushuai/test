@@ -13,9 +13,11 @@ import com.gys.util.Config;
 import com.gys.util.EmailUtil;
 import com.gys.util.StringUtil;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -372,5 +374,20 @@ public class UserService {
      */
     public int countUnreadnumFromNotifyByUserAndState(User user) {
         return notifyDao.countUnreadnumFromNotifyByUserid(user.getId());
+    }
+
+    /**
+     * 根据id更新notify表中相应通知的状态
+     */
+    public void updateNotifyState(String ids) {
+        //ids是一串以逗号分隔的notifyid，将ids转换成字符串数组或者list集合
+        String idArray[] = ids.split(",");
+        //循环修改数组中每一条消息的状态
+        for (int i = 0;i < idArray.length;i++) {
+            Notify notify = notifyDao.findNotifyById(idArray[i]);
+            notify.setState(Notify.STATE_READ);
+            notify.setReadtime(new Timestamp(DateTime.now().getMillis()));
+            notifyDao.update(notify);
+        }
     }
 }
