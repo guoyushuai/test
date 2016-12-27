@@ -18,6 +18,7 @@ public class TopicService {
     private TopicDao topicDao = new TopicDao();
     private UserDao userDao = new UserDao();
     private ReplyDao replyDao = new ReplyDao();
+    private NotifyDao notifyDao = new NotifyDao();
 
     private FavDao favDao = new FavDao();
 
@@ -99,6 +100,7 @@ public class TopicService {
 
     /**
      * 保存回复
+     * 发送通知
      */
     public void saveNewReply(String content, Integer topicid, Integer userid) {
 
@@ -113,7 +115,7 @@ public class TopicService {
 
         //根据topicid查找topic表中对应的topic对象，并更新表中的回复数量replynum和最后回复时间lastreplytime
         Topic topic = topicDao.findTopicById(topicid);
-        //回复时根据id查找对应帖子，触发帖子点击数+1的事件
+        //回复时根据id查找对应帖子，触发帖子点击数+1的事件，转移到TopicDetailServlet
 
         if(topic != null) {
             Reply getReply = replyDao.findReplyById(replyid);
@@ -124,9 +126,20 @@ public class TopicService {
             } else {
                 throw new ServiceException("回复不存在或已被删除");
             }
+
+            //新增回复的同时，判断是否要加入消息通知(自己回复自己不发通知不加入通知表)
+            if(!topic.getUserid().equals(userid)) {
+                Notify notify = new Notify();
+                notify.setUserid(topic.getUserid());//发帖人
+                notify.setContent("您发布的主题<a href=\"/topicDetail?topicid=" + topicid + "\"><" + topic.getTitle() + "></a>有了新的回复");
+                //notify.setState(Notify.STATE_UNREAD);//数据库中默认为0 未读
+                notifyDao.save(notify);
+            }
+
         } else {
             throw new ServiceException("帖子不存在或已被删除");
         }
+
     }
 
     /**
@@ -251,7 +264,7 @@ public class TopicService {
             totals = topicDao.count();
             /*count = nodeDao.sum();*/
         } else if (!exitNode(Integer.valueOf(nodeid))){
-            //传递来的nodeid不为空，能转换为数字，但是在node表中不存在,让nodeid强制等于null
+            //传递来的nodeid不为空，能转换为数字，但是在node表中不存在,让nodeid强制等于null,
             totals = topicDao.count();
             nodeid = null;
         } else {
@@ -276,7 +289,7 @@ public class TopicService {
         return topicPage;
     }
 
-    //
+    //判断url中获取的可转换为数字的nodeid在node表中是否存在
     public boolean exitNode(Integer nodeid) {
         List<Node> nodeList = nodeDao.findAllNodes();
         for(int i = 0;i < nodeList.size();i++) {

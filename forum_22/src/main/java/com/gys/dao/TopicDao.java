@@ -86,7 +86,7 @@ public class TopicDao {
 
     public List<Topic> findAllTopics(Map<String, Object> map) {
         /*SELECT * FROM t_topic tt,t_user tu WHERE tt.userid = tu.id AND nodeid = 1 LIMIT 5,5*/
-        String sql = "select * from t_topic tt,t_user tu where tt.userid = tu.id";
+        String sql = "select tt.*,tu.avatar,tu.username from t_topic tt,t_user tu where tt.userid = tu.id";
         String other = "";
 
         //传参，dbhelp中最后要求传入不定项参数，本质上是数组，所以用数组传参
@@ -102,7 +102,7 @@ public class TopicDao {
             list.add(nodeid);
         }
 
-        sql += " limit ?,?";
+        sql += " ORDER BY tt.lastreplytime DESC limit ?,?";
         list.add(map.get("start"));
         list.add(map.get("pagesize"));
 
@@ -113,7 +113,7 @@ public class TopicDao {
                 User user = new User();
                 user.setAvatar(resultSet.getString("avatar"));
                 user.setUsername(resultSet.getString("username"));
-                //将每条帖子对应的账户封装进帖子中
+                //将每条帖子对应的账户封装进topic中
                 topic.setUser(user);
                 return topic;
             }

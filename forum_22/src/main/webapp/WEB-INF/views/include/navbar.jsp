@@ -17,7 +17,7 @@
                         <a href="/newTopic"><i class="fa fa-plus"></i></a>
                     </li>
                     <li>
-                        <a href="#"><i class="fa fa-bell"></i></a>
+                        <a href="/notify"><i class="fa fa-bell"><span id="unreadnum" class="badge"></span></i></a>
                     </li>
                     <li>
                         <a href="/setting"><i class="fa fa-cog"></i></a>
@@ -33,7 +33,34 @@
                 </c:otherwise>
             </c:choose>
 
+            <span hidden id="islogin"><c:if test="${not empty sessionScope}">login</c:if></span>
+
         </ul>
     </div>
 </div>
 <!--header-bar end-->
+
+<script src="/static/js/jquery-1.11.1.js"></script>
+<%--<script src="/static/js/user/notify.js"></script>--%>
+<script>
+    $(function () {
+
+        /*保持消息通知的实时性，轮询，间歇调用*/
+        var loadNotify = function () {
+            /*NotifyServlet已有get方法*/
+            $.post("/notify").done(function (result) {
+                if(result.state == "success") {
+                    $("#unreadnum").text(result.data)
+                }
+            });
+        };
+        loadNotify();//运行
+
+        //防止没有登录时，依然在无限轮询，被过滤器过滤后又会返回登陆页的HTML
+        var login = $("#islogin").text();
+        if(login == "success") {
+            setInterval(loadNotify,1*1000);
+        }
+
+    });
+</script>

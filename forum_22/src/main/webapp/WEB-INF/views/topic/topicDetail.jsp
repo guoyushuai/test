@@ -284,7 +284,7 @@
                         if(result.state == "success") {
                             //等于刷新页面servlet只传了topicid这个参数进入topicDetail的doget方法根据topicid查找了帖子详情再请求转发到相应jsp
                             //暂时回复后定位到回复框，不能定位到自己刚回复的楼层
-                            window.location.href = "/topicDetail?topicid=" + result.data + "#reply";
+                            window.location.href = "/topicDetail?topicid=" + result.data;
                         } else {
                             alert(result.message);
                             swal("Oops!",result.message, "error");

@@ -3,8 +3,10 @@ package com.gys.service;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.gys.dao.LoginLogDao;
+import com.gys.dao.NotifyDao;
 import com.gys.dao.UserDao;
 import com.gys.entity.LoginLog;
+import com.gys.entity.Notify;
 import com.gys.entity.User;
 import com.gys.exception.ServiceException;
 import com.gys.util.Config;
@@ -22,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 public class UserService {
 
     private UserDao userDao = new UserDao();
+    private NotifyDao notifyDao = new NotifyDao();
 
     Logger logger = LoggerFactory.getLogger(UserService.class);
 
@@ -348,5 +351,26 @@ public class UserService {
         userDao.update(user);
         logger.info("{}修改了头像",user.getUsername());
 
+    }
+
+    /**
+     *根据账户查找所有的消息通知
+     */
+    public List<Notify> findNotifyListByUser(User user) {
+        return notifyDao.findNotifyListByUserid(user.getId());
+    }
+
+    /**
+     *根据账户查找所有未读的消息通知
+     */
+    public List<Notify> findUnreadNotifyListByUserAndState(User user) {
+        return notifyDao.findUnreadNotifyListByUserid(user.getId());
+    }
+
+    /**
+     *根据账户统计所有未读的消息通知的个数
+     */
+    public int countUnreadnumFromNotifyByUserAndState(User user) {
+        return notifyDao.countUnreadnumFromNotifyByUserid(user.getId());
     }
 }

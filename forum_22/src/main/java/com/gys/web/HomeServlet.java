@@ -43,8 +43,9 @@ public class HomeServlet extends BaseServlet {
         if (StringUtil.isNotEmpty(nodeid) && !StringUtil.isNumeric(nodeid)) {
             //传递来的nodeid不为空，同时又不能转换为数字
 
-            forward("index",req,resp);
-            return;
+            nodeid = null;
+            /*forward("index",req,resp);
+            return;*/
         } /*else if (StringUtil.isNotEmpty(nodeid) && !topicService.exitNode(Integer.valueOf(nodeid))) {
             forward("index",req,resp);
             return;
@@ -60,6 +61,9 @@ public class HomeServlet extends BaseServlet {
         Page<Topic> page = topicService.findAllTopicsByNodeid(nodeid,pageno);
 
         req.setAttribute("page",page);
+
+        //针对nodeid恶意，给客户端传一个
+        req.setAttribute("nodeid",nodeid);
 
         //调用父类BaseServlet中定义好的方法forward,简化请求转发操作
         forward("index",req,resp);

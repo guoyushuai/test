@@ -17,11 +17,11 @@
     <div class="box">
         <div class="talk-item">
             <ul class="topic-type unstyled inline" style="margin-bottom:0px;">
-                <li class="${empty param.nodeid ? 'active' : ''}"><a href="/home">全部</a></li>
+                <li class="${empty requestScope.nodeid ? 'active' : ''}"><a href="/home">全部</a></li>
                 <%--注意class中active加引号--%>
                 <c:forEach items="${requestScope.nodeList}" var="node">
                     <%--//选择分节点时，向服务器传递节点nodeid，以进一步确定显示响应节点内容--%>
-                    <li class="${param.nodeid == node.id ? 'active' : ''}"><a href="/home?nodeid=${node.id}">${node.nodename}</a></li>
+                    <li class="${requestScope.nodeid == node.id ? 'active' : ''}"><a href="/home?nodeid=${node.id}">${node.nodename}</a></li>
                 </c:forEach>
 
             </ul>
