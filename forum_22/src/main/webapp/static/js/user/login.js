@@ -81,7 +81,7 @@ $(function () {
                             }
                         });
                     } else {
-                        swal("Oops!", data.message, "error");
+                        swal("登录失败!", data.message, "error");
                         /*if(data.message == "账号还未激活") {
                             //1请到邮箱中激活账号
                             //2链接已过期或者邮件发送失败点击按钮重新发送邮件（ajax请求）

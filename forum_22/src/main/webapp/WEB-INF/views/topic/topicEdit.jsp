@@ -153,8 +153,8 @@
                                 });
                         } else {
                             swal({
-                                    title: result.message,
-                                    text: "点击前往查看帖子详情",
+                                    title: "编辑失败",
+                                    text: result.message,
                                     type: "error",
                                 },
                                 function () {

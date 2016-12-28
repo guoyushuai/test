@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.gys.entity.Topic;
 import com.gys.entity.User;
 import com.gys.util.DbHelp;
+import com.gys.util.Page;
 import com.gys.util.StringUtil;
 import org.apache.commons.dbutils.BasicRowProcessor;
 import org.apache.commons.dbutils.handlers.AbstractListHandler;
@@ -119,5 +120,24 @@ public class TopicDao {
             }
         },list.toArray());
 
+    }
+
+    public List<Topic> findAllTopicsByPage(Page<Topic> topicPage) {
+        String sql = "select tt.*,tu.avatar,tu.username from t_topic tt,t_user tu where tt.userid = tu.id ORDER BY tt.lastreplytime DESC limit ?,?";
+        return DbHelp.query(sql, new AbstractListHandler<Topic>() {
+            @Override
+            protected Topic handleRow(ResultSet resultSet) throws SQLException {
+                Topic topic = new BasicRowProcessor().toBean(resultSet,Topic.class);
+                User user = new User();
+                user.setUsername(resultSet.getString("username"));
+                topic.setUser(user);
+                return topic;
+            }
+        },topicPage.getStart(),topicPage.getPageSize());
+    }
+
+    public void deleteTopicById(Integer topicid) {
+        String sql = "delete from t_topic where id = ?";
+        DbHelp.update(sql,topicid);
     }
 }

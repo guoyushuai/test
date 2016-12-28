@@ -52,7 +52,7 @@ $(function () {
                 type:"post",
                 data:$("#loginForm").serialize(),
                 beforeSend:function () {
-                    $("#btn").append($("<i class='fa fa-spinner fa-spin'></i>")).attr("disabled","disabled");
+                    $("#loginBtn").append($("<i class='fa fa-spinner fa-spin'></i>")).attr("disabled","disabled");
                 },
                 success:function (result) {
                     if(result.state == "success") {
@@ -82,7 +82,7 @@ $(function () {
                             }
                         });
                     } else {
-                        swal("Oops!", result.message, "error");
+                        swal("登录失败", result.message, "error");
                         /*if(data.message == "账号还未激活") {
                          //1请到邮箱中激活账号
                          //2链接已过期或者邮件发送失败点击按钮重新发送邮件（ajax请求）
@@ -93,7 +93,7 @@ $(function () {
                     swal("Oops!", "服务器错误", "error");
                 },
                 complete:function () {
-                    $("#btn").html("登录").removeAttr("disabled");
+                    $("#loginBtn").html("登录").removeAttr("disabled");
                 }
             });
         }

@@ -146,7 +146,7 @@
                                     window.location.href = "/topicDetail?topicid=" + result.data.id;
                                 });
                         } else {
-                            swal("Oops!",result.message, "error");
+                            swal("发布失败!",result.message, "error");
                         }
                     },
                     error: function () {

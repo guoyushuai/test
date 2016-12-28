@@ -84,7 +84,7 @@ $(function () {
                             window.location.href = "/login";
                         });
                     } else {
-                        swal("Oops!", data.message, "error");
+                        swal("注册失败!", data.message, "error");
                     }
                 },
                 error:function () {

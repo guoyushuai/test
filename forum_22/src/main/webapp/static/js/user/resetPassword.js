@@ -47,7 +47,7 @@ $(function () {
                             window.location.href = "/login";
                         });
                     } else {
-                        swal("Oops!", data.message, "error");
+                        swal("重置失败!", data.message, "error");
                     }
                 },
                 error:function () {

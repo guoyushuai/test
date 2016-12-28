@@ -228,7 +228,7 @@
                             //修改页面上的收藏次数
                             $("#favnum").text(result.data);
                         } else {
-                            swal("Oops!",result.message, "error");
+                            swal("操作失败!",result.message, "error");
                         }
                     }).error(function () {
                         swal("Oops!","服务器异常", "error");

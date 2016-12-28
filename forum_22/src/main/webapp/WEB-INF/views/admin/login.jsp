@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,6 +26,11 @@
         </div>
 
         <form id="loginForm" action="" class="form-horizontal">
+
+            <c:if test="${param.state == 'logout'}">
+                <div class="alert alert-success">你已安全退出</div>
+            </c:if>
+
             <div class="control-group">
                 <label class="control-label">账号</label>
                 <div class="controls">
@@ -34,7 +40,7 @@
             <div class="control-group">
                 <label class="control-label">密码</label>
                 <div class="controls">
-                    <input name="password" id="password" type="text">
+                    <input name="password" id="password" type="password">
                 </div>
             </div>
 

@@ -74,8 +74,31 @@
             last:'末页',
             prev:'上一页',
             next:'下一页',
-            href: '?p={{number}}&nodeid=${param.nodeid}'
+            href:'?p={{number}}&nodeid=${param.nodeid}'
+            /*onPageClick: function () {
+                if(${empty requestScope.nodeid}){
+                    window.location.href = '?p={{number}}';
+                }else{
+                    window.location.href = '?p={{number}}&nodeid=${param.nodeid}';
+                };
+                /!*$('#content').text('Page ' + page);*!/
+            }*/
+
+
         });
+
+        /*if(${empty requestScope.nodeid}) {
+            $("#pagination").twbsPagination({
+                totalPages:${page.totalPage},
+                visiblePages:5,
+                first:'首页',
+                last:'末页',
+                prev:'上一页',
+                next:'下一页',
+                href: '?p={{number}}'
+            });
+        }*/
+
     });
 </script>
 </body>

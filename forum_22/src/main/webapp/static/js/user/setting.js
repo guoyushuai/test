@@ -124,7 +124,7 @@ $(function () {
                                 }*!/
                             });*/
                     } else {
-                        swal("Oops!", data.message, "error");
+                        swal("修改失败!", data.message, "error");
                     }
                 },
                 error:function () {

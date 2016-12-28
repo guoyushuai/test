@@ -271,7 +271,7 @@ public class TopicService {
             totals = topicDao.countByNodeid(Integer.valueOf(nodeid));
         }
 
-        /*参数不够，找不到结果
+        /*参数不够，找不到结果 需要start pagesize
         Page<Topic> page = topicDao.findAllTopics(totals,pageno);*/
 
         Page<Topic> topicPage = new Page<>(totals,pageno);
