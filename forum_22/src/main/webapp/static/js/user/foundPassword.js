@@ -39,18 +39,22 @@ $(function () {
                     if(data.state == "success") {
                         var type = $("#type").val();
                         if(type == "email") {
-                            alert("请到邮箱中查收邮件做下一步操作");
+                            swal({
+                                title: "发送成功",
+                                text: "请到邮箱中查收激活邮件",
+                                type: "success",
+                            });
                             /*与注册时不同，页面没有跳转，用户可能多次提交发送邮件，需要做出限制*/
                             /*window.location.href = "/resetPassword";*/
                         } else {
                             //TODO
                         }
                     } else {
-                        alert(data.message)
+                        swal("Oops!", data.message, "error");
                     }
                 },
                 error:function () {
-                    alert("服务器错误");
+                    swal("Oops!", "服务器错误", "error");
                 },
                 complete:function () {
                     $("#btn").text("提交").removeAttr("disabled");

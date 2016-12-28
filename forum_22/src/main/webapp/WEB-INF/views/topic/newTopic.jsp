@@ -140,27 +140,14 @@
                                     title: "发布成功",
                                     text: "点击前往查看帖子详情",
                                     type: "success",
-                                    timer: 2000,
-                                    showCancelButton: false,
-                                    confirmButtonColor: "#4285F4",
-                                    confirmButtonText: "前往",
-                                    closeOnCancel: true
                                 },
-                                function (isConfirm) {
-                                    if (isConfirm) {
-                                        //发帖成功，跳转到帖子详情页面
-                                        /*window.location.href = "/topicDetail";*/
-                                        //指定现实哪一条帖子，需要在跳转的同时传递帖子id,/*map<"data",topic>*/是data.id,不是topic.id
-                                        window.location.href = "/topicDetail?topicid=" + result.data.id;
-                                    }
-                                    /* else {
-                                     window.location.href = "/home";
-                                     }*/
+                                function () {
+                                    //发帖成功，跳转到帖子详情页面，指定显示哪一条帖子，需要在跳转的同时传递帖子id,/*map<"data",topic>*/是data.id,不是topic.id
+                                    window.location.href = "/topicDetail?topicid=" + result.data.id;
                                 });
                         } else {
                             swal("Oops!",result.message, "error");
                         }
-
                     },
                     error: function () {
                         swal("Oops!", "服务器异常，请稍后再试", "error");

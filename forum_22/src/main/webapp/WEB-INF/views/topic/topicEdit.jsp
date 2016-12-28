@@ -144,44 +144,22 @@
                                     title: "编辑成功",
                                     text: "点击前往查看帖子详情",
                                     type: "success",
-                                    timer: 2000,
-                                    showCancelButton: false,
-                                    confirmButtonColor: "#4285F4",
-                                    confirmButtonText: "前往",
-                                    closeOnCancel: true
                                 },
-                                function (isConfirm) {
-                                    if (isConfirm) {
-                                        //发帖成功，跳转到帖子详情页面
-                                        /*window.location.href = "/topicDetail";*/
-                                        //指定现实哪一条帖子，需要在跳转的同时传递帖子id
-                                        window.location.href = "/topicDetail?topicid=" + result.data;
-                                    }
-                                    /* else {
-                                     window.location.href = "/home";
-                                     }*/
+                                function () {
+                                    //修改成功，跳转到帖子详情页面
+                                    /*window.location.href = "/topicDetail";*/
+                                    //指定现实哪一条帖子，需要在跳转的同时传递帖子id
+                                    window.location.href = "/topicDetail?topicid=" + result.data;
                                 });
                         } else {
                             swal({
                                     title: result.message,
                                     text: "点击前往查看帖子详情",
                                     type: "error",
-                                    timer: 2000,
-                                    showCancelButton: false,
-                                    confirmButtonColor: "#4285F4",
-                                    confirmButtonText: "前往",
-                                    closeOnCancel: true
                                 },
-                                function (isConfirm) {
-                                    if (isConfirm) {
-                                        //发帖成功，跳转到帖子详情页面
-                                        /*window.location.href = "/topicDetail";*/
-                                        //指定现实哪一条帖子，需要在跳转的同时传递帖子id
+                                function () {
+                                        //修改失败，跳转到帖子详情页面
                                         window.location.href = "/topicDetail?topicid=" + result.data;
-                                    }
-                                    /* else {
-                                     window.location.href = "/home";
-                                     }*/
                                 });
                         }
 

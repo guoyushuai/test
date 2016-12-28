@@ -39,14 +39,19 @@ $(function () {
                 },
                 success:function (data) {
                     if(data.state == "success") {
-                        alert("密码重置成功，请登录");
-                        window.location.href = "/login";
+                        swal({
+                            title: "密码重置成功",
+                            text: "请重新登录",
+                            type: "success",
+                        },function () {
+                            window.location.href = "/login";
+                        });
                     } else {
-                        alert(data.message);
+                        swal("Oops!", data.message, "error");
                     }
                 },
                 error:function () {
-                    alert("服务器错误");
+                    swal("Oops!", "服务器错误", "error");
                 },
                 complete:function () {
                     $("#resetBtn").html("保存").removeAttr("disabled");

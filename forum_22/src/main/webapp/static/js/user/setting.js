@@ -98,6 +98,14 @@ $(function () {
                 success:function (data) {
                     if(data.state == "success") {
                         swal({
+                            title: "修改成功",
+                            text: "重新登陆",
+                            type: "success",
+                        },function () {
+                            window.location.href = "/login";
+                        });
+                        
+                        /*swal({
                                 title: "修改成功",
                                 text: "重新登陆",
                                 type: "success",
@@ -111,10 +119,10 @@ $(function () {
                             function(isConfirm){
                                 if (isConfirm) {
                                     window.location.href = "/login";
-                                }/* else {
+                                }/!* else {
                                     window.location.href = "/home";
-                                }*/
-                            });
+                                }*!/
+                            });*/
                     } else {
                         swal("Oops!", data.message, "error");
                     }

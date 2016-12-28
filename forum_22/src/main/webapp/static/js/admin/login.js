@@ -14,12 +14,13 @@ $(function () {
         return decodeURIComponent(results[2].replace(/\+/g, " "));
     }
 
-    $("#btn").click(function () {
+    $("#loginBtn").click(function () {
         $("#loginForm").submit();
     });
 
     //回车键，提交表单
     $("#password").keydown(function () {
+        /*event.keyCode键值*/
         if(event.keyCode == "13") {
             /*$("#btn").click();*/
             $("#loginForm").submit();
@@ -47,20 +48,20 @@ $(function () {
         },
         submitHandler:function () {
             $.ajax({
-                url:"/login",
+                url:"/admin/login",
                 type:"post",
                 data:$("#loginForm").serialize(),
                 beforeSend:function () {
                     $("#btn").append($("<i class='fa fa-spinner fa-spin'></i>")).attr("disabled","disabled");
                 },
-                success:function (data) {
-                    if(data.state == "success") {
+                success:function (result) {
+                    if(result.state == "success") {
                         swal({
                             title: "登录成功",
                             text: "",
                             type: "success",
                         },function () {
-                        //swal插件在弹框后如果有函数要执行，会一闪而过，防止swal插件一闪而过,将要执行的函数写进swal提供的函数体内
+                            //swal插件在弹框后如果有函数要执行，会一闪而过，防止swal插件一闪而过,将要执行的函数写进swal提供的函数体内
 
                             //之前表单提交页面刷新是在LoginServlet的dopost中通过获取url中的callback进行判断，登录成功后跳转到原请求界面
 
@@ -77,15 +78,15 @@ $(function () {
                                     window.location.href = uri;
                                 }
                             } else {
-                                window.location.href = "/home";
+                                window.location.href = "/admin/home";
                             }
                         });
                     } else {
-                        swal("Oops!", data.message, "error");
+                        swal("Oops!", result.message, "error");
                         /*if(data.message == "账号还未激活") {
-                            //1请到邮箱中激活账号
-                            //2链接已过期或者邮件发送失败点击按钮重新发送邮件（ajax请求）
-                        }*/
+                         //1请到邮箱中激活账号
+                         //2链接已过期或者邮件发送失败点击按钮重新发送邮件（ajax请求）
+                         }*/
                     }
                 },
                 error:function () {
@@ -99,3 +100,4 @@ $(function () {
     });
 
 })
+

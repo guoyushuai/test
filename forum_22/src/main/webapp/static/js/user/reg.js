@@ -74,15 +74,21 @@ $(function () {
                 },
                 success:function (data) {
                     if(data.state == "success") {
-                        alert("注册成功！请登录邮箱查收激活邮件");
-                        //页面跳转，如果邮件发送失败怎么办,点击重新发送
-                        window.location.href = "/login";
+                        swal({
+                            title: "注册成功",
+                            text: "请登录邮箱查收激活邮件",
+                            type: "success",
+                        },function () {
+                            //页面跳转，如果邮件发送失败怎么办,点击重新发送
+                            // todo
+                            window.location.href = "/login";
+                        });
                     } else {
-                        alert(data.message);
+                        swal("Oops!", data.message, "error");
                     }
                 },
                 error:function () {
-                    alert("服务器错误");
+                    swal("Oops!", "服务器错误", "error");
                 },
                 complete:function () {
                     /*$("#btn").text("注册").removeAttr("disabled");*/

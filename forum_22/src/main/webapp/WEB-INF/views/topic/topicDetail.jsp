@@ -109,7 +109,7 @@
                             <p style="font-size: 14px">${reply.content}</p>
                         </td>
                         <td width="70" align="right" style="font-size: 12px">
-                            <%--a标签可以任意设置一个rel属性 值为vs.count 相当于其他标签的value属性--%>
+                            <%--a标签可以任意设置一个rel属性(相当于其他标签的value属性) 值为vs.count(楼层数相当于给每一层一个唯一的id) --%>
                             <%--a标签的href=javascript:;不做跳转用--%>
                             <a href="javascript:;" rel="${vs.count}" class="replyLink" title="回复"><i class="fa fa-reply"></i></a>&nbsp;
                             <%--楼层数通过vs.count循环次数来判断--%>
@@ -228,10 +228,10 @@
                             //修改页面上的收藏次数
                             $("#favnum").text(result.data);
                         } else {
-                            alert(result.message);
+                            swal("Oops!",result.message, "error");
                         }
                     }).error(function () {
-                        alert("服务器异常");
+                        swal("Oops!","服务器异常", "error");
                     });
             });
 
