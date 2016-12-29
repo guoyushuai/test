@@ -86,4 +86,43 @@ public class AdminService {
             throw new ServiceException("参数异常");
         }
     }
+
+    /**
+     * 查找所有节点
+     */
+    public List<Node> fianAllNodes() {
+        return nodeDao.findAllNodes();
+    }
+
+    /**
+     * 修改帖子对应的节点
+     */
+    public void updateTopicById(String topicid, String nodeid) {
+        if(StringUtil.isNumeric(topicid) && StringUtil.isNumeric(nodeid)) {
+            Topic topic = topicDao.findTopicById(Integer.valueOf(topicid));
+            if(topic != null) {
+                if(topic.getNodeid() != Integer.valueOf(nodeid)) {
+                    //更新数据库中相应节点的topicnum
+                    Node oldnode = nodeDao.findNodeById(topic.getNodeid());
+                    oldnode.setTopicnum(oldnode.getTopicnum() - 1);
+                    nodeDao.update(oldnode);
+
+                    Node newnode = nodeDao.findNodeById(Integer.valueOf(nodeid));
+                    newnode.setTopicnum(newnode.getTopicnum() + 1);
+                    nodeDao.update(newnode);
+
+                    System.out.print("newnodeid:"+nodeid);
+                    System.out.print("oldnodeid:"+topic.getNodeid());
+                    //更新帖子的节点，并修改数据库中topic表的相应内容,应该放在节点更新的下面，否则这里设置了重新topic的nodeid,根据节点nodeid更新节点的topicnum时获取的节点对象是同一个
+                    topic.setNodeid(Integer.valueOf(nodeid));
+                    topicDao.update(topic);
+                }
+                //帖子的新旧节点nodeid一致什么都不做
+            } else {
+                throw new ServiceException("帖子不存在或已被删除");
+            }
+        } else {
+            throw new ServiceException("参数错误");
+        }
+    }
 }

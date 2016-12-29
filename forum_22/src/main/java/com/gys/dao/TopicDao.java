@@ -29,8 +29,8 @@ public class TopicDao {
     }
 
     public void update(Topic topic) {
-        String sql = "update t_topic set title=?,content=?,clicknum=?,favnum=?,thanksnum=?,replynum=?,lastreplytime=? where id = ?";
-        DbHelp.update(sql,topic.getTitle(),topic.getContent(),topic.getClicknum(),topic.getFavnum(),topic.getThanksnum(),topic.getReplynum(),topic.getLastreplytime(),topic.getId());
+        String sql = "update t_topic set title=?,content=?,clicknum=?,favnum=?,thanksnum=?,replynum=?,lastreplytime=?,userid=?,nodeid=? where id = ?";
+        DbHelp.update(sql,topic.getTitle(),topic.getContent(),topic.getClicknum(),topic.getFavnum(),topic.getThanksnum(),topic.getReplynum(),topic.getLastreplytime(),topic.getUserid(),topic.getNodeid(),topic.getId());
     }
 
     /*public List<Topic> findAllTopics() {
@@ -123,7 +123,7 @@ public class TopicDao {
     }
 
     public List<Topic> findAllTopicsByPage(Page<Topic> topicPage) {
-        String sql = "select tt.*,tu.avatar,tu.username from t_topic tt,t_user tu where tt.userid = tu.id ORDER BY tt.lastreplytime DESC limit ?,?";
+        String sql = "select tt.*,tu.avatar,tu.username from t_topic tt,t_user tu where tt.userid = tu.id ORDER BY tt.lastreplytime DESC,createtime desc limit ?,?";
         return DbHelp.query(sql, new AbstractListHandler<Topic>() {
             @Override
             protected Topic handleRow(ResultSet resultSet) throws SQLException {
