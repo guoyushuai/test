@@ -6,6 +6,7 @@ import com.gys.entity.User;
 import com.gys.util.DbHelp;
 import com.gys.util.Page;
 import com.gys.util.StringUtil;
+import com.gys.vo.CountTopicAndReplyByDay;
 import org.apache.commons.dbutils.BasicRowProcessor;
 import org.apache.commons.dbutils.handlers.AbstractListHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
@@ -139,5 +140,16 @@ public class TopicDao {
     public void deleteTopicById(Integer topicid) {
         String sql = "delete from t_topic where id = ?";
         DbHelp.update(sql,topicid);
+    }
+
+    public int countByDay() {
+        /*每一个导出表必须有一个别名eg：counttopics*/
+        String sql = "SELECT COUNT(*)  AS countdays FROM(SELECT COUNT(*) AS topicnum,DATE_FORMAT(createtime,'%y-%m-%d') AS TIME FROM t_topic GROUP BY TIME) AS counttopics";
+        return DbHelp.query(sql,new ScalarHandler<Long>()).intValue();
+    }
+
+    public List<CountTopicAndReplyByDay> countTopicAndReplyByDay(Page<CountTopicAndReplyByDay> page) {
+        String sql = "SELECT COUNT(*) AS topicnum,DATE_FORMAT(createtime,'%y-%m-%d') AS TIME,(SELECT COUNT(*) FROM t_reply WHERE DATE_FORMAT(t_reply.createtime,'%y-%m-%d') = DATE_FORMAT(t_topic.createtime,'%y-%m-%d')) AS replynum FROM t_topic GROUP BY TIME ORDER BY TIME DESC LIMIT ?,?";
+        return DbHelp.query(sql,new BeanListHandler<CountTopicAndReplyByDay>(CountTopicAndReplyByDay.class),page.getStart(),page.getPageSize());
     }
 }

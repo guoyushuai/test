@@ -13,7 +13,7 @@
             vertical-align: middle;
         }
         select {
-            width: 150px;
+            width: 70px;
             margin: 0px;
         }
     </style>
@@ -32,7 +32,7 @@
             <th>回复数量</th>
             <th>最后回复时间</th>
             <th>所属节点</th>
-            <th>操作</th>
+            <th colspan="2" style="text-align:center">操作</th>
         </tr>
         </thead>
         <tbody>
@@ -55,9 +55,9 @@
                         </c:forEach>
                     </select>
                 </td>
-                <td><a href="javascript:;" rel="${topic.id}" class="update">修改</a>
+                <td style="text-align:center"><a href="javascript:;" rel="${topic.id}" class="update">修改</a></td>
                     <%--不能直接跳转去删除，需要询问一下。循环不能用id选择器--%>
-                    <a href="javascript:;" rel="${topic.id}" class="delete">删除</a></td>
+                <td style="text-align:center"><a href="javascript:;" rel="${topic.id}" class="delete">删除</a></td>
             </tr>
         </c:forEach>
 

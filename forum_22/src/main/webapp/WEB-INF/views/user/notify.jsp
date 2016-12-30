@@ -25,7 +25,7 @@
             <tr>
 
                 <th width="30">
-                    <%--避免破坏表结构--%>
+                    <%-- 根据是否还有未读消息决定checkbox是否需要存在  hidden避免破坏表结构--%>
                     <c:if test="${not empty requestScope.notifyList}">
                         <c:forEach items="${requestScope.notifyList}" var="notify">
                             <span class="exitunread" hidden><c:if test="${notify.state == 0}">exitunread</c:if></span>

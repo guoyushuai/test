@@ -145,8 +145,6 @@
         </c:otherwise>
     </c:choose>
 
-
-
 </div>
 <!--container end-->
 <script src="http://cdn.bootcss.com/jquery/1.11.2/jquery.min.js"></script>
@@ -160,7 +158,11 @@
 <script src="/static/js/moment/zh-cn.js"></script>
 
 <script>
+
     $(function () {
+
+        $('body').animate( {scrollTop: 0}, 500);
+
         <c:if test="${not empty sessionScope.current_user}">
         /*未登录时屏蔽了回复功能，同时应该屏蔽编辑框，避免加载编辑框时报错*/
             var editor;

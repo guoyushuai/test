@@ -253,7 +253,7 @@ public class TopicService {
      * 根据nodeid,pageno查找对应数据
      */
     public Page<Topic> findAllTopicsByNodeid(String nodeid, Integer pageno) {
-        //page中需要totals,pageno连个参数（其余参数page中内置）
+        //page中需要totals,pageno两个参数（其余参数page中内置）
 
         //根据nodeid查找对应节点的帖子总数totals
         int totals = 0;

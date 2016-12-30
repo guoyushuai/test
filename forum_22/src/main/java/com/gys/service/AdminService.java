@@ -1,24 +1,22 @@
 package com.gys.service;
 
-import com.google.common.collect.Maps;
 import com.gys.dao.AdminDao;
 import com.gys.dao.NodeDao;
 import com.gys.dao.ReplyDao;
 import com.gys.dao.TopicDao;
 import com.gys.entity.Admin;
 import com.gys.entity.Node;
-import com.gys.entity.Reply;
 import com.gys.entity.Topic;
 import com.gys.exception.ServiceException;
 import com.gys.util.Config;
 import com.gys.util.Page;
 import com.gys.util.StringUtil;
+import com.gys.vo.CountTopicAndReplyByDay;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.Map;
 
 public class AdminService {
 
@@ -124,5 +122,19 @@ public class AdminService {
         } else {
             throw new ServiceException("参数错误");
         }
+    }
+
+    /**
+     * 根据日期统计当天的帖子和回复的数量 ，并分页返回相应页码的数据
+     */
+    public Page<CountTopicAndReplyByDay> countTopicAndReplyByDayAndPageNo(Integer pageNo) {
+        //page中需要totals,pageno两个参数（其余参数(eg:start pagesize)page中内置）
+        int totals = topicDao.countByDay();
+        Page<CountTopicAndReplyByDay> page = new Page<>(totals,pageNo);
+        //sql中需要start pagesize两个参数
+        List<CountTopicAndReplyByDay> topicAndReplyByDayList = topicDao.countTopicAndReplyByDay(page);
+
+        page.setItems(topicAndReplyByDayList);
+        return page;
     }
 }
