@@ -2,6 +2,7 @@ package com.gys.dao;
 
 import com.gys.entity.LoginLog;
 import com.gys.util.DbHelp;
+import org.apache.commons.dbutils.handlers.BeanHandler;
 
 public class LoginLogDao {
 
@@ -9,5 +10,10 @@ public class LoginLogDao {
     public void save(LoginLog login) {
         String sql = "insert into t_login_log(ip,userid) values(?,?)";
         DbHelp.update(sql,login.getIp(),login.getUserid());
+    }
+
+    public LoginLog findByUserid(Integer userId) {
+        String sql = "select * from t_login_log where userid = ?";
+        return DbHelp.query(sql,new BeanHandler<>(LoginLog.class),userId);
     }
 }

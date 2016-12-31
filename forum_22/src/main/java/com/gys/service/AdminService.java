@@ -1,21 +1,19 @@
 package com.gys.service;
 
-import com.gys.dao.AdminDao;
-import com.gys.dao.NodeDao;
-import com.gys.dao.ReplyDao;
-import com.gys.dao.TopicDao;
-import com.gys.entity.Admin;
-import com.gys.entity.Node;
-import com.gys.entity.Topic;
+import com.google.common.collect.Lists;
+import com.gys.dao.*;
+import com.gys.entity.*;
 import com.gys.exception.ServiceException;
 import com.gys.util.Config;
 import com.gys.util.Page;
 import com.gys.util.StringUtil;
-import com.gys.vo.CountTopicAndReplyByDay;
+import com.gys.vo.AdminHomeVo;
+import com.gys.vo.AdminUserVo;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class AdminService {
@@ -26,8 +24,8 @@ public class AdminService {
     TopicDao topicDao = new TopicDao();
     ReplyDao replyDao = new ReplyDao();
     NodeDao nodeDao = new NodeDao();
-
-
+    UserDao userDao = new UserDao();
+    LoginLogDao loginLogDao = new LoginLogDao();
 
     /**
      * 管理员登陆
@@ -127,14 +125,66 @@ public class AdminService {
     /**
      * 根据日期统计当天的帖子和回复的数量 ，并分页返回相应页码的数据
      */
-    public Page<CountTopicAndReplyByDay> countTopicAndReplyByDayAndPageNo(Integer pageNo) {
+    public Page<AdminHomeVo> countTopicAndReplyByDayAndPageNo(Integer pageNo) {
         //page中需要totals,pageno两个参数（其余参数(eg:start pagesize)page中内置）
         int totals = topicDao.countByDay();
-        Page<CountTopicAndReplyByDay> page = new Page<>(totals,pageNo);
+        Page<AdminHomeVo> homeVoPage = new Page<>(totals,pageNo);
         //sql中需要start pagesize两个参数
-        List<CountTopicAndReplyByDay> topicAndReplyByDayList = topicDao.countTopicAndReplyByDay(page);
+        List<AdminHomeVo> topicAndReplyByDayList = topicDao.countTopicAndReplyByDay(homeVoPage);
 
-        page.setItems(topicAndReplyByDayList);
-        return page;
+        homeVoPage.setItems(topicAndReplyByDayList);
+        return homeVoPage;
+    }
+
+    /**
+     * 根据页码查找对应页码的用户数据
+     */
+    public Page<AdminUserVo> findUserList(Integer pageNo) {
+        //用户状态为非未激活的用户
+        int totals = userDao.countUsersByState();
+        Page<AdminUserVo> userVoPage = new Page<>(totals,pageNo);
+        List<User> userList = userDao.findAllUsersByPage(userVoPage);
+
+        List<AdminUserVo> userVoList = Lists.newArrayList();
+        for (User user : userList) {
+            AdminUserVo adminUserVo = userDao.findAdminUserVoByUserid(user.getId());
+            userVoList.add(adminUserVo);
+        }
+        userVoPage.setItems(userVoList);
+        return userVoPage;
+
+
+
+        //未分页如下：
+        /*//loginlog表只能按照userid一个一个查（多对一），取倒序登录时间的第一个
+        List<AdminUserVo> userVoList = Lists.newArrayList();
+        List<User> userList = userDao.finAllUsers();
+        for (User user : userList) {
+            LoginLog loginLog = loginLogDao.findByUserid(user.getId());
+            AdminUserVo adminUserVo = new AdminUserVo();
+            adminUserVo.setXXX();
+
+            userVoList.add(adminUserVo);
+        }
+        return userVoList;*/
+    }
+
+    /**
+     * 根据userid修改账户的状态
+     */
+    public void updateUserStateByUserid(String userid) {
+        if(StringUtil.isNotEmpty(userid) && StringUtil.isNumeric(userid)) {
+            User user = userDao.findById(Integer.valueOf(userid));
+            if(user != null) {
+                int state = user.getState() == 1 ? 2 : 1;
+                user.setState(state);
+                userDao.update(user);
+
+            } else {
+                throw new ServiceException("账户不存在");
+            }
+        } else {
+            throw new ServiceException("参数异常");
+        }
     }
 }

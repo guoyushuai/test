@@ -6,7 +6,7 @@ import com.gys.entity.User;
 import com.gys.util.DbHelp;
 import com.gys.util.Page;
 import com.gys.util.StringUtil;
-import com.gys.vo.CountTopicAndReplyByDay;
+import com.gys.vo.AdminHomeVo;
 import org.apache.commons.dbutils.BasicRowProcessor;
 import org.apache.commons.dbutils.handlers.AbstractListHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
@@ -20,8 +20,8 @@ import java.util.Map;
 
 public class TopicDao {
     public Integer save(Topic topic) {
-        String sql = "insert into t_topic(title,content,userid,nodeid) values(?,?,?,?)";
-        return DbHelp.insert(sql,topic.getTitle(),topic.getContent(),topic.getUserid(),topic.getNodeid());
+        String sql = "insert into t_topic(title,content,userid,nodeid,lastreplytime) values(?,?,?,?,?)";
+        return DbHelp.insert(sql,topic.getTitle(),topic.getContent(),topic.getUserid(),topic.getNodeid(),topic.getLastreplytime());
     }
 
     public Topic findTopicById(Integer topicid) {
@@ -88,7 +88,7 @@ public class TopicDao {
 
     public List<Topic> findAllTopics(Map<String, Object> map) {
         /*SELECT * FROM t_topic tt,t_user tu WHERE tt.userid = tu.id AND nodeid = 1 LIMIT 5,5*/
-        String sql = "select tt.*,tu.avatar,tu.username from t_topic tt,t_user tu where tt.userid = tu.id";
+        String sql = "select tt.*,greatest(tt.createtime,tt.lastreplytime) AS f,tu.avatar,tu.username from t_topic tt,t_user tu where tt.userid = tu.id";
         String other = "";
 
         //传参，dbhelp中最后要求传入不定项参数，本质上是数组，所以用数组传参
@@ -104,7 +104,7 @@ public class TopicDao {
             list.add(nodeid);
         }
 
-        sql += " ORDER BY tt.lastreplytime DESC limit ?,?";
+        sql += " ORDER BY f desc limit ?,?";
         list.add(map.get("start"));
         list.add(map.get("pagesize"));
 
@@ -148,8 +148,8 @@ public class TopicDao {
         return DbHelp.query(sql,new ScalarHandler<Long>()).intValue();
     }
 
-    public List<CountTopicAndReplyByDay> countTopicAndReplyByDay(Page<CountTopicAndReplyByDay> page) {
+    public List<AdminHomeVo> countTopicAndReplyByDay(Page<AdminHomeVo> page) {
         String sql = "SELECT COUNT(*) AS topicnum,DATE_FORMAT(createtime,'%y-%m-%d') AS TIME,(SELECT COUNT(*) FROM t_reply WHERE DATE_FORMAT(t_reply.createtime,'%y-%m-%d') = DATE_FORMAT(t_topic.createtime,'%y-%m-%d')) AS replynum FROM t_topic GROUP BY TIME ORDER BY TIME DESC LIMIT ?,?";
-        return DbHelp.query(sql,new BeanListHandler<CountTopicAndReplyByDay>(CountTopicAndReplyByDay.class),page.getStart(),page.getPageSize());
+        return DbHelp.query(sql,new BeanListHandler<AdminHomeVo>(AdminHomeVo.class),page.getStart(),page.getPageSize());
     }
 }

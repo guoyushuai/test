@@ -37,7 +37,7 @@
         </thead>
         <tbody>
 
-        <c:forEach items="${requestScope.page.items}" var="topic">
+        <c:forEach items="${requestScope.page.items}" var="topic"><%--varStatus="vs"--%>
             <tr>
                 <td>
                     <a href="/topicDetail?topicid=${topic.id}" target="_blank">${topic.title}</a>
@@ -47,7 +47,8 @@
                 <td>${topic.replynum}</td>
                 <td>${topic.lastreplytime}</td>
                 <td>
-                    <select name="nodeid" id="nodeid">
+                    <%--循环体内部不能用id选择器--%>
+                    <select name="nodeid" class="nodeid">
                         <option value="">请选择节点</option>
                         <c:forEach items="${requestScope.nodeList}" var="node">
                             <%--默认选中该主题所属的节点，此topic对象没有封装node--%>
@@ -82,20 +83,24 @@
             last:'末页',
             prev:'上一页',
             next:'下一页',
-            href: '?p={{number}}'
+            href: '?p={{number}}&_=1'
         });
 
         /*修改标签的点击事件*/
         $(".update").click(function () {
-           var $topicid = $(this).attr("rel");
-           /*下拉框中被选中的节点的value属性的值*/
-           var $nodeid = $("#nodeid").val();
-           alert($topicid);
-           alert($nodeid);
+           var topicid = $(this).attr("rel");
+           /*下拉框中被选中的节点的value属性的值 */
+           /*循环体中id选择器这样获取的永远是页面内第一个下拉框内的值
+            var nodeid = $("#nodeid").val();*/
+
+           var nodeid = this.parentNode.parentNode.querySelector("select").value;
+
+           alert(topicid);
+           alert(nodeid);
            $.ajax({
                url:"/admin/topic?action=update",
                type:"post",
-               data:{"topicid":$topicid,"nodeid":$nodeid},
+               data:{"topicid":topicid,"nodeid":nodeid},
                success:function (result) {
                     if(result.state == "success") {
                         swal({
@@ -119,7 +124,7 @@
         /*每一个主题的删除链接都绑定click事件*/
         $(".delete").click(function () {
             /*进一步获取准确的要删除的主题的id*/
-            var $topicid = $(this).attr("rel");
+            var topicid = $(this).attr("rel");
             swal({
                 title: "确定要删除该主题?",
                 type: "warning",
@@ -132,7 +137,7 @@
                     $.ajax({
                         url:"/admin/topic?action=delete",
                         type:"post",
-                        data:{"topicid":$topicid},
+                        data:{"topicid":topicid},
                         success:function (result) {
                             if(result.state == "success") {
                                 swal({

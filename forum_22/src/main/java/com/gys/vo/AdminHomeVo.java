@@ -1,6 +1,6 @@
 package com.gys.vo;
 
-public class CountTopicAndReplyByDay {
+public class AdminHomeVo {
 
     private Integer topicnum;
     private Integer replynum;

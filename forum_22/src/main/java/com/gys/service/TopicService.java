@@ -43,8 +43,10 @@ public class TopicService {
         topic.setNodeid(nodeid);
 
         //数据库中一个表中只能有一个timestamp的默认值可以设置成current_timestamp
-        //将最后回复时间暂时设置为当前时间（发帖时间）
+        //将最后回复时间暂时设置为当前时间（发帖时间）否则帖子显示顺序没法排
         topic.setLastreplytime(new Timestamp(new DateTime().getMillis()));
+
+        System.out.println(new Timestamp(new DateTime().getMillis()));
 
         //将封装好的数据保存到数据库并获得该帖在数据库中topic表的id
         Integer topicid = topicDao.save(topic);
