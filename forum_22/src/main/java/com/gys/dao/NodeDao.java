@@ -30,4 +30,18 @@ public class NodeDao {
         return DbHelp.query(sql,new ScalarHandler<>());
     }
 
+    public void addNewNode(String newnodename) {
+        String sql = "insert into t_node(nodename) values(?)";
+        DbHelp.update(sql,newnodename);
+    }
+
+    public void deleteNodeById(Integer nodeid) {
+        String sql = "delete from t_node where id = ?";
+        DbHelp.update(sql,nodeid);
+    }
+
+    public Node findNodeByNodename(String newnodename) {
+        String sql = "select * from t_node where nodename = ?";
+        return DbHelp.query(sql,new BeanHandler<>(Node.class),newnodename);
+    }
 }

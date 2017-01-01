@@ -22,10 +22,7 @@ public class Page<T> {
     private int start;
 
     public Page(int totals,int pageNo) {
-        //页码小于1，定位到第一页
-        if(pageNo < 1) {
-            pageNo = 1;
-        }
+
         this.totals = totals;
 
         //获取总页数
@@ -39,6 +36,12 @@ public class Page<T> {
         if(pageNo > totalPage) {
             pageNo = totalPage;
         }
+
+        //页码小于1，定位到第一页
+        if(pageNo < 1) {
+            pageNo = 1;
+        }
+
         this.pageNo = pageNo;
 
         //计算当前页的起始行数

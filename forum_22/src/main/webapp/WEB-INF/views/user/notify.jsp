@@ -96,6 +96,7 @@
         $("#markBtn").click(function () {
             var ids = [];
             var $ckSons = $(".ckSon");
+
             for(var i = 0;i < $ckSons.length;i++) {
                 if($ckSons[i].checked == true) {
                     /*原生javascript->value没有小括号（）,jQuery->val()*/

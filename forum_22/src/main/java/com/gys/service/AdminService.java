@@ -86,7 +86,7 @@ public class AdminService {
     /**
      * 查找所有节点
      */
-    public List<Node> fianAllNodes() {
+    public List<Node> findAllNodes() {
         return nodeDao.findAllNodes();
     }
 
@@ -179,12 +179,88 @@ public class AdminService {
                 int state = user.getState() == 1 ? 2 : 1;
                 user.setState(state);
                 userDao.update(user);
-
             } else {
                 throw new ServiceException("账户不存在");
             }
         } else {
             throw new ServiceException("参数异常");
         }
+    }
+
+    /**
+     * 添加新节点
+     */
+    public void addNewNode(String newnodename) {
+        if(StringUtil.isNotEmpty(newnodename)) {
+            List<Node> nodeList = nodeDao.findAllNodes();
+            for (Node node : nodeList) {
+                if(newnodename.equals(node.getNodename())) {
+                    throw new ServiceException("该节点名称已存在！");
+                }
+            }
+            nodeDao.addNewNode(newnodename);
+        } else {
+            throw new ServiceException("新节点名称不能为空！");
+        }
+
+    }
+
+    /**
+     * 根据nodeid删除相应空节点
+     */
+    public void deleteNodeByid(String nodeid) {
+        if (StringUtil.isNotEmpty(nodeid) && StringUtil.isNumeric(nodeid)) {
+            Node node = nodeDao.findNodeById(Integer.valueOf(nodeid));
+            if (node != null) {
+                Integer topicnum = node.getTopicnum();
+                if(topicnum == 0) {
+                    nodeDao.deleteNodeById(node.getId());
+                } else {
+                    throw new ServiceException("节点下存在主题，不能删除");
+                }
+            } else {
+                throw new ServiceException("节点不存在");
+            }
+        } else {
+            throw new ServiceException("参数异常");
+        }
+    }
+
+    /**
+     * 根据nodeid修改对应节点的节点名称
+     */
+    public void editNode(String nodeid, String newnodename) {
+        if (StringUtil.isNotEmpty(nodeid) && StringUtil.isNumeric(nodeid)) {
+            Node node = nodeDao.findNodeById(Integer.valueOf(nodeid));
+            if(node != null) {
+                if(node.getNodename().equals(newnodename)) {
+                    return;
+                } else {
+                    if(StringUtil.isNotEmpty(newnodename)) {
+                        Node othernode = nodeDao.findNodeByNodename(newnodename);
+                        if(othernode == null) {
+                            node.setNodename(newnodename);
+                            nodeDao.update(node);
+                        } else {
+                            throw new ServiceException("节点名称已经存在");
+                        }
+                    } else {
+                        throw new ServiceException("节点名称不能为空");
+                    }
+                }
+            } else {
+                throw new ServiceException("节点不存在");
+            }
+            /*List<Node> nodeList = nodeDao.findAllNodes();
+            Boolean flag = false;
+            for (Node node : nodeList) {
+                if(Integer.valueOf(nodeid).equals(node.getId())) {
+                    flag = true;
+                }
+            }*/
+        } else {
+            throw new ServiceException("参数错误！");
+        }
+
     }
 }

@@ -88,7 +88,7 @@ public class TopicDao {
 
     public List<Topic> findAllTopics(Map<String, Object> map) {
         /*SELECT * FROM t_topic tt,t_user tu WHERE tt.userid = tu.id AND nodeid = 1 LIMIT 5,5*/
-        String sql = "select tt.*,greatest(tt.createtime,tt.lastreplytime) AS f,tu.avatar,tu.username from t_topic tt,t_user tu where tt.userid = tu.id";
+        String sql = "select tt.*,tu.avatar,tu.username from t_topic tt,t_user tu where tt.userid = tu.id";
         String other = "";
 
         //传参，dbhelp中最后要求传入不定项参数，本质上是数组，所以用数组传参
@@ -104,7 +104,7 @@ public class TopicDao {
             list.add(nodeid);
         }
 
-        sql += " ORDER BY f desc limit ?,?";
+        sql += " ORDER BY tt.lastreplytime desc limit ?,?";
         list.add(map.get("start"));
         list.add(map.get("pagesize"));
 

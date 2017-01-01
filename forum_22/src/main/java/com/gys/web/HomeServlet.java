@@ -55,7 +55,7 @@ public class HomeServlet extends BaseServlet {
         String p = req.getParameter("p");
         //p可能没值为null,也可能不是数字，不能直接转换为数字pageno
         Integer pageno = StringUtil.isNumeric(p) ? Integer.valueOf(p):1;
-
+        System.out.println(pageno);
         //page的构造方法，根据总条数count,当前页码pageNo，获得当前页所需要的数据
         //这里传入nodeid(可能为空不能直接在这里转换),pageNo，在service中进行转换
         Page<Topic> page = topicService.findAllTopicsByNodeid(nodeid,pageno);
