@@ -32,4 +32,18 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
+    <!--管理员登录过滤器-->
+    <filter>
+        <filter-name>AdminLoginFilter</filter-name>
+        <filter-class>com.gys.web.filter.AdminLoginFilter</filter-class>
+        <init-param>
+            <param-name>validateAdminUrl</param-name>
+            <param-value>/admin/home,/admin/topic,/admin/node,/admin/user</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>AdminLoginFilter</filter-name>
+        <url-pattern>/admin/*</url-pattern>
+    </filter-mapping>
+
 </web-app>
