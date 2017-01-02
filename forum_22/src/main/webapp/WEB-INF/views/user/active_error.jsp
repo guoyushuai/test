@@ -19,7 +19,7 @@
         </div>
         <div class="box-padding">
             <%--获取servlet中的数据 EL表达式是jsp自带的重要组成部分--%>
-            <h3>${requestScope.message}，激活失败，请稍后再试或 <a href=""><%--todo--%>点击重新发送激活邮件</a></h3>
+            <h3>${requestScope.message}，激活失败，请稍后再试<%--或 <a href="">&lt;%&ndash;todo&ndash;%&gt;点击重新发送激活邮件</a>--%></h3>
         </div>
     </div>
 </div>

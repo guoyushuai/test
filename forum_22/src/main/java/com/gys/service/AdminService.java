@@ -140,9 +140,10 @@ public class AdminService {
      * 根据页码查找对应页码的用户数据
      */
     public Page<AdminUserVo> findUserList(Integer pageNo) {
-        //用户状态为非未激活的用户
+        //用户状态为非未激活的用户总数
         int totals = userDao.countUsersByState();
         Page<AdminUserVo> userVoPage = new Page<>(totals,pageNo);
+        //分页查询状态不为0的所有用户
         List<User> userList = userDao.findAllUsersByPage(userVoPage);
 
         List<AdminUserVo> userVoList = Lists.newArrayList();

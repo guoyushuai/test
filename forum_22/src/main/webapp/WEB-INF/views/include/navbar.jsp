@@ -3,7 +3,7 @@
 <div class="header-bar">
     <div class="container">
         <a href="/home" class="brand">
-            <i class="fa fa-reddit-alien"></i>
+            <i class="fa fa-refresh fa-spin "></i>
         </a>
         <ul class="unstyled inline pull-right">
             <c:choose>

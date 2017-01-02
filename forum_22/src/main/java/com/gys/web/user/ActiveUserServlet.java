@@ -1,6 +1,8 @@
 package com.gys.web.user;
 
 import com.google.common.collect.Maps;
+import com.gys.dto.JsonResult;
+import com.gys.entity.User;
 import com.gys.exception.ServiceException;
 import com.gys.service.UserService;
 import com.gys.util.StringUtil;
@@ -45,5 +47,25 @@ public class ActiveUserServlet extends BaseServlet {
                 forward("user/active_error",req,resp);
             }
         }
+    }
+
+    //未激活账户重新发送激活邮件
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        String email = req.getParameter("email");
+
+        UserService userService = new UserService();
+
+        Map<String,Object> result = Maps.newHashMap();
+        try {
+            userService.sendEmailByEmail(email);
+            result.put("state","success");
+
+        } catch (ServiceException e) {
+            result.put("state","error");
+            result.put("message",e.getMessage());
+        }
+        renderJson(result,resp);
     }
 }

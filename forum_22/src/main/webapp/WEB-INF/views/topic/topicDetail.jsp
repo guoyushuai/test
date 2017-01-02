@@ -197,10 +197,10 @@
                 $("#favTopic").click(function () {
                     var action = "";
                     if($(this).text() == "加入收藏") {
-                        alert("未收藏需加入");
+                        /*alert("未收藏需加入");*/
                         action = "fav";
                     } else if($(this).text() == "取消收藏") {
-                        alert("已收藏需取消");
+                        /*alert("已收藏需取消");*/
                         action = "unfav";
                     };
                     //需要给客户端传递一个参数，来判断用户是否点击了收藏按钮
@@ -220,13 +220,15 @@
                     $.post("/topicFav",{"topicid":${requestScope.topic.id},"action":action})
                         .done(function (result) {
                             if(result.state == "success") {
-                                alert("服务端已更新");
+                                /*alert("服务端已更新");*/
                                 if(action == "fav") {
-                                    alert("客户端加入，字面变取消，人数+1");
+                                    swal("收藏成功", "success");
+                                   /* alert("客户端加入，字面变取消，人数+1");*/
                                     /*$(this).html("取消收藏");*/
                                     $this.html("取消收藏");
                                 } else if(action == "unfav") {
-                                    alert("客户端取消，字面变加入，人数-1");
+                                    swal("取消成功", "success");
+                                    /*alert("客户端取消，字面变加入，人数-1");*/
                                     /*$(this).html("加入收藏");*/
                                     $this.html("加入收藏");
                                 }

@@ -9,6 +9,14 @@
     <link href="http://cdn.bootcss.com/bootstrap/2.3.1/css/bootstrap.min.css" rel="stylesheet">
     <link href="http://cdn.bootcss.com/sweetalert/1.1.3/sweetalert.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/style.css">
+    <%--<style>
+        #change {
+            text-decoration: none;
+            display: block;
+            width: 160px;
+            height: 70px;
+        }
+    </style>--%>
 </head>
 <body>
 
@@ -37,7 +45,7 @@
             <div class="control-group">
                 <label class="control-label">账号</label>
                 <div class="controls">
-                    <input type="text" name="username">
+                    <input type="text" name="username" id="username">
                 </div>
             </div>
             <div class="control-group">
@@ -46,6 +54,20 @@
                     <input type="password" name="password">
                 </div>
             </div>
+
+                <%--<div class="control-group">
+                    <label class="control-label"></label>
+                    <div class="controls">
+                        <a href="javascript:;" id="change">
+                            <img src="/captcha.png" id="img" title="看不清？点击更换">
+                        </a>
+                    </div>
+                    <label class="control-label">验证码</label>
+                    <div class="controls">
+                        <input type="text" name="code">
+                    </div>
+                </div>--%>
+
             <div class="control-group">
                 <label class="control-label"></label>
                 <div class="controls">

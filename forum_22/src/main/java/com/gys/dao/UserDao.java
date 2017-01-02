@@ -47,13 +47,13 @@ public class UserDao {
         String sql = ""
     }*/
 
-    public List<User> finAllUsers() {
+    /*public List<User> finAllUsers() {
         String sql = "select * from t_user";
         return DbHelp.query(sql,new BeanListHandler<>(User.class));
-    }
+    }*/
 
     public List<User> findAllUsersByPage(Page<AdminUserVo> userVoPage) {
-        String sql = "SELECT * FROM t_user ORDER BY id LIMIT ?,?";
+        String sql = "SELECT * FROM t_user WHERE state > 0 ORDER BY id LIMIT ?,?";
         return DbHelp.query(sql,new BeanListHandler<User>(User.class),userVoPage.getStart(),userVoPage.getPageSize());
     }
 

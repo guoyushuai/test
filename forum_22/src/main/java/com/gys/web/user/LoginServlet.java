@@ -47,8 +47,13 @@ public class LoginServlet extends BaseServlet {
 
             result.put("state","success");
         } catch(ServiceException e) {
+            if("账号还未激活".equals(e.getMessage())) {
+                User activeUser = userService.findByUsername(username);
+                result.put("email",activeUser.getEmail());
+            }
             result.put("state","error");
             result.put("message",e.getMessage());
+
         }
 
         renderJson(result,resp);

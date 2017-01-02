@@ -24,6 +24,6 @@ public class AdminLogoutServlet extends BaseServlet {
         HttpSession session = req.getSession();
         session.invalidate();
         //servlet->servlet重定向/login
-        resp.sendRedirect("admin/login?state=logout");
+        resp.sendRedirect("/admin/login?state=logout");
     }
 }

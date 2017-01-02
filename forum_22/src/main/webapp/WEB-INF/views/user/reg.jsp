@@ -41,7 +41,7 @@
             <div class="control-group">
                 <label class="control-label">电子邮件</label>
                 <div class="controls">
-                    <input type="text" name="email">
+                    <input type="text" name="email" id="email">
                 </div>
             </div>
             <div class="control-group">
@@ -62,7 +62,7 @@
 </div>
 <!--container end-->
 <script src="/static/js/jquery-1.11.1.js"></script>
-<script src="/static/js/jquery.validate.min.js"></script
+<script src="/static/js/jquery.validate.min.js"></script>
 <script src="/static/js/sweetalert.min.js"></script>
 <script src="/static/js/user/reg.js"></script>
 

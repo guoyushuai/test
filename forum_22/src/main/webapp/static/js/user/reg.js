@@ -73,15 +73,17 @@ $(function () {
                     $("#btn").append($("<i class='fa fa-spinner fa-spin'></i>")).attr("disabled","disabled");
                 },
                 success:function (data) {
+                    var jumpemail = $("#email").val();
                     if(data.state == "success") {
                         swal({
                             title: "注册成功",
                             text: "请登录邮箱查收激活邮件",
                             type: "success",
                         },function () {
-                            //页面跳转，如果邮件发送失败怎么办,点击重新发送
-                            // todo
-                            window.location.href = "/login";
+                            //页面跳转，不应跳转到系统登录界面，跳转到邮箱激活页面。。。如果邮件发送失败怎么办,点击重新发送
+                            // 跳转到登录邮箱界面
+                            var url = jumpemail.split('@')[1];
+                            window.location.href = "http://mail." + url;
                         });
                     } else {
                         swal("注册失败!", data.message, "error");

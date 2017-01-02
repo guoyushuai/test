@@ -109,7 +109,15 @@ public class UserService {
         userDao.save(user);
 
         //向注册用户填写的邮箱发送激活邮件
+        sendActiveEmailByUser(user);
 
+
+    }
+
+    /**
+     * 向注册用户邮箱发送激活邮件
+     */
+    public void sendActiveEmailByUser(User user) {
         //发送邮件过程缓慢，不宜让用户过多等待发邮件，注册成功时直接跳转登录等其他操作，让子线程去做发邮件的事
         //创建线程的两种方式之一，1继承Thread类，重写run方法；2实现Runnable接口，并实现run方法
         //匿名局部内部类
@@ -119,7 +127,7 @@ public class UserService {
 
                 /*1时效性(缓存)2与用户一一对应(缓存)3防破解(随机数编码)*/
                 String uuid = UUID.randomUUID().toString();
-                activeCache.put(uuid,username);
+                activeCache.put(uuid,user.getUsername());
 
                 //用户点击链接后跳转到的页面地址
                 String url = "http://bbs.kaishengit.com/user/active?_=" + uuid;
@@ -127,9 +135,9 @@ public class UserService {
                 //邮件服务崩溃，手动获取连接
                 System.out.println(url);
 
-                String html = "<h3>亲爱的:"+ username +"<h3>请点击<a href="+ url +">该链接</a>激活您的账号。" ;
+                String html = "<h3>亲爱的:"+ user.getUsername() +"<h3>请点击<a href="+ url +">该链接</a>激活您的账号。" ;
 
-                EmailUtil.sendHtmlEmail("账号激活邮件",html,email);
+                EmailUtil.sendHtmlEmail("账号激活邮件",html,user.getEmail());
 
             }
         });
@@ -138,7 +146,6 @@ public class UserService {
         //发送邮件可能失败，但是直接跳转到登录页面了
         //在用户登录时显示账号未激活，需要激活，login.jsp中点击重新发送邮件
         // TODO: 2016/12/17
-
     }
 
     /**
@@ -256,6 +263,8 @@ public class UserService {
         }
 
     }
+
+
 
     /**
      *根据连接找到需要重置密码的用户
@@ -388,6 +397,22 @@ public class UserService {
             notify.setState(Notify.STATE_READ);
             notify.setReadtime(new Timestamp(DateTime.now().getMillis()));
             notifyDao.update(notify);
+        }
+    }
+
+    /**
+     * 根据用户名向对应邮箱发送邮件
+     */
+    public void sendEmailByEmail(String email) {
+        if(StringUtil.isNotEmpty(email)) {
+            User user = userDao.findByEmail(email);
+            if (user != null) {
+                sendActiveEmailByUser(user);
+            } else {
+                throw new ServiceException("账户不存在！");
+            }
+        } else {
+            throw new ServiceException("参数错误！");
         }
     }
 }

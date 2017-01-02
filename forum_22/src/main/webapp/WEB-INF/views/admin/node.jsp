@@ -183,7 +183,7 @@
                 showCancelButton: true,
                 cancelButtonText: "取消修改！",
                 confirmButtonText: "确定修改！",
-                    /*closeOnCancel: false,*/
+                closeOnCancel: false,
                 closeOnConfirm: false,
                 animation: "slide-from-top",
                 inputPlaceholder: "new node"
