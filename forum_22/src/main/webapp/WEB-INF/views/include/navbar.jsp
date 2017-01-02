@@ -32,8 +32,8 @@
                     </li>
                 </c:otherwise>
             </c:choose>
-
-            <span hidden id="islogin"><c:if test="${not empty sessionScope}">login</c:if></span>
+                                                    <%--not empty sessionScope不好使session中可能存有其他东西--%>
+            <span hidden id="islogin"><c:if test="${not empty sessionScope.current_user}">login</c:if></span>
 
         </ul>
     </div>

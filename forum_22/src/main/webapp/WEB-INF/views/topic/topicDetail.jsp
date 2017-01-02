@@ -20,6 +20,47 @@
         .simditor .simditor-body {
             min-height: 100px;
         }
+
+        /*a.back-to-top {
+            display: none;
+            width: 60px;
+            height: 60px;
+            text-indent: -9999px;
+          1  position: fixed;
+          1  z-index: 999;
+          1  right: 20px;
+          1  bottom: 20px;
+          1  background: #27AE61 url("/static/img/logo.png") no-repeat center 43%;
+            -webkit-border-radius: 30px;
+            -moz-border-radius: 30px;
+          1  border-radius: 30px;
+        }*/
+
+        #toplink, #botlink {
+            position: fixed;
+            right: 7.5%;
+            bottom: 50%;
+            /*width: 60px;
+            height: 60px;*/
+            color: #666;
+            font-size: 3em;
+            /*background: #f0f0f0 !*url("!*!static/img/logo.png*!") no-repeat center 43%*!;*/
+            border-radius: 30px;
+            z-index: 99;
+            /*-webkit-border-radius: 30px;
+            -moz-border-radius: 30px;*/
+            /*box-shadow: 1px 2px 3px rgba(0,0,0,0.25);*/
+        }
+        #botlink {
+            top: 50%;
+            bottom: auto;
+        }
+        #toplink:hover, #botlink:hover {
+            color: #a52311;
+            background: #fcfcfc;
+            text-decoration: none;
+        }
+
     </style>
 </head>
 <body>
@@ -145,6 +186,11 @@
         </c:otherwise>
     </c:choose>
 
+    <%--<a href="#top" id="toplink" title="Go to top">↑</a>
+    <a href="#bot" id="botlink" title="Go to bottom">↓</a>;--%>
+
+    <%--<a href="#" class="back-to-top">Back to Top</a>--%>
+
 </div>
 <!--container end-->
 <script src="http://cdn.bootcss.com/jquery/1.11.2/jquery.min.js"></script>
@@ -160,6 +206,55 @@
 <script>
 
     $(function () {
+
+        $('body').prepend('<a href="#top" id="toplink" title="Go to top"><i class="fa fa-arrow-circle-up" aria-hidden="true"></i></a>' +
+            '<a href="#bot" id="botlink" title="Go to bottom"><i class="fa fa-arrow-circle-down" aria-hidden="true"></i></a>');
+
+        $(window).scroll(function() {
+
+            var scrollTop = $(this).scrollTop();
+            var scrollHeight = $(document).height();
+            var windowHeight = $(this).height();
+            if (scrollTop + windowHeight == scrollHeight) {  //滚动到底部执行事件
+                alert("我到底部了");
+                $("#botlink").fadeOut('slow');
+            }else if(scrollTop == 0){//滚动到头部部执行事件
+                alert("我到头部了");
+                $("#toplink").fadeOut('slow');
+            } else {
+                $("#toplink").fadeIn('slow');
+                $("#botlink").fadeIn('slow');
+            }
+
+        });
+
+            // Smooth scroll to top.
+            $("a[href=#top]").on("click", function (e) {
+                $("html,body").animate({scrollTop: 0}, 1000);
+                e.preventDefault();
+            });
+
+            // Smooth scroll to bottom.
+            $("a[href=#bot]").on("click", function (e) {
+                $("html,body").animate({scrollTop: $(document).height()}, 1000);
+                e.preventDefault();
+            });
+             /*$('body').prepend('<a href="#" class="back-to-top">Back to Top</a>');
+        var amountScrolled = 300;
+
+        $(window).scroll(function() {
+            if ( $(window).scrollTop() > amountScrolled ) {
+                $('a.back-to-top').fadeIn('slow');
+            } else {
+                $('a.back-to-top').fadeOut('slow');
+            }
+        });
+        $('a.back-to-top').click(function() {
+            $('html, body').animate({
+                scrollTop: 0
+            }, 700);
+            return false;
+        });*/
         <c:choose>
             <c:when test="${empty sessionScope.current_user}">
                 $(".replyLink").click(function () {
@@ -318,7 +413,7 @@
             }
         })
 
-    });;
+    });
 </script>
 
 </body>
