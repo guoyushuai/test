@@ -55,4 +55,15 @@ public class BaseServlet extends HttpServlet {
 
     }
 
+    public String getIP(HttpServletRequest request) {
+        String ip = request.getRemoteAddr();
+        if("0:0:0:0:0:0:0:1".equals(ip)) {
+            return "127.0.0.1";
+        } else {
+            return ip;
+        }
+
+    }
+
+
 }

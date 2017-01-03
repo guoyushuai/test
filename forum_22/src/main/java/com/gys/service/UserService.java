@@ -130,7 +130,7 @@ public class UserService {
                 activeCache.put(uuid,user.getUsername());
 
                 //用户点击链接后跳转到的页面地址
-                String url = "http://bbs.kaishengit.com/user/active?_=" + uuid;
+                String url = "http://192.168.1.35/user/active?_=" + uuid;
 
                 //邮件服务崩溃，手动获取连接
                 System.out.println(url);
@@ -234,7 +234,7 @@ public class UserService {
                             //有效期30分钟
 
                             //用户点击链接后跳转到的界面地址，参数token=uuid
-                            String url = "http://bbs.kaishengit.com/resetPassword?token=" + uuid;
+                            String url = "http://192.168.1.35/resetPassword?token=" + uuid;
 
                             //邮件服务崩溃，手动获取连接//跳转到登录页面后，添加重新发送邮件功能
                             System.out.println(url);

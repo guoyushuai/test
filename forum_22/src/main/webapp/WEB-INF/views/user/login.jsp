@@ -54,7 +54,7 @@
                     <input type="password" name="password">
                 </div>
             </div>
-
+                <%--todo 密码错三次再出现验证码比较好 --%>
                 <%--<div class="control-group">
                     <label class="control-label"></label>
                     <div class="controls">

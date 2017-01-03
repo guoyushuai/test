@@ -145,6 +145,7 @@ $(function () {
                                             title: "点击重新发送邮件",
                                             text: "",
                                             type: "info",
+                                            closeOnConfirm: false
                                         },function () {
                                             $.ajax({
                                                 url:"/user/active",
@@ -152,18 +153,20 @@ $(function () {
                                                 data:{"email":data.email},
                                                 success:function (result) {
                                                     if(result.state == "success") {
-                                                        alert("邮件已发送,前往登录邮箱！");
-                                                        var url = jumpemail.split('@')[1];
-                                                        window.location.href = "http://mail." + url;
-                                                        /*swal({
-                                                            title: "邮件已发送",
-                                                            text: "请登录邮箱",
-                                                            type: "success",
-                                                        },function () {
-                                                            var url = jumpemail.split('@')[1];
-                                                            alert(url);
-                                                            window.location.href = "http://mail." + url;
-                                                        });*/
+                                                        /*alert("邮件已发送,前往登录邮箱！");
+                                                        * closeOnConfirm: false */
+                                                        swal({
+                                                             title: "邮件已发送",
+                                                             text: "请登录邮箱",
+                                                             type: "success",
+                                                             },function () {
+                                                             var url = jumpemail.split('@')[1];
+                                                             /*alert(url);*/
+                                                             window.location.href = "http://mail." + url;
+                                                         });
+                                                        /*var url = jumpemail.split('@')[1];
+                                                        window.location.href = "http://mail." + url;*/
+
                                                     } else {
                                                         swal("Oops!", result.message, "error");
                                                     }

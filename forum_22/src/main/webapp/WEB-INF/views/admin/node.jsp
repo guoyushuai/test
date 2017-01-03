@@ -79,6 +79,7 @@
                      $nodemame[i].html();
                      }*/
 
+                    //做个flag
                     var flag = true;
                     $(".nodename").each(function(){
                         var nodename = $(this).text();
@@ -183,7 +184,7 @@
                 showCancelButton: true,
                 cancelButtonText: "取消修改！",
                 confirmButtonText: "确定修改！",
-                closeOnCancel: false,
+                /*closeOnCancel: false,*/
                 closeOnConfirm: false,
                 animation: "slide-from-top",
                 inputPlaceholder: "new node"
@@ -218,6 +219,7 @@
                                 cancelButtonText: "放弃修改！",
                                 confirmButtonText: "确定修改！",
                                 closeOnConfirm: false,
+                                closeOnCancel: false,
                                 showLoaderOnConfirm: true,
                             },
                             function(){

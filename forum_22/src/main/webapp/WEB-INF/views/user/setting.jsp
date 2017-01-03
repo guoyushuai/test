@@ -5,9 +5,9 @@
 <head>
     <meta charset="UTF-8">
     <title>用户设置</title>
-    <link href="http://cdn.bootcss.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href="http://cdn.bootcss.com/bootstrap/2.3.1/css/bootstrap.min.css" rel="stylesheet">
-    <link href="http://cdn.bootcss.com/sweetalert/1.1.3/sweetalert.min.css" rel="stylesheet">
+    <link href="/static/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/sweetalert.css" rel="stylesheet">
     <link rel="stylesheet" href="/static/js/uploader/webuploader.css">
     <link rel="stylesheet" href="/static/css/style.css">
 
@@ -111,9 +111,10 @@
 
 <script src="/static/js/jquery-1.11.1.js"></script>
 <script src="/static/js/jquery.validate.min.js"></script>
-<script src="/static/js/user/setting.js"></script>
 <script src="/static/js/sweetalert.min.js"></script>
 <script src="/static/js/uploader/webuploader.min.js"></script>
+<script src="/static/js/user/setting.js"></script>
+
 
 <%--写在外部js文件中获取不到token的值--%>
 <script>

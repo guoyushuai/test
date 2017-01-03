@@ -56,6 +56,7 @@
                         </c:forEach>
                     </select>
                 </td>
+                属性,js中使用(.+)
                 <td style="text-align:center"><a href="javascript:;" rel="${topic.id}" class="update">修改</a></td>
                     <%--不能直接跳转去删除，需要询问一下。循环不能用id选择器--%>
                 <td style="text-align:center"><a href="javascript:;" rel="${topic.id}" class="delete">删除</a></td>
@@ -95,8 +96,14 @@
 
            var nodeid = this.parentNode.parentNode.querySelector("select").value;
 
-           alert(topicid);
-           alert(nodeid);
+            //解决取值问题的另一个思路
+            /*<select name="nodeid" class="{vs.count}">
+            <a href="javascript:;" xyz="{vs.count}" class="update">修改</a>
+            //黑科技---
+            $("." + $(this).attr("xyz")).val();*/
+
+           /*alert(topicid);
+           alert(nodeid);*/
            $.ajax({
                url:"/admin/topic?action=update",
                type:"post",

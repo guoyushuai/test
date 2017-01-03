@@ -216,10 +216,10 @@
             var scrollHeight = $(document).height();
             var windowHeight = $(this).height();
             if (scrollTop + windowHeight == scrollHeight) {  //滚动到底部执行事件
-                alert("我到底部了");
+                /*alert("我到底部了");*/
                 $("#botlink").fadeOut('slow');
             }else if(scrollTop == 0){//滚动到头部部执行事件
-                alert("我到头部了");
+                /*alert("我到头部了");*/
                 $("#toplink").fadeOut('slow');
             } else {
                 $("#toplink").fadeIn('slow');
@@ -239,7 +239,9 @@
                 $("html,body").animate({scrollTop: $(document).height()}, 1000);
                 e.preventDefault();
             });
-             /*$('body').prepend('<a href="#" class="back-to-top">Back to Top</a>');
+
+
+        /*$('body').prepend('<a href="#" class="back-to-top">Back to Top</a>');
         var amountScrolled = 300;
 
         $(window).scroll(function() {
@@ -255,6 +257,7 @@
             }, 700);
             return false;
         });*/
+
         <c:choose>
             <c:when test="${empty sessionScope.current_user}">
                 $(".replyLink").click(function () {
@@ -312,6 +315,8 @@
 
                     /*$(this)获取不到当前的控件了*/
                     var $this = $(this);
+
+                    //通过ajax请求实时更新页面上的收藏数据
                     $.post("/topicFav",{"topicid":${requestScope.topic.id},"action":action})
                         .done(function (result) {
                             if(result.state == "success") {
@@ -362,7 +367,7 @@
         });
 
 
-        //validate不校验隐藏域
+        //validate不校验隐藏域处理的处理办法
         $.extend($.validator.defaults,{ignore:""});
 
         $("#replyForm").validate({

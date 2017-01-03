@@ -33,7 +33,8 @@ public class LoginServlet extends BaseServlet {
         String password = req.getParameter("password");
 
         //获取登录客户端的ip地址
-        String ip = req.getRemoteAddr();
+        //在baseservlet中添加判断，如果ip为ipv6的0:0:0:0:0:0:0:1地址则返回127.0.0.1
+        String ip = getIP(req);
 
         Map<String,Object> result = Maps.newHashMap();
 
