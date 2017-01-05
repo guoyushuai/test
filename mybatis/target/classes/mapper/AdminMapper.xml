@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace命名空间（包名）最好与对应的java接口一模一样-->
+<mapper namespace="com.gys.mapper.AdminMapper">
+    <!--<cache/>-->
+    <!--id方法名parameterType参数类型resultType返回类型（完全限定名，若使用别名，需要在根目录mybatis.xml中注册别名）-->
+    <select id="findById" parameterType="int" resultType="com.gys.pojo.Admin">
+        SELECT * FROM t_admin WHERE id = #{id}
+    </select>
+    <select id="findAll" resultType="com.gys.pojo.Admin">
+        SELECT * FROM t_admin
+    </select>
+
+    <insert id="save" parameterType="Admin">
+        INSERT into t_admin(username,password) VALUES (#{username},#{password})
+    </insert>
+
+    <update id="update" parameterType="Admin">
+        UPDATE t_admin SET username=#{username},password=#{password} WHERE id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="int">
+        DELETE FROM t_admin WHERE id = #{id}
+    </delete>
+
+</mapper>

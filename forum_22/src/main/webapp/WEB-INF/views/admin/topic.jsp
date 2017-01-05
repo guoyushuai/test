@@ -93,6 +93,8 @@
            /*下拉框中被选中的节点的value属性的值 */
            /*循环体中id选择器这样获取的永远是页面内第一个下拉框内的值
             var nodeid = $("#nodeid").val();*/
+           /*var nodeid = $(this).parent().parent().find(".selected").find(".nodeid");
+           var nodeid = $(this).parent().siblings(".selected").find(".nodeid").val();*/
 
            var nodeid = this.parentNode.parentNode.querySelector("select").value;
 
