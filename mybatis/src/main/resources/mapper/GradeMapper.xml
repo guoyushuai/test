@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gys.mapper.GradeMapper">
+
+    <select id="findById" resultMap="gradeMap">
+        SELECT
+        t_student.id,
+        stuname,
+        gradeid,
+        /*t_grade.id AS 'grade.id',*/
+        gradename/* AS 'grade.gradename'*/
+        FROM
+        t_student
+        INNER JOIN t_grade ON t_student.gradeid = t_grade.id
+        WHERE
+        t_grade.id = #{id};
+    </select>
+    <resultMap id="gradeMap" type="Grade">
+        <id property="id" column="gradeid"></id>
+        <result property="gradename" column="gradename"></result>
+        <!--可选column="gradeid"外键-->
+        <collection property="studentList" ofType="Student">
+            <id property="id" column="id"/>
+            <result property="stuname" column="stuname"/>
+            <result property="gradeid" column="gradeid"/>
+        </collection>
+    </resultMap>
+
+
+
+
+
+    <select id="findByGradeId" resultType="com.gys.pojo.Grade">
+        SELECT * FROM t_grade WHERE id = #{id}
+    </select>
+
+
+
+    <select id="findAll" resultMap="allMap">
+        SELECT * FROM t_grade
+    </select>
+    <resultMap id="allMap" type="Grade">
+        <id column="id" property="id"/>
+        <result column="gradename" property="gradename"/>
+        <collection property="studentList" ofType="Student" column="id"
+                    select="com.gys.mapper.StudentMapper.findByGradeId"/>
+    </resultMap>
+
+</mapper>

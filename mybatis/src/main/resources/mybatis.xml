@@ -3,9 +3,17 @@
         PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
+
+    <!--开启数据库列名下划线风格转换为java中驼峰命名法-->
+    <settings>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
+
     <!--注册别名-->
     <typeAliases>
         <typeAlias type="com.gys.pojo.Admin" alias="Admin" />
+        <typeAlias type="com.gys.pojo.Student" alias="Student" />
+        <typeAlias type="com.gys.pojo.Grade" alias="Grade" />
     </typeAliases>
 
     <!--配置环境-->
@@ -23,5 +31,7 @@
     <!--加载mapper.xml文件-->
     <mappers>
         <mapper resource="mapper/AdminMapper.xml" />
+        <mapper resource="mapper/StudentMapper.xml" />
+        <mapper resource="mapper/GradeMapper.xml" />
     </mappers>
 </configuration>

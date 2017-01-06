@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gys.mapper.StudentMapper">
+
+    <select id="findById" resultType="com.gys.pojo.Student">
+        SELECT
+        t_student.id,
+        stuname,
+        gradeid,
+        t_grade.id AS 'grade.id',
+        gradename AS 'grade.gradename'
+        FROM
+        t_student
+        INNER JOIN t_grade ON t_student.gradeid = t_grade.id
+        WHERE
+        t_student.id = #{id};
+    </select>
+
+    <!--<select id="findById" resultMap="stuMap">
+        SELECT
+        t_student.id,
+        stuname,
+        gradeid,
+        /*t_grade.id AS 'grade.id',*/
+        gradename/* AS 'grade.gradename'*/
+        FROM
+        t_student
+        INNER JOIN t_grade ON t_student.gradeid = t_grade.id
+        WHERE
+        t_student.id = #{id};
+    </select>
+    <resultMap id="stuMap" type="Student">
+        <id column="id" property="id" />
+        <result column="stuname" property="stuname" />
+        <result column="gradeid" property="gradeid" />
+        &lt;!&ndash;可选column="gradeid"外键&ndash;&gt;
+        <association property="grade" javaType="Grade">
+            <id column="gradeid" property="id"></id>
+            <result column="gradename" property="gradename"></result>
+        </association>
+    </resultMap>-->
+
+
+
+
+
+    <select id="findAll" resultMap="allMap">
+        SELECT * FROM t_Student
+    </select>
+    <resultMap id="allMap" type="Student">
+        <id column="id" property="id"></id>
+        <result column="stuname" property="stuname"></result>
+        <result column="gradeid" property="gradeid"></result>
+        <!--column="gradeid"不再是外键，是当前行的值作为select中相应方法的的参数传入方法中,主要配合select使用，-->
+        <association property="grade" javaType="Grade" column="gradeid"
+                     select="com.gys.mapper.GradeMapper.findByGradeId"/>
+    </resultMap>
+
+
+
+    <select id="findByGradeId" resultType="com.gys.pojo.Student">
+        SELECT * FROM t_Student WHERE gradeid = #{gradeid}
+    </select>
+
+
+
+</mapper>
