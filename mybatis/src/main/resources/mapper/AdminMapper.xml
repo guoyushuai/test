@@ -13,6 +13,69 @@
         SELECT * FROM t_admin
     </select>
 
+
+
+    <select id="findByUsernameAndPassword1" resultType="com.gys.pojo.Admin">
+        SELECT * FROM t_admin WHERE username = #{param1} and password = #{param2}
+    </select>
+    <select id="findByUsernameAndPassword2" resultType="com.gys.pojo.Admin">
+        SELECT * FROM t_admin WHERE username = #{name} and password = #{pwd}
+    </select>
+    <select id="findByUsernameAndPassword3" resultType="com.gys.pojo.Admin">
+        SELECT * FROM t_admin WHERE username = #{username} and password = #{password}
+    </select>
+    <select id="findByUsernameAndPassword4" resultType="com.gys.pojo.Admin">
+        SELECT * FROM t_admin WHERE username = #{name} and password = #{pwd}
+    </select>
+
+
+    <select id="findByParam1" resultType="com.gys.pojo.Admin">
+        SELECT * FROM t_admin
+        <where>
+            /*if() else if()*/
+            <if test="username != null and username != ''">
+                username = #{username}
+            </if>
+            <if test="password != null and password != ''">
+                and password = #{password}
+            </if>
+        </where>
+    </select>
+    <select id="findByParam2" resultType="com.gys.pojo.Admin">
+        SELECT * FROM t_admin
+        <where>
+            /*do where case*/
+            <choose>
+                <when test="username != null and username != ''">
+                    username = #{username}
+                </when>
+                <when test="password != null and password != ''">
+                    password = #{password}
+                </when>
+                <otherwise>
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+    <select id="findByParam3" resultType="com.gys.pojo.Admin">
+        SELECT * FROM t_admin
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="username != null and username != ''">
+                username = #{username}
+            </if>
+            <if test="password != null and password != ''">
+                and password = #{password}
+            </if>
+        </trim>
+    </select>
+    <select id="findByIds" resultType="com.gys.pojo.Admin">
+        SELECT * FROM t_admin WHERE id IN
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+
     <insert id="save" parameterType="Admin">
         INSERT into t_admin(username,password) VALUES (#{username},#{password})
     </insert>
