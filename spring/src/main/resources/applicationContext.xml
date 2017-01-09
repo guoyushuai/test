@@ -1,9 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:P="http://www.springframework.org/schema/p"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="userDaoImpl" class="com.gys.dao.impl.UserDaoImpl"/>
+    <!--<bean id="userDaoImpl" class="com.gys.dao.impl.UserDaoImpl"/>-->
+    <bean id="userDao" class="com.gys.dao.impl.UserDaoImpl"/>
+
+    <bean id="userService" class="com.gys.service.impl.UserServiceImpl"
+          autowire="constructor">
+    <!--
+    自动注入 基于注解Bean管理时一般使用自动注入，被注入的对象在xml文件中的命名（id属性值）需规范
+    默认值default为no
+    基于set方法注入值为byName或byType
+    基于构造方法注入值为constructor
+    -->
+
+
+
+    <!--<bean id="userService" class="com.gys.service.impl.UserServiceImpl">-->
+        <!--
+        构造方法注入
+        1、name对应构造方法中的参数名称
+        2、type对应构造方法中的参数类型,不适合构造方法中有多个参数的情况
+        3、index对应构造方法中的参数索引,不直观
+        -->
+        <!--<constructor-arg name="userDao" ref="userDao"/>-->
+        <!--<constructor-arg type="com.gys.dao.UserDao" ref="userDao"/>-->
+        <!--<constructor-arg index="0" ref="userDao"/>-->
+
+
+        <!--
+        set注入
+        1、name属性值对应service中set方法，ref属性值对应Spring容器（即applicationContext.xml）中的id属性值
+        调用UserSreviceImpl中的setUserDao方法把接口UserDao的实现类UserDaoImpl注入进来
+        2、同一，子节点的形式表示
+        3、适合于，UserDaoImpl的唯一作用就是注入到UserServiceImpl中，不单独使用UserDaoImpl也不把UserDaoImpl注入到其他类中
+        4、2.5版本之后set注入引入了p前缀注入
+        -->
+        <!--<property name="userDao" ref="userDao"/>-->
+        <!--<property name="userDao">
+            <ref bean="userDao"/>
+        </property>-->
+        <!--<property name="userDao">
+            <bean class="com.gys.dao.impl.UserDaoImpl"/>
+        </property>-->
+    </bean>
+    <!--<bean id="userService" class="com.gys.service.impl.UserServiceImpl"
+          P:userDao-ref="userDao" />-->
+
+
 
 </beans>
