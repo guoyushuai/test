@@ -2,20 +2,58 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:P="http://www.springframework.org/schema/p"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop
+         http://www.springframework.org/schema/aop/spring-aop.xsd">
 
-    <!--<bean id="userDaoImpl" class="com.gys.dao.impl.UserDaoImpl"/>-->
+<!--<bean id="userDaoImpl" class="com.gys.dao.impl.UserDaoImpl"/>-->
     <bean id="userDao" class="com.gys.dao.impl.UserDaoImpl"/>
+    <bean id="userService" class="com.gys.service.impl.UserServiceImpl">
+        <property name="userDao" ref="userDao"/>
+    </bean>
 
-    <bean id="userService" class="com.gys.service.impl.UserServiceImpl"
-          autowire="constructor">
-    <!--
-    自动注入 基于注解Bean管理时一般使用自动注入，被注入的对象在xml文件中的命名（id属性值）需规范
-    默认值default为no
-    基于set方法注入值为byName或byType
-    基于构造方法注入值为constructor
-    -->
+    <!--通知类-->
+    <bean id="myAspect" class="com.gys.aop.MyAspect"/>
+    <aop:config>
+        <!--引用通知类-->
+        <aop:aspect ref="myAspect">
+            <!--切入点表达式...注意表达式中返回值后空格-->
+            <aop:pointcut id="pt" expression="execution(* com.gys.service..*.*(..))"/>
+
+            <!--环绕通知-->
+            <aop:around method="aroundAdvice" pointcut-ref="pt"/>
+
+            <!--前置通知-->
+            <aop:before method="beforeAdvice" pointcut-ref="pt"/>
+            <!--后置通知-->
+            <aop:after-returning method="afterAdvice" pointcut-ref="pt"/>
+            <!--异常通知-->
+            <aop:after-throwing method="exceptionAdvice" pointcut-ref="pt"/>
+            <!--最终通知-->
+            <aop:after method="finallyAdvice" pointcut-ref="pt"/>
+
+        </aop:aspect>
+    </aop:config>
+
+
+
+
+
+
+
+
+
+    <!--<bean id="userService" class="com.gys.service.impl.UserServiceImpl"
+          autowire="constructor">-->
+        <!--
+        自动注入 基于注解Bean管理时一般使用自动注入，被注入的对象在xml文件中的命名（id属性值）需规范
+        默认值default为no
+        基于set方法注入值为byName或byType
+        基于构造方法注入值为constructor
+        -->
 
 
 
@@ -46,7 +84,7 @@
         <!--<property name="userDao">
             <bean class="com.gys.dao.impl.UserDaoImpl"/>
         </property>-->
-    </bean>
+    <!--</bean>-->
     <!--<bean id="userService" class="com.gys.service.impl.UserServiceImpl"
           P:userDao-ref="userDao" />-->
 

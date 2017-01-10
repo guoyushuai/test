@@ -7,6 +7,7 @@ public class UserDaoImpl implements UserDao {
     public UserDaoImpl() {
         System.out.println("Create UserDaoImpl");
     }
+
     public void save() {
         System.out.println("UserDaoImpl save");
     }
