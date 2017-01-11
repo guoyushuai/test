@@ -2,28 +2,29 @@ package com.gys.service.impl;
 
 import com.gys.dao.UserDao;
 import com.gys.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserServiceImpl implements UserService {
 
+    //属性自动注入
+    @Autowired
     private UserDao userDao;
 
-
-    /*//构造方法注入（类之间最高级别的依赖）
-    public UserServiceImpl(UserDao userDao) {
+    /*//set方法自动注入
+    private UserDao userDao;
+    @Autowired
+    public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
     }*/
 
-
-    //set方法注入（基本数据类型及集合的注入，写相应的set方法）
-    public void setUserDao(UserDao userDao) {
-        this.userDao = userDao;
-    }
-
-
+    @Override
     public void save() {
         userDao.save();
     }
 
+    @Override
     public void update() {
         userDao.update();
     }

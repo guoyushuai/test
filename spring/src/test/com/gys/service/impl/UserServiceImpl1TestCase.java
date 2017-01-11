@@ -6,14 +6,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 
-public class UserServiceImplTestCase {
+public class UserServiceImpl1TestCase {
 
     @Test
     public void load() {
-        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("applicationContext1.xml");
 
-        /*UserService userService = applicationContext.getBean("userService",UserServiceImpl.class);*/
-        //BeanNotOfRequiredTypeException.加入aop后返回的是代理对象，却要强转为目标对象会引起该异常
         UserService userService = (UserService) applicationContext.getBean("userService");
 
         userService.save();
