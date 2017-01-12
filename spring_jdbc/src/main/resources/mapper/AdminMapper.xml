@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gys.mapper.AdminMapper">
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_admin(username,password) VALUES (#{username},#{password})
+    </insert>
+    <update id="update">
+        UPDATE t_admin SET username=#{username},password=#{password} where id = #{id}
+    </update>
+    <select id="findById" resultType="com.gys.pojo.Admin">
+        SELECT * FROM t_admin WHERE id = #{id}
+    </select>
+    <select id="finByUsername" resultType="com.gys.pojo.Admin">
+        SELECT * FROM t_admin WHERE username = #{username}
+    </select>
+
+</mapper>

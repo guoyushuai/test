@@ -23,6 +23,32 @@
         <property name="password" value="${jdbc.password}"/>
     </bean>
 
+
+    <!--托管MyBatis的SqlSessionFactory-->
+    <bean id="sqlSessionFactory"
+          class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!--配置数据库连接池(数据源：直接注入已经配好的数据源)-->
+        <property name="dataSource" ref="dataSource"/>
+        <!--配置别名（别名类所在的包:自动将包内所有类按类名起别名）-->
+        <property name="typeAliasesPackage" value="com.gys.pojo"/>
+        <!--加载Mapper配置文件-->
+        <property name="mapperLocations" value="classpath:mapper/*.xml"/>
+        <!--其他配置-->
+
+    </bean>
+
+    <!--Mapper接口的自动扫描:自动产生接口的实现类对象，并将对象放入到Spring容器中-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.gys.mapper"/>
+    </bean>
+
+
+
+
+
+
+
+
     <!--JDBCTemplate模板（DbUtils/DbHelp工具类）并注入连接池-->
     <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
         <property name="dataSource" ref="dataSource"/>
