@@ -36,8 +36,8 @@
         <url-pattern>/</url-pattern>
     </servlet-mapping>
 
-    <!--spring applicationContext的监听器-->
-    <!--tomcat启动时创建spring容器，servletContextListener监听servletContext对象的创建和销毁-->
+    <!--spring applicationContext的监听器(Spring容器初始化监听器)-->
+    <!--tomcat启动时创建spring容器(创建容器的同时告诉容器Spring容器的配置文件路径)，servletContextListener监听servletContext对象的创建和销毁-->
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>

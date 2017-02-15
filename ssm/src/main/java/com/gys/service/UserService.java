@@ -1,5 +1,6 @@
 package com.gys.service;
 
+import com.gys.pojo.Role;
 import com.gys.pojo.User;
 
 import java.util.List;
@@ -14,5 +15,9 @@ public interface UserService {
 
     User findUserById(Integer id);
 
-    void edit(User user);
+    void edit(User user, Integer[] roleid);
+
+    List<Role> findAllRoles();
+
+    void saveNewUser(User user, Integer[] roleids);
 }

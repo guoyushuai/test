@@ -43,4 +43,17 @@ public class UserServiceImplTest {
         System.out.println(user);
     }
 
+    @Test
+    public void saveNewUser() throws Exception {
+        User user = new User("aa","bb");
+        Integer[] roleids = {1,2,3};
+        userService.saveNewUser(user,roleids);
+    }
+
+
+    @Test
+    public void test() {
+        System.out.println(11%2);
+    }
+
 }

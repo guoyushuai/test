@@ -10,13 +10,13 @@
         http://www.springframework.org/schema/tx
         http://www.springframework.org/schema/tx/spring-tx.xsd">
     
-    <!--自动扫描,基于注解的Bean管理和IOC-->
+    <!--自动扫描,基于注解的Bean管理和IOC,排除Controller-->
     <context:component-scan base-package="com.gys">
         <context:exclude-filter type="annotation"
                                 expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
 
-    <!--读取properties文件-->
+    <!--读取properties文件,将文件中的键值对都放到Spring容器中,即可注入到配置文件中,也可注入到类中(@Value)-->
     <context:property-placeholder location="classpath:config.properties"/>
 
     <!--配置数据库连接池-->
@@ -27,7 +27,7 @@
         <property name="password" value="${jdbc.password}"/>
     </bean>
 
-    <!--事务管理器-->
+    <!--事务管理器(JDBC的事务管理器)-->
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
     </bean>

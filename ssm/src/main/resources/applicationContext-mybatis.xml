@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans.xsd">
+        http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
     <!--托管SqlSessionFactory-->
     <bean id="sqlSessionFactory"
@@ -14,6 +15,12 @@
         <!--加载mapper文件-->
         <property name="mapperLocations" value="classpath:mapper/*.xml"/>
         <!--其他-->
+        <property name="configuration">
+            <bean class="org.apache.ibatis.session.Configuration">
+                <!--数据库列名下划线对应java中属性名驼峰-->
+                <property name="mapUnderscoreToCamelCase" value="true"/>
+            </bean>
+        </property>
     </bean>
 
     <!--mapper接口的自动扫描-->
