@@ -9,4 +9,5 @@ public interface RoleMapper {
 
     Role findRoleById(Integer roleid);
 
+    List<Role> findByUserId(Integer userid);
 }

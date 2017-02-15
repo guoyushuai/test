@@ -7,4 +7,5 @@ public interface UserRoleMapper {
     void saveNewUserRole(UserRole userRole);
 
     void delRoleByUserId(Integer userid);
+
 }

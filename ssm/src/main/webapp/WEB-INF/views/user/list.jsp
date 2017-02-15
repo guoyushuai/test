@@ -37,6 +37,30 @@
         <section class="content">
 
             <!-- Default box -->
+
+            <div class="box box-solid box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title"><i class="fa fa-search"></i> 搜索</h3>
+                </div>
+                <div class="box-body">
+                    <%--以Get方式提交到当前url中--%>
+                    <form class="form-inline">
+                        <div class="form-group">
+                            <input class="form-control" type="text" name="q_name" value="${queryName}" placeholder="姓名" >
+                        </div>
+                        <div class="form-group">
+                            <select class="form-control" name="q_role" >
+                                <option value="">--角色--</option>
+                                <c:forEach items="${roleList}" var="role">
+                                    <option value="${role.id}" ${role.id == queryRole ? 'selected' : ''}>${role.viewName}</option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                        <button class="btn btn-default">搜索</button>
+                    </form>
+                </div>
+            </div>
+
             <div class="box">
 
                 <div class="box-header with-border">
@@ -72,7 +96,9 @@
                     </thead>
                     <tbody>
 
-                    <c:forEach items="${userList}" var="user">
+                    <%--<c:forEach items="${userList}" var="user">--%>
+                    <%--增加分页功能--%>
+                    <c:forEach items="${page.items}" var="user">
                         <tr>
                             <td>${user.username}</td>
                             <td>${user.roleNames}</td>
@@ -88,6 +114,10 @@
                 </table>
                 </div>
                 <!-- /.box-body -->
+
+                <div class="box-footer">
+                    <ul style="margin:5px 0px" id="pagination" class="pagination pull-right"></ul>
+                </div>
 
             </div>
             <!-- /.box -->
@@ -109,6 +139,21 @@
 </div>
 <!-- ./wrapper -->
 <%@ include file="../include/js.jsp"%>
+<script src="/static/plugins/jquery.twbsPagination.min.js"></script>
+<script>
+    $(function () {
+        //分页插件
+        $("#pagination").twbsPagination({
+            totalPages:${page.totalPage},
+            visiblePages:5,
+            href:"/user?q_name=${queryName}&q_role=${queryRole}&p={{number}}",
+            first:"首页",
+            prev:"上一页",
+            next:"下一页",
+            last:"末页"
+        });
+    });
+</script>
 </body>
 </html>
 

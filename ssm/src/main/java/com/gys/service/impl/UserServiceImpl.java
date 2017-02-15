@@ -7,6 +7,7 @@ import com.gys.pojo.Role;
 import com.gys.pojo.User;
 import com.gys.pojo.UserRole;
 import com.gys.service.UserService;
+import com.gys.util.db.Page;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -107,5 +108,28 @@ public class UserServiceImpl implements UserService {
         userMapper.save(user);
         //2、保存用户和角色关系
         addUserRole(user, roleids);
+    }
+
+    @Override
+    public Page<User> findUserByPageNo(Integer pageNo) {
+        int total = userMapper.count().intValue();;
+        Page<User> page = new Page<>(total,pageNo);
+
+        List<User> userList = userMapper.findByPage(page.getStart(),page.getPageSize());
+        page.setItems(userList);
+        return page;
+
+    }
+
+    @Override
+    public Page<User> findUserByPageNoAndSearchParam(Integer pageNo, String queryName, String queryRole) {
+        int total = userMapper.countByParam(queryName,queryRole).intValue();;
+        Page<User> page = new Page<>(total,pageNo);
+
+        /*List<User> userList = userMapper.findByPage(page.getStart(),page.getPageSize());*/
+        List<User> userList = userMapper.findByPageAndParam(page.getStart(),page.getPageSize(),queryName,queryRole);
+
+        page.setItems(userList);
+        return page;
     }
 }

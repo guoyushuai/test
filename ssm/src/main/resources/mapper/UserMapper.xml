@@ -3,6 +3,9 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.gys.mapper.UserMapper">
+
+    <cache/>
+
     <insert id="save" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO t_user(username,password) VALUES (#{username},#{password})
     </insert>
@@ -20,13 +23,19 @@
         DELETE FROM t_user where id = #{id}
     </delete>
 
+
+    <sql id="selectUserAndRole">
+        SELECT tu.*,tr.id AS roleid,tr.role_name,tr.view_name FROM t_user AS tu
+        LEFT JOIN t_user_role ON tu.id = t_user_role.userid
+        LEFT JOIN t_role AS tr ON t_user_role.roleid = tr.id
+    </sql>
+
+
     <!--<select id="findAllUsers" resultType="com.gys.pojo.User">
         SELECT * FROM t_user
     </select>-->
     <select id="findAllUsers" resultMap="userMap">
-        SELECT tu.*,tr.id AS roleid,tr.role_name,tr.view_name FROM t_user AS tu
-        LEFT JOIN t_user_role ON tu.id = t_user_role.userid
-        LEFT JOIN t_role AS tr ON t_user_role.roleid = tr.id
+        <include refid="selectUserAndRole"/>
     </select>
     <resultMap id="userMap" type="User">
         <id column="id" property="id"/>
@@ -39,9 +48,57 @@
         </collection>
     </resultMap>
     <select id="findUserById" resultMap="userMap">
-        SELECT tu.*,tr.id AS roleid,tr.role_name,tr.view_name FROM t_user AS tu
-        LEFT JOIN t_user_role ON tu.id = t_user_role.userid
-        LEFT JOIN t_role AS tr ON t_user_role.roleid = tr.id
+        <include refid="selectUserAndRole"/>
         where tu.id = #{id}
     </select>
+    <select id="count" resultType="java.lang.Long">
+        select count(*) FROM t_user
+    </select>
+    <!--<select id="findByPage" resultMap="userMap">
+        /*导致一个用户拥有多个角色时查询结果合并,每页用户条数不够5个,采用下面的N+1方式*/
+        <include refid="selectUserAndRole"/>
+        limit ${start},${pageSize}
+    </select>-->
+    <select id="findByPage" resultMap="userMap1">
+        SELECT * FROM t_user
+        limit ${start},${pageSize}
+    </select>
+    <select id="countByParam" resultType="java.lang.Long">
+        select count(*) from t_user
+        /*没有选择角色时，单表查询；避免两表连接查询时，同一个人拥有多个角色导致重复
+        或者采用子查询，先查角色，再查拥有该角色的所有人*/
+        <if test="queryRole != null and queryRole != ''">
+            left JOIN t_user_role on t_user.id = t_user_role.userid
+        </if>
+        <where>
+            <if test="queryName != null and queryName != ''">
+                username like concat('%',#{queryName},'%')
+            </if>
+            <if test="queryRole != null and queryRole != ''">
+                and  t_user_role.roleid = #{queryRole}
+            </if>
+        </where>
+    </select>
+    <select id="findByPageAndParam" resultMap="userMap1">
+        select * from t_user
+        <if test="queryRole != null and queryRole != ''">
+            left JOIN t_user_role on t_user.id = t_user_role.userid
+        </if>
+        <where>
+            <if test="queryName != null and queryName != ''">
+                username like concat('%',#{queryName},'%')
+            </if>
+            <if test="queryRole != null and queryRole != ''">
+                and  t_user_role.roleid = #{queryRole}
+            </if>
+        </where>
+        limit ${start},${pageSize}
+    </select>
+    <resultMap id="userMap1" type="User">
+        <id column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <collection property="roleList" ofType="Role" column="id"
+                    select="com.gys.mapper.RoleMapper.findByUserId"/>
+    </resultMap>
 </mapper>

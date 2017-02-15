@@ -4,15 +4,15 @@ import com.gys.exception.NoFoundException;
 import com.gys.pojo.Role;
 import com.gys.pojo.User;
 import com.gys.service.UserService;
+import com.gys.util.db.Page;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 @Controller
@@ -22,10 +22,33 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    //从表单或者URL中获得的参数，该参数非必需或者有默认值(必须是字符串类型)时加此注解
     @GetMapping
-    public String List(Model model) {
-        List<User> userList = userService.findAllUsers();
-        model.addAttribute("userList",userList);
+    public String List(@RequestParam(required = false,defaultValue = "1") Integer p,
+                       @RequestParam(required = false,defaultValue = "",name = "q_name") String queryName,
+                       @RequestParam(required = false,defaultValue = "",name = "q_role") String queryRole,
+                       Model model) throws UnsupportedEncodingException {
+
+        /*List<User> userList = userService.findAllUsers();
+        model.addAttribute("userList",userList);*/
+        //分页显示所有用户
+        /*Page<User> page = userService.findUserByPageNo(p);*/
+
+        //搜索框输入中文乱码
+        if(StringUtils.isNotEmpty(queryName)) {
+            queryName = new String(queryName.getBytes("ISO8859-1"),"UTF-8");
+        }
+
+        Page<User> page = userService.findUserByPageNoAndSearchParam(p,queryName,queryRole);
+
+        //供搜索下拉框使用
+        List<Role> roleList = userService.findAllRoles();
+
+        model.addAttribute("roleList",roleList);
+        model.addAttribute("page",page);
+        //保证点下一页时，搜索框依然有值
+        model.addAttribute("queryName",queryName);
+        model.addAttribute("queryRole",queryRole);
         return "user/list";
     }
 
