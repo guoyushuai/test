@@ -45,20 +45,12 @@
                 </div>
                 <div class="box-body">
                     <%--以Get方式提交到当前url中--%>
-                    <form class="form-inline">
-                        <div class="form-group">
-                            <input class="form-control" type="text" name="q_name" value="${queryName}" placeholder="姓名" >
-                        </div>
-                        <div class="form-group">
-                            <select class="form-control" name="q_role" >
-                                <option value="">--角色--</option>
-                                <c:forEach items="${roleList}" var="role">
-                                    <option value="${role.id}" ${role.id == queryRole ? 'selected' : ''}>${role.viewName}</option>
-                                </c:forEach>
-                            </select>
-                        </div>
-                        <button class="btn btn-default">搜索</button>
-                    </form>
+                        <form class="form-inline">
+                            <div class="form-group">
+                                <input type="text" id="q_device_name" placeholder="设备名称" value="${queryName}" class="form-control">
+                            </div>
+                            <button type="button" id="searchBtn" class="btn btn-default">搜索</button>
+                        </form>
                 </div>
             </div>
 
@@ -134,27 +126,37 @@
         /*/!*零配置,老版本dataTable*!/
         $(".table").DataTable();*/
 
-        $(".table").DataTable({
+        //返回一个对象
+        var table = $(".table").DataTable({
             //定义每页显示的数量
             "lengthMenu": [ 5,10, 25, 50, 75, 100 ],
             //所有的操作都在服务端进行
             "serverSide": true,
-            //服务端url地址
-            "ajax":"/setting/device/load",
-            /*//指定默认排序方式
-            "order":[0,'desc'],
+            /*//服务端url地址
+            "ajax":"/setting/device/load",*/
+            //对象
+            "ajax":{
+                "url":"/setting/device/load",//url
+                "type":"post",//方式
+                "data":function(obj){//发送到服务端的数据，所有的键值对
+                    obj.deviceName = $("#q_device_name").val();
+                }
+            },
+            //指定默认排序方式,哪一列的什么形式
+            "order":[[0,'desc']],
             //禁止使用自带的搜索
-            "searching":false,*/
-            //配置返回的JSON中[data]属性中数据key和表格列的对应关系
+            "searching":false,
+            //配置返回的JSON中[data]属性中数据key和表格列的对应关系,name属性值主要用于告诉服务端以哪一列进行排序
             "columns":[
-                {"data":"id"},
+                {"data":"id","name":"id"},
                 {"data":"name"},
                 {"data":"unit"},
-                {"data":"totalNum"},
-                {"data":"currentNum"},
-                {"data":"price"},
-                {"data":function(){
-                    return "";
+                {"data":"totalNum","name":"total_num"},
+                {"data":"currentNum","name":"current_num"},
+                {"data":"price","name":"price"},
+                {"data":function(obj){
+                    //(row)obj当前行在data[]数组中的那个对象
+                    return "<a href='javascript:;' rel='"+obj.id+"' class='delLink'>删除</a>";
                 }}
 
             ],
@@ -162,7 +164,7 @@
             "columnDefs":[
                 //要求必须有一个排序列，visible是否显示（id列不连续，除了用来排序没什么用，不显示）
                 {targets:[0],visible: false},
-                {targets:[1,2,3,4,5],orderable:false}
+                {targets:[1,2,6],orderable:false}
             ],
             //定义中文
             "language":{
@@ -180,6 +182,36 @@
                     "previous":   "上一页"
                 }
             }
+        });
+
+        /*绑定事件时，元素不存在，数据都是后来动态添加上去的，删除事件绑定不上*/
+        /*$(".delLink").click(function () {
+            if(confirm("确定要删除吗?")) {
+            }
+        });*/
+
+        /*使用事件委托机制*/
+        $(document).delegate(".delLink","click",function(){
+            if(confirm("确定要删除吗?")) {
+                var id = $(this).attr("rel");
+                $.get("/setting/device/"+id+"/del")
+                    .done(function(data){
+                        if(data == "success") {
+                            alert("删除成功");
+
+                            //dataTables返回的对象table重新加载,刷新box,不是整个页面刷新
+                            table.ajax.reload();
+                        }
+                    })
+                    .error(function(){
+                        alert("服务器异常");
+                    });
+            }
+        });
+
+        //自定义搜索
+        $("#searchBtn").click(function () {
+            table.draw(); //dataTables发出请求
         });
 
     });

@@ -6,10 +6,7 @@ import com.gys.service.DeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,7 +36,7 @@ public class SettingDeviceController {
         return "setting/device/list";
     }
 
-    @GetMapping("/load")
+    @PostMapping("/load")
     @ResponseBody
     public Map<String,Object> load(HttpServletRequest request) {
         //第几次请求
@@ -49,18 +46,44 @@ public class SettingDeviceController {
         //每页显示几条内容
         String length = request.getParameter("length");
 
-        List<Device> deviceList = deviceService.findDeviceByPage(start,length);
+        //排序的列的序号
+        String orderIndex = request.getParameter("order[0][column]");
+        //排序方式
+        String orderType = request.getParameter("order[0][dir]");
+        //客户端列的序号对应的列的名字
+        String orderColumn = request.getParameter("columns["+orderIndex+"][name]");
 
+        //自带的搜索的键search[value]
+
+        //搜索框内的值，自行扩展的键
+        String deviceName = request.getParameter("deviceName");
+
+        Map<String,Object> searchParam = Maps.newHashMap();
+        searchParam.put("start",start);
+        searchParam.put("length",length);
+        searchParam.put("orderType",orderType);
+        searchParam.put("orderColumn",orderColumn);
+        searchParam.put("deviceName",deviceName);
+
+
+        /*//零配置时的分页查询
+        List<Device> deviceList = deviceService.findDeviceByPage(start,length);
+        Long count = deviceService.count();*/
+
+        List<Device> deviceList = deviceService.findDeviceBySearchParam(searchParam);
         Long count = deviceService.count();
 
-        //插件对结果的JSON格式要求{}对象，map转成JSON后就是对象
+        //加入搜索后，过滤后的总记录数,参数传入map便于以后扩展
+        Long filteredCount = deviceService.countBySearchParam(searchParam);
+
+        //插件对结果的JSON格式要求为{}对象，map转成JSON后就是对象
         Map<String,Object> resultMap = Maps.newHashMap();
         //传过来第几次，返回就是第几次
         resultMap.put("draw",draw);
         //记录总数
         resultMap.put("recordsTotal",count);
-        //暂时保持与count一致
-        resultMap.put("recordsFiltered",count);
+        //过滤后的总记录数
+        resultMap.put("recordsFiltered",filteredCount);
         //该页的数据
         resultMap.put("data",deviceList);
 
@@ -79,4 +102,10 @@ public class SettingDeviceController {
         return "redirect:/setting/device";
     }
 
+    @GetMapping("/{id:\\d+}/del")
+    @ResponseBody
+    public String delDevice(@PathVariable Integer id) {
+        deviceService.delDevice(id);
+        return "success";
+    }
 }
