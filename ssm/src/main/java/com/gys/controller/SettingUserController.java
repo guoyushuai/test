@@ -16,8 +16,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 @Controller
-@RequestMapping("/user")
-public class UserController {
+@RequestMapping("/setting/user")
+public class SettingUserController {
 
     @Autowired
     private UserService userService;
@@ -49,7 +49,7 @@ public class UserController {
         //保证点下一页时，搜索框依然有值
         model.addAttribute("queryName",queryName);
         model.addAttribute("queryRole",queryRole);
-        return "user/list";
+        return "setting/user/list";
     }
 
     /*@GetMapping("/new")
@@ -60,7 +60,7 @@ public class UserController {
     public String newUser(Model model) {
         List<Role> roleList = userService.findAllRoles();
         model.addAttribute("roleList",roleList);
-        return "user/new";
+        return "setting/user/new";
     }
 
     /*@PostMapping("/new")
@@ -75,14 +75,14 @@ public class UserController {
     public String newUser(User user,Integer[] roleids, RedirectAttributes redirectAttributes) {
         userService.saveNewUser(user,roleids);
         redirectAttributes.addFlashAttribute("message","保存成功");
-        return "redirect:/user";
+        return "redirect:/setting/user";
     }
 
     @GetMapping("/{id:\\d+}/del")
     public String del(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
         userService.del(id);
         redirectAttributes.addFlashAttribute("message","删除成功");
-        return "redirect:/user";
+        return "redirect:/setting/user";
     }
 
     @GetMapping("/{id:\\d+}/edit")
@@ -100,7 +100,7 @@ public class UserController {
             List<Role> roleList = userService.findAllRoles();
             model.addAttribute("roleList",roleList);
             model.addAttribute("user",user);
-            return "user/edit";
+            return "setting/user/edit";
         }
     }
 
@@ -115,7 +115,7 @@ public class UserController {
     public String edit(User user,Integer[] roleids,RedirectAttributes redirectAttributes) {
         userService.edit(user,roleids);
         redirectAttributes.addFlashAttribute("message","修改成功");
-        return "redirect:/user";
+        return "redirect:/setting/user";
     }
 
 }

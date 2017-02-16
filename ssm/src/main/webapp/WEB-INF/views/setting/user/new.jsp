@@ -6,14 +6,14 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>AdminLTE 2 | Dashboard</title>
-    <%@ include file="../include/css.jsp"%>
+    <%@ include file="../../include/css.jsp"%>
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
 
-    <%@ include file="../include/header.jsp"%>
+    <%@ include file="../../include/header.jsp"%>
 
-    <%@ include file="../include/sidebar.jsp"%>
+    <%@ include file="../../include/sidebar.jsp"%>
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -21,11 +21,11 @@
         <section class="content-header">
             <h1>
                 系统设置
-                <small>Control panel</small>
+                <small></small>
             </h1>
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-dashboard"></i>系统设置</a></li>
-                <li class="active">编辑用户</li>
+                <li class="active">添加用户</li>
             </ol>
         </section>
 
@@ -35,7 +35,7 @@
             <!-- Default box -->
             <div class="box">
                 <div class="box-header with-border">
-                    <h3 class="box-title">编辑用户</h3>
+                    <h3 class="box-title">添加用户</h3>
 
                     <%--<div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
@@ -46,11 +46,9 @@
                 </div>
                 <div class="box-body">
                     <form method="post">
-                        <%--提交修改时用id属性指定修改的是哪一个用户--%>
-                        <input type="hidden" name="id" value="${user.id}">
                         <div class="from-group">
                             <label>账号</label>
-                            <input type="text" name="username" value="${user.username}" class="form-control">
+                            <input type="text" name="username" class="form-control">
                         </div>
                         <div class="form-group">
                             <label>密码</label>
@@ -58,29 +56,17 @@
                         </div>
                         <div class="form-group">
                             <label>角色</label>
-                            <div>
-                                <%--所有的角色集合--%>
+                            <div class="form-control">
                                 <c:forEach items="${roleList}" var="role">
-                                    <c:set var="flag" value="false" scope="page"/>
-                                    <%--用户拥有的角色集合--%>
-                                    <c:forEach items="${user.roleList}" var="userRole">
-                                        <c:if test="${role.id == userRole.id}">
-                                            <label class="checkbox-inline">
-                                                <input type="checkbox" checked name="roleids" value="${role.id}"> ${role.viewName}
-                                            </label>
-                                            <c:set var="flag" value="true"/>
-                                        </c:if>
-                                    </c:forEach>
-                                    <c:if test="${not flag}">
-                                        <label class="checkbox-inline">
-                                            <input type="checkbox" name="roleids" value="${role.id}"> ${role.viewName}
-                                        </label>
-                                    </c:if>
+                                    <%--横板复选框；复选框的name属性值设置相同,请求头form data发送数组--%>
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" name="roleids" value="${role.id}"> ${role.viewName}
+                                    </label>
                                 </c:forEach>
                             </div>
                         </div>
                         <div class="from-group">
-                            <button class="btn btn-success">修改</button>
+                            <button class="btn btn-success">保存</button>
                         </div>
                     </form>
                 </div>
@@ -105,7 +91,6 @@
 
 </div>
 <!-- ./wrapper -->
-<%@ include file="../include/js.jsp"%>
+<%@ include file="../../include/js.jsp"%>
 </body>
 </html>
-

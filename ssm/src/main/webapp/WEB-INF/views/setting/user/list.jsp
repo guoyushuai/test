@@ -6,16 +6,16 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>AdminLTE 2 | Dashboard</title>
-    <%@ include file="../include/css.jsp"%>
+    <%@ include file="../../include/css.jsp"%>
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
 
-    <%@ include file="../include/header.jsp"%>
+    <%@ include file="../../include/header.jsp"%>
 
     <%--<%@ include file="../include/sidebar.jsp"%>--%>
     <%--当前节点高亮显示--%>
-    <jsp:include page="../include/sidebar.jsp">
+    <jsp:include page="../../include/sidebar.jsp">
         <jsp:param name="menu" value="sys_accounts"/>
     </jsp:include>
 
@@ -67,7 +67,7 @@
                     <h3 class="box-title">账户管理</h3>
 
                     <div class="box-tools pull-right">
-                        <a href="/user/new" class="btn"><i class="fa fa-plus"></i></a>
+                        <a href="/setting/user/new" class="btn"><i class="fa fa-plus"></i></a>
                         <%--<button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
                             <i class="fa fa-minus"></i></button>
                         <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
@@ -104,8 +104,8 @@
                             <td>${user.roleNames}</td>
                             <td>
                                     <%--注意url的设计--%>
-                                <a href="/user/${user.id}/edit">编辑</a>
-                                <a href="/user/${user.id}/del">删除</a>
+                                <a href="/setting/user/${user.id}/edit">编辑</a>
+                                <a href="/setting/user/${user.id}/del">删除</a>
                             </td>
                         </tr>
                     </c:forEach>
@@ -138,7 +138,7 @@
 
 </div>
 <!-- ./wrapper -->
-<%@ include file="../include/js.jsp"%>
+<%@ include file="../../include/js.jsp"%>
 <script src="/static/plugins/jquery.twbsPagination.min.js"></script>
 <script>
     $(function () {
@@ -146,7 +146,7 @@
         $("#pagination").twbsPagination({
             totalPages:${page.totalPage},
             visiblePages:5,
-            href:"/user?q_name=${queryName}&q_role=${queryRole}&p={{number}}",
+            href:"/setting/user?q_name=${queryName}&q_role=${queryRole}&p={{number}}",
             first:"首页",
             prev:"上一页",
             next:"下一页",

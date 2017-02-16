@@ -17,7 +17,7 @@ public class DeviceServiceImpl implements DeviceService {
 
     @Override
     public void saveNewDevice(Device device) {
-        //新增时当前库存数量等于总数量
+        //新增数据时当前库存数量等于总数量
         device.setCurrentNum(device.getTotalNum());
         deviceMapper.save(device);
     }

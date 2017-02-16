@@ -110,11 +110,15 @@ public class UserServiceImpl implements UserService {
         addUserRole(user, roleids);
     }
 
+    //该方法容易导致数据的重复，同一个人拥有多个角色时
     @Override
     public Page<User> findUserByPageNo(Integer pageNo) {
+        //聚合函数查询结果是long类型
         int total = userMapper.count().intValue();;
+        //Page对象的构造方法需要total总数，pageNo页码两个参数
         Page<User> page = new Page<>(total,pageNo);
 
+        //查询当前页数据需要start起始行,pageSize页面容量（每页显示几条数据）两个参数
         List<User> userList = userMapper.findByPage(page.getStart(),page.getPageSize());
         page.setItems(userList);
         return page;
@@ -123,6 +127,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<User> findUserByPageNoAndSearchParam(Integer pageNo, String queryName, String queryRole) {
+
         int total = userMapper.countByParam(queryName,queryRole).intValue();;
         Page<User> page = new Page<>(total,pageNo);
 
