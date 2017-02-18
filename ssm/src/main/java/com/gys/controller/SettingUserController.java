@@ -22,7 +22,10 @@ public class SettingUserController {
     @Autowired
     private UserService userService;
 
-    //从表单或者URL中获得的参数，该参数非必需或者有默认值(必须是字符串类型)时加此注解
+    /**
+     *@RequestParam (相当于request.getparameter())从表单或者URL中获得参数时，
+     *该参数非必需或者有默认值(必须是字符串类型)时才加此注解
+     */
     @GetMapping
     public String List(@RequestParam(required = false,defaultValue = "1") Integer p,
                        @RequestParam(required = false,defaultValue = "",name = "q_name") String queryName,
@@ -34,7 +37,7 @@ public class SettingUserController {
         //分页显示所有用户
         /*Page<User> page = userService.findUserByPageNo(p);*/
 
-        //搜索框输入中文乱码
+        //搜索框输入中文,通过url传值导致乱码
         if(StringUtils.isNotEmpty(queryName)) {
             queryName = new String(queryName.getBytes("ISO8859-1"),"UTF-8");
         }

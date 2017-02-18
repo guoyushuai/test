@@ -19,4 +19,6 @@ public interface DeviceService {
     void delDevice(Integer id);
 
     Long countBySearchParam(Map<String, Object> searchParam);
+
+    Device findDeviceById(Integer id);
 }

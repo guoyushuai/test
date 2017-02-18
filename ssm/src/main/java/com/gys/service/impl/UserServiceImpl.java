@@ -65,6 +65,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void edit(User user, Integer[] roleids) {
         //删除用户原有的角色
         userRoleMapper.delRoleByUserId(user.getId());
