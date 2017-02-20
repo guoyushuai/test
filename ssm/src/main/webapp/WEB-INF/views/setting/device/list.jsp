@@ -138,7 +138,7 @@
             "ajax":{
                 "url":"/setting/device/load",//url
                 "type":"post",//方式
-                "data":function(obj){//发送到服务端的数据，所有的键值对
+                "data":function(obj){//发送到服务端的数据，所有的(自行扩展的)键值对
                     obj.deviceName = $("#q_device_name").val();
                 }
             },
@@ -146,7 +146,8 @@
             "order":[[0,'desc']],
             //禁止使用自带的搜索
             "searching":false,
-            //配置返回的JSON中[data]属性中数据key和表格列的对应关系,name属性值主要用于告诉服务端以哪一列进行排序
+            //配置(响应)返回的JSON对象中的"data":[{}]对象数组中的属性中数据key和datatable表格中列序号的对应关系
+            // (第1列对应id,第2列对应name,第3列对应unit ...),name属性值主要用于告诉服务端以哪一列进行排序
             "columns":[
                 {"data":"id","name":"id"},
                 {"data":"name"},

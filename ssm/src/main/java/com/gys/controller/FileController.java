@@ -33,7 +33,8 @@ public class FileController {
 
             return new AjaxResult(result);
 
-        } catch (IOException e) {
+            //不仅有IOException,还有自定义的RuntimeException
+        } catch (Exception e) {
             return new AjaxResult(AjaxResult.ERROR,e.getMessage());
         }
     }

@@ -20,8 +20,9 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public String uploadFile(String originalFilename, String contentType, InputStream inputStream) {
-        //上传后文件名字
+        //上传后保存在服务器内的文件名字，保证上传后的文件名唯一
         String newFileName = UUID.randomUUID().toString() + originalFilename.substring(originalFilename.lastIndexOf("."));
+
 
         File file = new File(new File(uploadPath),newFileName);
         try {

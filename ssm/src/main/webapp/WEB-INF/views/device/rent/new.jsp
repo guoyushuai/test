@@ -41,45 +41,45 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>公司名称</label>
-                                <input type="text" class="form-control">
+                                <input type="text" class="form-control" id="companyName" tabindex="1">
                             </div>
                             <div class="form-group">
                                 <label>联系电话</label>
-                                <input type="text" class="form-control">
+                                <input type="text" class="form-control" id="tel" tabindex="4">
                             </div>
                             <div class="form-group">
                                 <label>租赁日期</label>
                                 <%--默认今天，只读不能修改--%>
                                 <%--关键时间点不能信赖客户端时间，读取服务器时间传过来比较好--%>
-                                <input type="text" class="form-control" id="rentDate" readonly>
+                                <input type="text" class="form-control" id="rentDate" readonly <%--tabindex="7"--%>>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>法人代表</label>
-                                <input type="text" class="form-control">
+                                <input type="text" class="form-control" id="linkMan" tabindex="2">
                             </div>
                             <div class="form-group">
                                 <label>地址</label>
-                                <input type="text" class="form-control">
+                                <input type="text" class="form-control" id="address" tabindex="5">
                             </div>
                             <div class="form-group">
                                 <label>归还日期</label>
-                                <input type="text" class="form-control" id="backDate" >
+                                <input type="text" class="form-control" id="backDate" tabindex="8">
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>身份证号</label>
-                                <input type="text" class="form-control">
+                                <input type="text" class="form-control" id="cardNum" tabindex="3">
                             </div>
                             <div class="form-group">
                                 <label>传真</label>
-                                <input type="text" class="form-control">
+                                <input type="text" class="form-control" id="fax" tabindex="6">
                             </div>
                             <div class="form-group">
                                 <label>总天数</label>
-                                <input type="text" class="form-control" id="totalDays"  <%--v-model="days"--%>>
+                                <input type="text" class="form-control" id="totalDays" readonly <%--tabindex="9"--%> <%--v-model="days"--%>>
                             </div>
                         </div>
                     </div>
@@ -120,7 +120,7 @@
                             <td>{{device.price}}</td>
                             <td>{{device.num}}</td>
                             <td>{{device.total}}</td>
-                            <td><a href="javascript:;" v-on:click="remove(device)"><i class="fa fa-trash text-danger"></i></a></td>
+                            <td><a href="javascript:;" v-on:click="removeDevice(device)"><i class="fa fa-trash text-danger"></i></a></td>
                         </tr>
                         </tbody>
                     </table>
@@ -136,7 +136,8 @@
                 </div>
                 <div class="box-body">
                     <div id="picker">选择文件</div><%--webuploader文件上传默认标签及选择器--%>
-                    注意：上传合同扫描件要求清晰可见 合同必须公司法人签字盖章
+                    <p>注意：上传合同扫描件要求清晰可见 合同必须公司法人签字盖章</p>
+                    <%--上传后在页面上显示原始名字--%>
                     <ul id="fileList">
                     </ul>
                     <button class="btn btn-primary pull-right" type="button" v-on:click="saveRent">保存合同</button>
@@ -221,7 +222,7 @@
 <script src="/static/plugins/webuploader/webuploader.min.js"></script>
 <script>
 
-    /*定义一个全局数组*/
+    /*定义一个全局数组,定义在外部便于存进去的值，往服务端发送的时候能取到值*/
     var fileArray = [];
 
     var days = 0;
@@ -259,7 +260,6 @@
 
             days = totalDays;
 
-            
             //修改总价 在vue中实现的不完美 todo
 
         });
@@ -288,6 +288,7 @@
                     $("#currNum").val(device.currentNum);
                     $("#unit").val(device.unit);
                     $("#rentPrice").val(device.price);
+
                     $("#deviceName").val(device.name);//租赁设备列表中需要设备名称这个字段
                 } else {
                     layer.msg(result.message);
@@ -301,7 +302,6 @@
         $("#totalDays").change(function () {
 
         });
-
         //修改总价
         //无法获得{{total}}
         //在vuejs中进行操作
@@ -323,21 +323,24 @@
 
         });
 
-        uploader.on( 'uploadSuccess', function(file,result) {
+        //uploader的API的events的uploadSuccess的两个参数file对象,response服务端返回的数据
+        uploader.on( 'uploadSuccess', function(file,response) {
             layer.msg("上传成功！");
-            var html = "<li>" + result.data.originalFilename + "</li>";
+
+            //上传成功后在页面显示上传成功的文件原始名称
+            var html = "<li>" + response.data.originalFilename + "</li>";
             $("#fileList").append(html);
 
             /*为了将数据存放到数据库，向客户端发送数据*/
             var json = {
-                originalFilename : result.data.originalFilename,
-                newFileName : result.data.newFileName
+                sourceName : response.data.originalFilename,
+                newName : response.data.newFileName
             }
-            /*往数组里存放数据*/
+            /*每传成功一个就往数组里存放数据*/
+            /*fileArray.push(response.data.newName)*/
             fileArray.push(json);
 
         });
-
         uploader.on( 'uploadError', function( file ) {
             layer.msg("服务器忙，上传失败！")
         });
@@ -380,8 +383,11 @@
         },
         methods:{
             addDevice:function () { //v-on:click="addDevice";鼠标点击时才会触发，将数据存入deviceArray中
-                //获取当前选择的设备的id
+                //获取当前选择的设备的id,以及库存数量
                 var deviceId = $("#deviceId").val();
+
+                var currentNum = $("#currNum").val();
+
                 //判断数组中是否有当前选择的设备，如果有则当前设备的数量增加,总价更新
                 var flag = false;
                 for(var i = 0;i < this.$data.deviceArray.length;i++) {
@@ -394,6 +400,12 @@
 
                         this.$data.deviceArray[i].num = parseFloat(this.$data.deviceArray[i].num) + parseFloat($("#rentNum").val());
                         this.$data.deviceArray[i].total = parseFloat(this.$data.deviceArray[i].num) * parseFloat($("#rentPrice").val());
+
+
+                        if(currentNum < parseFloat(this.$data.deviceArray[i].num)) {
+                            layer.msg(this.$data.deviceArray[i].name + "库存不足");
+                        }
+
                         flag = true;
                         break;
                     }
@@ -408,30 +420,78 @@
                     json.num = $("#rentNum").val();
                     json.total = parseFloat(json.price) * parseFloat(json.num);
 
+                    if(currentNum < json.num) {
+                        layer.msg(json.name + "库存不足");
+                    }
+
                     this.$data.deviceArray.push(json);
                     //(模态框中的数据赋值给json对象的对应属性)
                     // json数据添加到数据deviceArray[]数组中
                     //通过vue的数据模块绑定，将deviceArray数组中的数据循环(v-for="device in deviceArray")输出显示到设备租赁列表中
                 }
+
             },
+            //this.deviceArray==this.$data.deviceArray
             //删除，传参循环的对象device；将device对象从data中的对象数组deviceArray中删除
-            remove:function (device) {
-                layer.confirm("确定要删除么？", {
-                    btn: ['确定','取消'] //按钮
-                }, function(index){
-                    //this.deviceArray==this.$data.deviceArray
+            removeDevice:function (device) {
+                layer.confirm("确定要删除么？", function(index){
                     //splice(删除,插入,替换)从第几个开始（从数组中查询device是第几个）删除几个
                     app.$data.deviceArray.splice(app.$data.deviceArray.indexOf(device),1);
+                    //点击窗口后，窗口自动消失
                     layer.close(index);
                 });
             },
+            //点击保存合同，向服务端发送数据（）
             saveRent:function () {
-                
+                var jsonObject = {
+                    deviceArray : app.$data.deviceArray,
+                    fileArray : fileArray,
+
+                    companyNum:$("#companyName").val(),
+                    tel:$("#tel").val(),
+                    rentDate:$("#rentDate").val(),
+                    linkMan:$("#linkMan").val(),
+                    address:$("#address").val(),
+                    backDate:$("#backDate").val(),
+                    cardNum:$("#cardNum").val(),
+                    fax:$("#fax").val(),
+                    totalDays:$("#totalDays").val()
+                };
+
+                // springMVC默认将对象/数组转换成json格式字符串(类似于servlet中的new Gson().toJson变成json格式的字符串"{"xx":"xx","xxx":"xxx"}"传输到jsp，
+                // JSON.parse(String)   将JSON格式的字符串String-->JSON格式的对象Object！！！jsp中使用该方法将上字符串转换成json对象(对于ajax的请求，其会将结果根据相应的MIME头自动转换成相应格式，此时jsp中不用写这句话)
+
+                //直接发送jsonObject过去时，ajax会将对象序列化成字符串"xx=xx&xx=xx&xx=xx"  服务端的方法参数中需要同时有多个xx键名参数去接收
+                //jquery ajax send json
+                //JSON.stringify(jsonObject)  将JSON格式的对象Object-->JSON格式的字符串String"{"xx":"xx","xx":"xx"}"传输到springMVC中,springMVC经过自动解析(jackson-databind)将其转换（封装）成对应对象进行接收，不用在方法的参数列表中写多个参数
+                $.ajax({
+                    url:"/device/rent/new",
+                    type:"post",
+                    /*data:json,*/
+                    data:JSON.stringify(jsonObject),
+                    //发送给服务端的类型MIME头
+                    contentType:"application/json;charset=UTF-8",
+                    success:function (data) {
+                        if(data.status == 'success') {
+                            layer.confirm("保存成功",{btn:['继续添加','打印合同']},function(){
+                                window.history.go(0);//刷新页面,继续添加
+                            },function(){
+                                window.location.href = "/device/rent/"+data.data;//将合同流水号传递过来
+                            });
+                        } else {
+                            layer.msg(data.message);
+                        }
+                    },
+                    error:function () {
+                        layer.msg("服务器忙，请稍后再试");
+                    }
+                });
+
             }
         },
         computed:{
             //this.$data只供获取data:{}节点内的数据
-            total:function () {//等价于在data:{total:xxx}
+            total:function () {//等价于在数据节点data:{total:xxx}
                 var result = 0;
                 for(var i = 0;i < this.$data.deviceArray.length;i++) {
                     var item = this.$data.deviceArray[i].total;//从数据data项中的deviceArray数组中取相应的值

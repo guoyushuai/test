@@ -43,7 +43,7 @@
                     <h3 class="box-title"><i class="fa fa-search"></i> 搜索</h3>
                 </div>
                 <div class="box-body">
-                    <%--以Get方式提交到当前url中--%>
+                    <%--method不写，默认以Get方式提交到当前url中--%>
                     <form class="form-inline">
                         <div class="form-group">
                             <input class="form-control" type="text" name="q_name" value="${queryName}" placeholder="姓名" >

@@ -60,7 +60,7 @@ public class SettingDeviceController {
         //搜索框内的值，自行扩展的键
         String deviceName = request.getParameter("deviceName");
 
-        /*需要往xml中传入多个参数时，使用对象、集合、或者一个一个写参数序号或者起别名*/
+        /*需要往mapper.xml中传入多个参数时，使用对象、集合、或者一个一个写参数序号或者起别名*/
         Map<String,Object> searchParam = Maps.newHashMap();
         searchParam.put("start",start);
         searchParam.put("length",length);
@@ -81,7 +81,8 @@ public class SettingDeviceController {
         //加入搜索后，过滤后的总记录数,参数放入Map集合中进行传递，虽然只用其中一个参数但便于以后扩展
         Long filteredCount = deviceService.countBySearchParam(searchParam);
 
-        //插件对结果的JSON格式要求为{}对象，Map集合转成JSON数据后就是对象（键值对-属性值）
+        //插件对响应结果的格式有要求，JSON格式(对象{}/数组[])要求为{}对象，
+        // ！！！@ResponseBody springMVC默认将结果自动转换为JSON格式，Map集合转成JSON数据后就是对象（键值对-属性值）
         Map<String,Object> resultMap = Maps.newHashMap();
         //传过来第几次，返回就是第几次
         resultMap.put("draw",draw);

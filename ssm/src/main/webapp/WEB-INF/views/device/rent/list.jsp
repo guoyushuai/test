@@ -59,5 +59,19 @@
 </div>
 
 <%@include file="../../include/js.jsp"%>
+<script>
+    $(function () {
+        var json = {
+            A:"2233",
+            B:"2233",
+            C:"2233",
+        };
+        console.log(json);
+        var str = JSON.stringify(json);
+        console.log(str);
+        var obj = JSON.parse(str);
+        console.log(obj)
+    })
+</script>
 </body>
 </html>
