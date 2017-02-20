@@ -87,7 +87,7 @@
                             </div>
                             <div class="form-group">
                                 <label>总天数</label>
-                                ${rent.totalDay}
+                                ${rent.totalDays}
                             </div>
                             <div class="form-group">
                                 <label>尾款</label>
@@ -116,16 +116,17 @@
                         </tr>
                         </thead>
                         <tbody>
-
+                        <c:forEach items="${detailList}" var="detail">
                         <tr>
-                            <c:forEach items="${detailList}" var="detail">
+
                                 <td>${detail.deviceName}</td>
                                 <td>${detail.deviceUnit}</td>
                                 <td>${detail.devicePrice}</td>
                                 <td>${detail.num}</td>
                                 <td>${detail.totalPrice}</td>
-                            </c:forEach>
+
                         </tr>
+                        </c:forEach>
                         </tbody>
                     </table>
                 </div>
@@ -135,11 +136,18 @@
             <div class="box hidden-print">
                 <div class="box-header">
                     <h3 class="box-title">合同扫描件</h3>
+                    <div class="box-tools pull-right">
+                        <%--根据合同号，将同意合同上传的所有合同文件一起打包下载下来--%>
+                        <%--btn-lg btn-sm btn-xs按钮大小--%>
+                        <a href="/file/download/doc/zip?id=${rent.id}" class="btn btn-sm btn-default">
+                            <i class="fa fa-file-archive-o"></i> 打包下载
+                        </a>
+                    </div>
                 </div>
                 <div class="box-body">
                     <ul id="fileList">
                         <c:forEach items="${docList}" var="doc">
-                            <li>${doc.sourceName}</li>
+                            <li><a href="/file/download/doc?id=${doc.id}">${doc.sourceName}</a></li>
                         </c:forEach>
                     </ul>
                 </div>
@@ -158,6 +166,7 @@
 <%@include file="../../include/js.jsp"%>
 <script>
     $(function () {
+        //打印页面
         $("#print").click(function () {
             window.print();
         });

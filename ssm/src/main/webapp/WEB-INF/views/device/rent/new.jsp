@@ -168,9 +168,9 @@
                                 <%--下拉框未选择时的默认值--%>
                                 <option value="">选择设备</option>
 
-                                    <%--<div v-for="device in ${deviceList}">//vue.js的循环不适用于下拉框的显示
-                                        <option value="${device.id}">${device.name}</option>
-                                    </div>--%>
+                                <%--<div v-for="device in ${deviceList}">//vue.js的循环不适用于下拉框的显示
+                                    <option value="${device.id}">${device.name}</option>
+                                </div>--%>
 
                                 <c:forEach items="${deviceList}" var="device">
                                     <option value="${device.id}">${device.name}</option>
@@ -233,15 +233,15 @@
         $("#rentDate").val(moment().format("YYYY-MM-DD"));
 
         /*归还日期:$("#backDate").datepicker();
-        * format:格式
-        * language:语言
-        * autoclose:选择后自动关闭
-        * startDate:起始日期(支持moment()函数,同样需要格式化，不需要获取租赁日期文本框中的值，直接获取当前时间)，今天之前不能选(包括今天，最少一天)
-        *
-        * 该第三方插件，原生的失去焦点或者change都获取不到框内的值，只能使用其提供的事件
-        * 链式调用on:datapicker的(event)
-        * changeDate事件及其处理函数function(e){} e具有几个属性date;datas;format([ix],[format])
-        * */
+         * format:格式
+         * language:语言
+         * autoclose:选择后自动关闭
+         * startDate:起始日期(支持moment()函数,同样需要格式化，不需要获取租赁日期文本框中的值，直接获取当前时间)，今天之前不能选(包括今天，最少一天)
+         *
+         * 该第三方插件，原生的失去焦点或者change都获取不到框内的值，只能使用其提供的事件
+         * 链式调用on:datapicker的(event)
+         * changeDate事件及其处理函数function(e){} e具有几个属性date;datas;format([ix],[format])
+         * */
         $("#backDate").datepicker({
             format: "yyyy-mm-dd",
             language: "zh-CN",
@@ -299,7 +299,7 @@
         });
 
         //租赁总天数修改时，触发事件,触发不了 todo
-        $("#totalDays").change(function () {
+        $("#backDate").change(function () {
 
         });
         //修改总价
@@ -348,32 +348,32 @@
     });
 
     /*vue框架不依赖于jquery
-    * <div id="app">
-        <input type="text" v-model="message">
-        <p>{{message}}</p>
+     * <div id="app">
+     <input type="text" v-model="message">
+     <p>{{message}}</p>
      </div>
-    * var app = new Vue({
-    *     el:"该层的div作为vue的组件(支持各种选择器)，div内所有东西被vue管理",
-    *     data:{//数据
-    *        message:xxx
-    *     },
-    *     methods:{//方法
-    *     }
-    *     computed:{//计算属性
-    *     }
-    * });
-    *
-    * SPA(single page application)单网页应用  VS   frameset/iframe地址栏不变
-    * v-on:xxx
-    * @xxx
-    *
-    * 路由
-    * <a href="#/all"></a>
-    *
-    * 组件与数据绑定
-    * []数组
-    * {}对象
-    * */
+     * var app = new Vue({
+     *     el:"该层的div作为vue的组件(支持各种选择器)，div内所有东西被vue管理",
+     *     data:{//数据
+     *        message:xxx
+     *     },
+     *     methods:{//方法
+     *     }
+     *     computed:{//计算属性
+     *     }
+     * });
+     *
+     * SPA(single page application)单网页应用  VS   frameset/iframe地址栏不变
+     * v-on:xxx
+     * @xxx
+     *
+     * 路由
+     * <a href="#/all"></a>
+     *
+     * 组件与数据绑定
+     * []数组
+     * {}对象
+     * */
     var app = new Vue({
         el:"#app",
         data:{
@@ -388,46 +388,57 @@
 
                 var currentNum = $("#currNum").val();
 
-                //判断数组中是否有当前选择的设备，如果有则当前设备的数量增加,总价更新
-                var flag = false;
-                for(var i = 0;i < this.$data.deviceArray.length;i++) {
-                    var item = this.$data.deviceArray[i];
-                    if(item.id == deviceId) {
+                //库存数量小于当前设备一次性要租的数量，（不严谨）
+                if(currentNum < $("#rentNum").val()) {
+                    layer.msg($("#deviceName").val() + "库存不足");
+                } else {
+                    //判断数组中是否有当前选择的设备，如果有则当前设备的数量增加,总价更新
+                    var flag = false;
+                    for(var i = 0;i < this.$data.deviceArray.length;i++) {
+                        var item = this.$data.deviceArray[i];
+                        if(item.id == deviceId) {
 
-                        /*item.num = parseFloat(item.num) + parseFloat($("#rentNum").val());
-                        item.total = parseFloat(item.num) * parseFloat($("#rentPrice").val());*/
-                        //不是java,没有java中的按地址引用,但以上方法可行
+                            /*item.num = parseFloat(item.num) + parseFloat($("#rentNum").val());
+                             item.total = parseFloat(item.num) * parseFloat($("#rentPrice").val());*/
+                            //不是java,没有java中的按地址引用,但以上方法可行
 
-                        this.$data.deviceArray[i].num = parseFloat(this.$data.deviceArray[i].num) + parseFloat($("#rentNum").val());
-                        this.$data.deviceArray[i].total = parseFloat(this.$data.deviceArray[i].num) * parseFloat($("#rentPrice").val());
+                            this.$data.deviceArray[i].num = parseFloat(this.$data.deviceArray[i].num) + parseFloat($("#rentNum").val());
+                            this.$data.deviceArray[i].total = parseFloat(this.$data.deviceArray[i].num) * parseFloat($("#rentPrice").val());
 
+                            /*//库存数量小于(页面内已租数量与当前要租的数量之和)data中的deviceArray[]中存储的数据
+                             if(currentNum < parseFloat(this.$data.deviceArray[i].num)) {
+                             layer.msg(this.$data.deviceArray[i].name + "库存不足");
+                             }*/
 
-                        if(currentNum < parseFloat(this.$data.deviceArray[i].num)) {
-                            layer.msg(this.$data.deviceArray[i].name + "库存不足");
+                            flag = true;
+                            break;
                         }
-
-                        flag = true;
-                        break;
                     }
-                }
-                //若果数组中没有当前选择的设备，则将数据直接添加进数组
-                if(!flag) {
-                    var json = {};
-                    json.id = deviceId;//$("#deviceId").val();不做显示用，作为条件判断的依据
-                    json.name = $("#deviceName").val();
-                    json.unit = $("#unit").val();
-                    json.price = $("#rentPrice").val();
-                    json.num = $("#rentNum").val();
-                    json.total = parseFloat(json.price) * parseFloat(json.num);
+                    //若果数组中没有当前选择的设备，则将数据直接添加进数组
+                    if(!flag) {
+                        var json = {};
+                        json.id = deviceId;//$("#deviceId").val();不做显示用，作为条件判断的依据
+                        json.name = $("#deviceName").val();
+                        json.unit = $("#unit").val();
+                        json.price = $("#rentPrice").val();
+                        json.num = $("#rentNum").val();
+                        json.total = parseFloat(json.price) * parseFloat(json.num);
 
-                    if(currentNum < json.num) {
-                        layer.msg(json.name + "库存不足");
+                        /*//库存数量小于data中的deviceArray[]中存储的数据
+                         if(currentNum < json.num) {
+                         layer.msg(json.name + "库存不足");
+                         }*/
+
+                        this.$data.deviceArray.push(json);
+                        //(模态框中的数据赋值给json对象的对应属性)
+                        // json数据添加到数据deviceArray[]数组中
+                        //通过vue的数据模块绑定，将deviceArray数组中的数据循环(v-for="device in deviceArray")输出显示到设备租赁列表中
                     }
 
-                    this.$data.deviceArray.push(json);
-                    //(模态框中的数据赋值给json对象的对应属性)
-                    // json数据添加到数据deviceArray[]数组中
-                    //通过vue的数据模块绑定，将deviceArray数组中的数据循环(v-for="device in deviceArray")输出显示到设备租赁列表中
+                    //租赁数量累加时，超过库存数量，暂无后续操作（不严谨）
+                    if(currentNum < parseFloat(this.$data.deviceArray[i].num)) {
+                        layer.msg(this.$data.deviceArray[i].name + "库存不足");
+                    }
                 }
 
             },
@@ -447,7 +458,7 @@
                     deviceArray : app.$data.deviceArray,
                     fileArray : fileArray,
 
-                    companyNum:$("#companyName").val(),
+                    companyName:$("#companyName").val(),
                     tel:$("#tel").val(),
                     rentDate:$("#rentDate").val(),
                     linkMan:$("#linkMan").val(),
@@ -476,7 +487,7 @@
                             layer.confirm("保存成功",{btn:['继续添加','打印合同']},function(){
                                 window.history.go(0);//刷新页面,继续添加
                             },function(){
-                                window.location.href = "/device/rent/"+data.data;//将合同流水号传递过来
+                                window.location.href = "/device/rent/"+data.data;//将合同流水号传递过来,打印时需要传递给客户端进行查询相关信息
                             });
                         } else {
                             layer.msg(data.message);

@@ -7,5 +7,7 @@ import java.util.List;
 public interface DeviceRentDocMapper {
     void batchSave(List<DeviceRentDoc> rentDocList);
 
-    List<DeviceRentDoc> findByRentId(Integer id);
+    List<DeviceRentDoc> findByRentId(Integer rentId);
+
+    DeviceRentDoc findById(Integer id);
 }

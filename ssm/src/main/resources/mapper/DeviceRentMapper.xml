@@ -13,4 +13,7 @@
     <select id="findBySerialNumber" resultType="com.gys.pojo.DeviceRent">
         SELECT * FROM t_device_rent where serial_number = #{serialNumber}
     </select>
+    <select id="findById" resultType="com.gys.pojo.DeviceRent">
+        SELECT * FROM t_device_rent WHERE id = #{id}
+    </select>
 </mapper>

@@ -80,7 +80,7 @@ public class DeviceRentController {
             result.setStatus(AjaxResult.SUCCESS);
             return result;
         } catch (ServiceException e) {
-            return new AjaxResult(e.getMessage());
+            return new AjaxResult(AjaxResult.ERROR,e.getMessage());
         }
 
     }

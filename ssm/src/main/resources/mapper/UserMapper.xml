@@ -72,10 +72,25 @@
 
     <select id="countByParam" resultType="java.lang.Long">
         select count(*) from t_user
+        <if test="queryRole != null and queryRole != ''">
+            left JOIN t_user_role on t_user.id = t_user_role.userid
+        </if>
+        <where>
+            <if test="queryName != null and queryName != ''">
+                username like concat('%',#{queryName},'%')
+            </if>
+            <if test="queryRole != null and queryRole != ''">
+                and  t_user_role.roleid = #{queryRole}
+            </if>
+        </where>
+    </select>
+    <select id="countByParam1" resultType="java.lang.Long">
+        select count(*) from t_user
         /*没有选择角色时，单表查询，保证数据库中不能有重名（账户名唯一）；避免两表连接查询时，同一个人拥有多个角色导致查询结果重复
         或者采用子查询，先查角色，再查拥有该角色的所有人
         select * from t_user where id in(select userid from t_user_role where roleid = #{roleid})
         */
+
         <if test="queryRole != null and queryRole != ''">
             left JOIN t_user_role on t_user.id = t_user_role.userid
         </if>

@@ -18,9 +18,11 @@ public interface UserMapper {
 
     Long count();
 
-    List<User> findByPage(@Param("start") int start, @Param("pageSize") int pageSize);
+    List<User> findByPage(@Param("start") int start,
+                          @Param("pageSize") int pageSize);
 
-    Long countByParam(@Param("queryName") String queryName, @Param("queryRole") String queryRole);
+    Long countByParam(@Param("queryName") String queryName,
+                      @Param("queryRole") String queryRole);
 
     List<User> findByPageAndParam(@Param("start") int start,
                                   @Param("pageSize") int pageSize,

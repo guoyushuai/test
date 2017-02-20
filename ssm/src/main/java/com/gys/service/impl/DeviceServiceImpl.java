@@ -139,7 +139,7 @@ public class DeviceServiceImpl implements DeviceService {
             rentDetailMapper.batchSave(RentDetailList);
         }
 
-        //计算合同总价及预付款、尾款，并更新租赁合同中没有填写的值
+        //计算合同总价及预付款、尾款，并更新租赁合同DeviceRent中没有填写的值
         total = total * deviceRent.getTotalDays();
         float preCost = total  * 0.3F;
         float lastCost = total - preCost;

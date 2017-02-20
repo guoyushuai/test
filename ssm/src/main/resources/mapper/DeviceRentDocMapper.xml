@@ -9,7 +9,10 @@
         </foreach>
     </insert>
     <select id="findByRentId" resultType="com.gys.pojo.DeviceRentDoc">
-        select * from t_device_rent_doc where rent_id = #{id} ;
+        select * from t_device_rent_doc where rent_id = #{rentId} ;
+    </select>
+    <select id="findById" resultType="com.gys.pojo.DeviceRentDoc">
+        SELECT * from t_device_rent_doc WHERE id = #{id}
     </select>
 
 </mapper>
