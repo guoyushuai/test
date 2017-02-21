@@ -98,6 +98,8 @@ public class DeviceServiceImpl implements DeviceService {
         //获取合同流水号
         deviceRent.setSerialNumber(SerialNumberUtil.getSerialNumber());
 
+        //deviceRent的状态默认未完成
+
         //保存成功后，mybatis中获得的自动增长的主键值就自动赋值给了deviceRent对象的id属性
         rentMapper.save(deviceRent);
 
@@ -185,5 +187,29 @@ public class DeviceServiceImpl implements DeviceService {
     @Override
     public List<DeviceRentDoc> findDeviceRentDocListByRentId(Integer id) {
         return rentDocMapper.findByRentId(id);
+    }
+
+
+    @Override
+    public List<DeviceRent> findDeviceRentByQueryParam(Map<String, Object> queryParam) {
+        return rentMapper.findByQueryParam(queryParam);
+    }
+
+    @Override
+    public Long deviceRentCount() {
+        return rentMapper.count();
+    }
+
+    @Override
+    @Transactional
+    public void changeRentState(Integer id) {
+        //1、修改合同的状态为已完成
+        DeviceRent deviceRent = rentMapper.findById(id);
+        deviceRent.setState("已完成");
+        rentMapper.updateState(deviceRent);
+
+        //2财务模块处理
+
+
     }
 }

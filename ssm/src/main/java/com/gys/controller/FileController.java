@@ -36,6 +36,7 @@ public class FileController {
     @Autowired
     private FileService fileService;
 
+
     @PostMapping("/upload")
     @ResponseBody
     public AjaxResult ajaxFileUpload(MultipartFile file) {

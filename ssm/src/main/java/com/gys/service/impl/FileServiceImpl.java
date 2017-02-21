@@ -63,7 +63,7 @@ public class FileServiceImpl implements FileService {
     public void downloadFile(Integer id, HttpServletResponse response) {
 
         DeviceRentDoc rentDoc = rentDocMapper.findById(id);
-        //上传路径即为下载路径
+        //上传路径即为下载的目标源路径
         String downloadPath = uploadPath;
 
         if(rentDoc != null) {
@@ -107,14 +107,14 @@ public class FileServiceImpl implements FileService {
         //根据id在数据库中查找到相应的文件
         DeviceRentDoc rentDoc = rentDocMapper.findById(id);
 
-        //下载的路径与上传的路径相同，点击下载时没有提示？？？
+        //下载的目标源路径与上传的路径相同，点击下载时没有提示？？？
         String downloadPath = uploadPath;
 
         if(rentDoc != null) {
             //根据路径查找要下载的文件是否存在
             File file = new File(new File(downloadPath),rentDoc.getNewName());
             if(file.exists()) {
-                //产生文件输入流（对客户端来说）
+                //产生文件输入流
                 return new FileInputStream(file);
             } else {
                 return null;

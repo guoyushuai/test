@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>设备租赁合同显示</title>
     <%@include file="../../include/css.jsp"%>
-    <link rel="stylesheet" href="/static/plugins/uploader/webuploader.css">
+    <link rel="stylesheet" href="/static/plugins/webuploader/webuploader.css">
     <link rel="stylesheet" href="/static/plugins/datepicker/datepicker3.css">
     <link rel="stylesheet" href="/static/plugins/select2/select2.min.css">
 </head>

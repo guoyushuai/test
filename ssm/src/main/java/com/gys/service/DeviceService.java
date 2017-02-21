@@ -33,4 +33,10 @@ public interface DeviceService {
     List<DeviceRentDetail> findDeviceRentDetailListByRentId(Integer id);
 
     List<DeviceRentDoc> findDeviceRentDocListByRentId(Integer id);
+
+    List<DeviceRent> findDeviceRentByQueryParam(Map<String, Object> queryParam);
+
+    Long deviceRentCount();
+
+    void changeRentState(Integer id);
 }

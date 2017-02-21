@@ -230,7 +230,8 @@
     $(function () {
 
         /*租赁日期:默认今天momnet()，格式化format(),赋值val(xxx),取值val();*/
-        $("#rentDate").val(moment().format("YYYY-MM-DD"));
+
+        $("#rentDate").val(moment().format("YYYY-MM-dd"));
 
         /*归还日期:$("#backDate").datepicker();
          * format:格式
