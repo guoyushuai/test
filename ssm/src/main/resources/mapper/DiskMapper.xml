@@ -5,7 +5,22 @@
         insert into t_disk(source_name,new_name,fid,create_time,create_user,size,type)
         values(#{sourceName},#{newName},#{fid},#{createTime},#{createUser},#{size},#{type})
     </insert>
+    <delete id="delById">
+        delete from t_disk where id = #{id}
+    </delete>
+    <delete id="batchDel">
+        delete from t_disk where id in
+        <foreach collection="list" item="delid" open="(" close=")" separator=",">
+            #{delid}
+        </foreach>
+    </delete>
     <select id="findByFid" resultType="com.gys.pojo.Disk">
         select * from t_disk where fid = #{fid}
+    </select>
+    <select id="findById" resultType="com.gys.pojo.Disk">
+        select * from t_disk where id = #{id}
+    </select>
+    <select id="findAll" resultType="com.gys.pojo.Disk">
+        select * from t_disk
     </select>
 </mapper>

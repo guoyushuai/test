@@ -94,7 +94,7 @@ public class FileController {
             DeviceRentDoc rentDoc = fileService.findDeviceRentDocById(id);
             String fileName = rentDoc.getSourceName();
 
-
+            //响应头
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
             headers.setContentDispositionFormData("attachment",fileName, Charset.forName("UTF-8"));
@@ -108,7 +108,6 @@ public class FileController {
     }
 
 
-    //文件直接下载，没有弹框提示
     /*@GetMapping("/download/doc")
     public void downloadfile(Integer id,HttpServletResponse response) throws IOException {
         InputStream inputStream = fileService.downloadFile(id);//DeviceRentDoc的id
@@ -122,7 +121,7 @@ public class FileController {
             //设置弹出的对话框中的文件名称
             String fileName = rentDoc.getSourceName();
             fileName = new String(fileName.getBytes("UTF-8"),"ISO8859-1");//注意中文乱码问题
-            response.setHeader("Content-Disposition","attachment;filename=\"" + fileName + "\"");//注意格式 转义引号
+            response.setHeader("Content-Disposition","attachment;filename=\"" + fileName + "\"");//注意格式 转义引号 ,弹出对话框中的自动补上文件原始名字
 
             //响应输出流
             OutputStream outputStream = response.getOutputStream();
@@ -137,14 +136,14 @@ public class FileController {
     }*/
 
 
-    //合同详情显示页面，点击文件名连接下载相应文件;异常的处理不太合适，出现异常对客户端没有提示
-   /* @GetMapping("/download/doc")
+    /*//合同详情显示页面，点击文件名连接下载相应文件;异常的处理不太合适
+    @GetMapping("/download/doc")
     @ResponseBody
-    public void downloadFile(Integer id, HttpServletResponse response) {
+    public void downloadFile(Integer id, HttpServletResponse response) throws IOException {
         try {
-            fileService.downloadFile(id,response);
-        } catch (Exception e) {
-            e.printStackTrace();
+            fileService.downloadFile(id, response);
+        } catch (NoFoundException e) {
+
         }
     }*/
 }

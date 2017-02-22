@@ -60,7 +60,7 @@ public class FileServiceImpl implements FileService {
 
     //对异常的处理有点乱，暂不使用
     @Override
-    public void downloadFile(Integer id, HttpServletResponse response) {
+    public void downloadFile(Integer id, HttpServletResponse response) throws IOException {
 
         DeviceRentDoc rentDoc = rentDocMapper.findById(id);
         //上传路径即为下载的目标源路径
@@ -70,7 +70,7 @@ public class FileServiceImpl implements FileService {
 
             File file = new File(downloadPath,rentDoc.getNewName());
             if(file.exists()) {
-                try {
+
                     //获得文件输入流
                     FileInputStream inputStream = new FileInputStream(file);
 
@@ -90,9 +90,6 @@ public class FileServiceImpl implements FileService {
                     outputStream.flush();
                     outputStream.close();
                     inputStream.close();
-                } catch (IOException e) {
-                    throw new RuntimeException("文件下载异常",e);
-                }
 
             } else {
                 throw new NoFoundException();
@@ -107,7 +104,7 @@ public class FileServiceImpl implements FileService {
         //根据id在数据库中查找到相应的文件
         DeviceRentDoc rentDoc = rentDocMapper.findById(id);
 
-        //下载的目标源路径与上传的路径相同，点击下载时没有提示？？？
+        //下载的目标源路径与上传的路径相同
         String downloadPath = uploadPath;
 
         if(rentDoc != null) {

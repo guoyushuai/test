@@ -1,15 +1,27 @@
 package com.gys.controller;
 
 import com.gys.dto.AjaxResult;
+import com.gys.exception.NoFoundException;
 import com.gys.exception.ServiceException;
 import com.gys.pojo.Disk;
 import com.gys.service.DiskService;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.List;
 
 @Controller
@@ -53,6 +65,12 @@ public class DiskController {
         return "success";
     }
 
+    /**
+     * 文件上传
+     * @param fid 文件要上传到的目录
+     * @param file
+     * @return
+     */
     @PostMapping("/upload")
     @ResponseBody
     public AjaxResult newFile(Integer fid, MultipartFile file) {
@@ -63,6 +81,70 @@ public class DiskController {
         } catch (ServiceException e) {
             return new AjaxResult(AjaxResult.ERROR,e.getMessage());
         }
+    }
+
+    /**
+     * 文件下载Spring
+     * @param id 要删除的文件
+     * @return
+     * @throws IOException
+     */
+    @GetMapping("/download")
+    @ResponseBody
+    public ResponseEntity<InputStreamResource> downloadFile(Integer id) throws IOException {
+        InputStream inputStream = diskService.downloadFile(id);
+        if(inputStream != null) {
+            Disk disk = diskService.findById(id);
+            String sourceName = disk.getSourceName();
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            headers.setContentDispositionFormData("attachment",sourceName, Charset.forName("UTF-8"));
+
+            return new ResponseEntity<InputStreamResource>(new InputStreamResource(inputStream),headers, HttpStatus.OK);
+        } else {
+            /*return new NoFoundException();*/
+            throw new NoFoundException();
+        }
+    }
+
+    /**
+     * 文件下载servlet
+     * @return
+     */
+    /*@GetMapping("/download")
+    public void downloadFile(Integer id,HttpServletResponse response) throws IOException {
+        InputStream inputStream = diskService.downloadFile(id);
+
+        if(inputStream != null) {
+            //查找对应文件记录
+            Disk disk = diskService.findById(id);
+
+            String sourceName = disk.getSourceName();
+            sourceName = new String(sourceName.getBytes("UTF-8"),"ISO8859-1");
+
+            //设置响应头
+            response.setContentType("application/octet-stream");//标记为二进制流（浏览器不支持的格式）
+            *//*response.setContentLengthLong(Long.parseLong(disk.getSize()));//表明文件大小,这里是可视化的大小*//*
+            response.setHeader("Content-Disposition","attachment;filename=\"" + sourceName + "\"");//弹出的下载对话框自动补全文件原始名字
+
+            //获得响应输出流
+            OutputStream outputStream = response.getOutputStream();
+            IOUtils.copy(inputStream,outputStream);
+            outputStream.flush();
+            outputStream.close();
+            inputStream.close();
+
+        } else {
+            throw new NoFoundException();
+        }
+    }*/
+
+    @GetMapping("/del/{id:\\d+}")
+    @ResponseBody
+    public AjaxResult del(@PathVariable Integer id) {
+        diskService.delById(id);
+        return new AjaxResult(AjaxResult.SUCCESS);
     }
 
 }

@@ -94,7 +94,7 @@
                                         <%--文件点击下载，文件夹点击进入下级目录--%>
                                     <c:choose>
                                         <c:when test="${disk.type == 'file'}">
-                                            <a href="/path/download?id=${disk.id}">${disk.sourceName}</a>
+                                            <a href="/pan/download?id=${disk.id}">${disk.sourceName}</a>
                                         </c:when>
                                         <c:otherwise>
                                             <a href="/pan?path=${disk.id}">${disk.sourceName}</a>
@@ -104,7 +104,7 @@
                                 <td>${disk.size}</td>
                                 <td>${disk.createTime}</td>
                                 <td>${disk.createUser}</td>
-                                <td></td>
+                                <td><a href="javascript:;" class="del" rel="${disk.id}"><i class="fa fa-trash text-danger"></i></a></td>
                             </tr>
                         </c:forEach>
                         </tbody>
@@ -128,6 +128,7 @@
 <script>
     $(function () {
 
+        //上传文件
         var uploader = WebUploader.create({
             swf : "/static/plugins/uploader/Uploader.swf",
             server : "/pan/upload",//上传文件post提交
@@ -142,7 +143,7 @@
             alert(result.data);*/
             //AjaxResult构造方法，status（String）与data（object） 包含
             if(result.status == "success") {
-                lay.msg("上传成功");
+                layer.msg("上传成功");
                 window.history.go(0);
             } else {
                 layer.msg(result.message);
@@ -153,7 +154,7 @@
             layer.msg("服务器忙，请稍后再试！");
         });
 
-
+        //新建文件夹
         $("#newfolder").click(function () {
             var fid = ${fid};//新建文件夹时，从服务端传入（从客户端url中获取不靠谱），在目前显示的目录下创建
             layer.prompt({title:"请输入文件夹名称"},function (text,index) {//title:弹框的标题；text:弹框中输入的内容；index:用于关闭该弹框
@@ -171,10 +172,41 @@
             });
         });
 
+        //返回上级
         $("#back").click(function () {
             window.history.go(-1);
         });
 
+
+        /*layer.confirm('您是如何看待前端开发？', {
+            btn: ['重要','奇葩'] //按钮
+        }, function(){
+            layer.msg('的确很重要', {icon: 1});
+        }, function(){
+            layer.msg('也可以这样', {
+                time: 20000, //20s后自动关闭
+                btn: ['明白了', '知道了']
+            });
+        });*/
+        //删除，（委托,否则后续新建的文件夹和新上传的文件点击删除无反应）
+        /*$("#del").click(function () {*/
+        $(document).delegate(".del","click",function () {
+
+            var id = $(this).attr("rel");
+            layer.confirm("确定要删除么？",function (index) {
+                layer.close(index);
+                $.get("/pan/del/" + id).done(function (result) {
+                    if(result.status == "success") {
+                        layer.msg("删除成功");
+                        window.history.go(0);
+                    } else {
+                        layer.msg(result.message);
+                    }
+                }).error(function () {
+                    layer.msg("服务器忙，请稍后再试！")
+                });
+            });
+        });
 
     });
 </script>
