@@ -83,7 +83,7 @@ public class FileServiceImpl implements FileService {
                     fileName = new String(fileName.getBytes("UTF-8"),"ISO8859-1");
                     response.setHeader("Content-Disposition", "attachment;fileName=\"" + fileName + "\"");
 
-                    //获得响应输出流
+                    //生成响应输出流
                     OutputStream outputStream = response.getOutputStream();
 
                     IOUtils.copy(inputStream,outputStream);
@@ -114,7 +114,7 @@ public class FileServiceImpl implements FileService {
             //根据路径查找要下载的文件是否存在
             File file = new File(new File(downloadPath),rentDoc.getNewName());
             if(file.exists()) {
-                //产生文件输入流
+                //获得文件输入流
                 return new FileInputStream(file);
             } else {
                 return null;
