@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gys.mapper.LaborMapper">
+    <insert id="save">
+        insert into t_labor(name,unit,total_num,current_num,price)
+        values(#{name},#{unit},#{totalNum},#{currentNum},#{price})
+    </insert>
+    <delete id="del">
+        delete from t_labor where id = #{id}
+    </delete>
+    <select id="findBySearchParam" resultType="com.gys.pojo.Labor">
+        select * from t_labor
+        <where>
+            <if test="laborName != null and laborName != ''">
+                name like concat('%',#{laborName},'%')
+            </if>
+        </where>
+        <if test="orderColumn != null and orderColumn != '' and orderType != null and orderType != ''">
+            order by ${orderColumn} ${orderType}
+        </if>
+        limit ${start},${length}
+        /*$ 与 #*/
+    </select>
+    <select id="count" resultType="java.lang.Long">
+        select count(*) from t_labor
+    </select>
+    <select id="countBySearchParam" resultType="java.lang.Long">
+        select count(*) from t_labor
+        <where>
+            <if test="laborName != null and laborName != ''">
+                name like concat('%',#{laborName},'%')
+            </if>
+        </where>
+    </select>
+</mapper>

@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>AdminLTE 2 | Dashboard</title>
+    <title>账户管理</title>
     <%@ include file="../../include/css.jsp"%>
 </head>
 <body class="hold-transition skin-blue sidebar-mini">

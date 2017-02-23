@@ -1,11 +1,10 @@
 package com.gys.controller;
 
 import com.google.common.collect.Maps;
-import com.gys.pojo.Device;
-import com.gys.service.DeviceService;
+import com.gys.pojo.Labor;
+import com.gys.service.LaborService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -14,28 +13,29 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 系统设置中的设备管理控制器
+ * 系统设置中的劳务管理控制器
  */
 @Controller
-@RequestMapping("/setting/device")
-public class SettingDeviceController {
+@RequestMapping("/setting/labor")
+public class SettingLaborController {
 
     @Autowired
-    private DeviceService deviceService;
+    private LaborService laborService;
 
-    /*@GetMapping
-    public String list(Model model) {
-        List<Device> deviceList = deviceService.findAllDevices();
-        model.addAttribute("deviceList",deviceList);
-        return "setting/device/list";
-    }*/
-
-    //使用dataTable插件后，list只做跳转就行，在通过get请求来到页面时页面显示数据通过插件的ajax异步方式查询获得
+    /**
+     * 展示工种列表
+     * @return
+     */
     @GetMapping
     public String list() {
-        return "setting/device/list";
-    }
+        return "setting/labor/list";
+    }//只做跳转用
 
+    /**
+     * 进入list界面后datatable插件异步请求显示在表格中的数据
+     * @param request
+     * @return
+     */
     @PostMapping("/load")
     @ResponseBody
     public Map<String,Object> load(HttpServletRequest request) {
@@ -58,7 +58,9 @@ public class SettingDeviceController {
         //自带的搜索的键名为search[value]
 
         //搜索框内的值，自行扩展的键
-        String deviceName = request.getParameter("deviceName");
+        String laborName = request.getParameter("laborName");
+
+        System.out.println(draw + "->" + start + "->" + length + orderColumn + orderType + laborName);
 
         /*需要往mapper.xml中传入多个参数时，使用对象、集合、或者一个一个写参数序号或者起别名*/
         Map<String,Object> searchParam = Maps.newHashMap();
@@ -66,7 +68,7 @@ public class SettingDeviceController {
         searchParam.put("length",length);
         searchParam.put("orderType",orderType);
         searchParam.put("orderColumn",orderColumn);
-        searchParam.put("deviceName",deviceName);
+        searchParam.put("laborName",laborName);
 
 
         /*//零配置时的分页查询，服务端每次查的其实是所有数据
@@ -74,12 +76,12 @@ public class SettingDeviceController {
         Long count = deviceService.count();*/
 
         //查找符合查询条件的所有数据
-        List<Device> deviceList = deviceService.findDeviceBySearchParam(searchParam);
+        List<Labor> laborList = laborService.findLaborBySearchParam(searchParam);
         //总记录数
-        Long count = deviceService.count();
+        Long count = laborService.count();
 
         //加入搜索后，过滤后的总记录数,参数放入Map集合中进行传递，虽然只用其中一个参数但便于以后扩展
-        Long filteredCount = deviceService.countBySearchParam(searchParam);
+        Long filteredCount = laborService.countBySearchParam(searchParam);
 
         //插件对响应结果的格式有要求，JSON格式(对象{}/数组[])要求为{}对象，
         // ！！！@ResponseBody springMVC默认将结果自动转换为JSON格式，Map集合转成JSON数据后就是对象（键值对-属性值）
@@ -91,27 +93,42 @@ public class SettingDeviceController {
         //过滤后的总记录数
         resultMap.put("recordsFiltered",filteredCount);
         //该页的数据
-        resultMap.put("data",deviceList);
+        resultMap.put("data",laborList);
 
         return resultMap;
     }
 
+    /**
+     *
+     * @return
+     */
     @GetMapping("/new")
-    public String newDevice() {
-        return "setting/device/new";
+    public String newLabor() {
+        return "setting/labor/new";
     }
 
+    /**
+     * 保存新工种
+     * @param labor
+     * @param redirectAttributes
+     * @return
+     */
     @PostMapping("/new")
-    public String newDevice(Device device, RedirectAttributes redirectAttributes) {
-        deviceService.saveNewDevice(device);
-        redirectAttributes.addFlashAttribute("message","操作成功");
-        return "redirect:/setting/device";
+    public String newLobar(Labor labor,RedirectAttributes redirectAttributes) {
+        laborService.saveNewLabor(labor);
+        redirectAttributes.addFlashAttribute("message","保存成功");
+        return "redirect:/setting/labor";
     }
 
+    /**
+     * 删除工种
+     * @param id
+     * @return
+     */
     @GetMapping("/del/{id:\\d+}")
     @ResponseBody
-    public String delDevice(@PathVariable Integer id) {
-        deviceService.delDevice(id);
-        return "success";
+    public String delLabor(@PathVariable Integer id) {
+        laborService.delLabor(id);
+        return "success";//new AjaxResult(AjaxResult.SUCCESS)
     }
 }

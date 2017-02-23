@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>设备管理</title>
+    <title>劳务管理</title>
     <%@ include file="../../include/css.jsp"%>
     <%--<link rel="stylesheet" href="/static/plugins/datatables/dataTables.bootstrap.css">--%>
     <link rel="stylesheet" href="/static/plugins/datatables/jquery.dataTables.min.css">
@@ -18,7 +18,7 @@
     <%--<%@ include file="../include/sidebar.jsp"%>--%>
     <%--当前节点高亮显示--%>
     <jsp:include page="../../include/sidebar.jsp">
-        <jsp:param name="menu" value="sys_device"/>
+        <jsp:param name="menu" value="sys_labor"/>
     </jsp:include>
 
     <!-- Content Wrapper. Contains page content -->
@@ -31,7 +31,7 @@
             </h1>
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-dashboard"></i>系统设置</a></li>
-                <li class="active">设备管理</li>
+                <li class="active">劳务管理</li>
             </ol>
         </section>
 
@@ -46,22 +46,22 @@
                 </div>
                 <div class="box-body">
                     <%--以Get方式提交到当前url中--%>
-                        <form class="form-inline">
-                            <div class="form-group">
-                                <input type="text" id="q_device_name" placeholder="设备名称" value="${queryName}" class="form-control">
-                            </div>
-                            <button type="button" id="searchBtn" class="btn btn-default">搜索</button>
-                        </form>
+                    <form class="form-inline">
+                        <div class="form-group">
+                            <input type="text" id="q_labor_name" placeholder="工种名称" value="${queryName}" class="form-control">
+                        </div>
+                        <button type="button" id="searchBtn" class="btn btn-default">搜索</button>
+                    </form>
                 </div>
             </div>
 
             <div class="box">
 
                 <div class="box-header with-border">
-                    <h3 class="box-title">设备管理</h3>
+                    <h3 class="box-title">劳务管理</h3>
 
                     <div class="box-tools pull-right">
-                        <a href="/setting/device/new" class="btn"><i class="fa fa-plus"></i></a>
+                        <a href="/setting/labor/new" class="btn"><i class="fa fa-plus"></i></a>
                     </div>
                 </div>
 
@@ -69,42 +69,42 @@
                     <%--requestscope--%>
                     <c:if test="${not empty message}">
                         <div class="alert alert-success">
-                             <strong>${message}</strong>
-                            <%--<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>--%>
-                            <%--关闭提示框--%>
-                             <button type="button" class="close" data-dismiss="alert"><i class="fa fa-times"></i></button>
+                            <strong>${message}</strong>
+                                <%--<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>--%>
+                                <%--关闭提示框--%>
+                            <button type="button" class="close" data-dismiss="alert"><i class="fa fa-times"></i></button>
                         </div>
                     </c:if>
 
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th>id</th>
-                        <th>名称</th>
-                        <th>单位</th>
-                        <th>总数</th>
-                        <th>库存</th>
-                        <th>价格</th>
-                        <th width="100">#</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <%--页面显示数据通过插件ajax方式查询--%>
-                    <%--<c:forEach items="${deviceList}" var="device">
+                    <table class="table">
+                        <thead>
                         <tr>
-                            <td>${device.name}</td>
-                            <td>${device.unit}</td>
-                            <td>${device.totalNum}</td>
-                            <td>${device.currentNum}</td>
-                            <td>${device.price}</td>
-                            <td>
-                                <a href="">##</a>
-                            </td>
+                            <th>id</th>
+                            <th>工种</th>
+                            <th>单位</th>
+                            <th>总人数</th>
+                            <th>现有人数</th>
+                            <th>价格</th>
+                            <th width="100">#</th>
                         </tr>
-                    </c:forEach>--%>
+                        </thead>
+                        <tbody>
+                        <%--页面显示数据通过插件ajax方式查询--%>
+                        <%--<c:forEach items="${deviceList}" var="device">
+                            <tr>
+                                <td>${device.name}</td>
+                                <td>${device.unit}</td>
+                                <td>${device.totalNum}</td>
+                                <td>${device.currentNum}</td>
+                                <td>${device.price}</td>
+                                <td>
+                                    <a href="">##</a>
+                                </td>
+                            </tr>
+                        </c:forEach>--%>
 
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
                 </div>
                 <!-- /.box-body -->
 
@@ -125,7 +125,7 @@
 <script>
     $(function () {
         /*/!*零配置,老版本dataTable*!/
-        $(".table").DataTable();*/
+         $(".table").DataTable();*/
 
         //返回一个对象
         var table = $(".table").DataTable({
@@ -134,13 +134,13 @@
             //所有的操作都在服务端进行
             "serverSide": true,
             /*//服务端url地址
-            "ajax":"/setting/device/load",*/
+             "ajax":"/setting/device/load",*/
             //对象
             "ajax":{
-                "url":"/setting/device/load",//url
+                "url":"/setting/labor/load",//url
                 "type":"post",//方式
                 "data":function(obj){//发送到服务端的数据，所有的(自行扩展的)键值对
-                    obj.deviceName = $("#q_device_name").val();
+                    obj.laborName = $("#q_labor_name").val();
                 }
             },
             //指定默认排序方式,哪一列的什么形式
@@ -188,15 +188,15 @@
 
         /*绑定事件时，元素不存在，数据都是后来动态添加上去的，删除事件绑定不上*/
         /*$(".delLink").click(function () {
-            if(confirm("确定要删除吗?")) {
-            }
-        });*/
+         if(confirm("确定要删除吗?")) {
+         }
+         });*/
 
         /*使用事件委托机制*/
         $(document).delegate(".delLink","click",function(){
             if(confirm("确定要删除吗?")) {
                 var id = $(this).attr("rel");
-                $.get("/setting/device/del/"+id)
+                $.get("/setting/labor/del/"+id)
                     .done(function(data){
                         if(data == "success") {
                             alert("删除成功");
@@ -214,7 +214,6 @@
         //自定义搜索
         $("#searchBtn").click(function () {
             table.draw(); //dataTables发出请求
-            table.ajax.reload();
         });
 
     });

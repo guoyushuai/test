@@ -32,7 +32,10 @@
                         <a href="/setting/user"><i class="fa fa-circle-o"></i>账户管理</a>
                     </li>
                     <li class="${param.menu == 'sys_device' ? 'active' : ''}">
-                        <a href="/setting/device"><i class="fa fa-circle-o"></i> 设备管理</a>
+                        <a href="/setting/device"><i class="fa fa-circle-o"></i>设备管理</a>
+                    </li>
+                    <li class="${param.menu == 'sys_labor' ? 'active' : ''}">
+                    <a href="/setting/labor"><i class="fa fa-circle-o"></i>劳务管理</a>
                     </li>
                 </ul>
             </li>

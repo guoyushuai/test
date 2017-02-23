@@ -15,6 +15,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
+/**
+ * 系统设置中的账户管理控制器
+ */
 @Controller
 @RequestMapping("/setting/user")
 public class SettingUserController {
