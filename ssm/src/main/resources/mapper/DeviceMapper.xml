@@ -8,6 +8,13 @@
     <update id="updateCurrentNum">
         UPDATE t_device SET current_num = #{currentNum} where id = #{id}
     </update>
+    <update id="update">
+        UPDATE t_device SET current_num = #{currentNum} where name = #{name}
+    </update>
+    <!--<update id="batchUpdate">
+        UPDATE t_device SET current_num = #{currentNum} where id in
+        <foreach collection="list" item="id" open="(" close=")" separator=","
+    </update>-->
     <delete id="del">
         DELETE FROM t_device where id = #{id}
     </delete>
@@ -42,5 +49,8 @@
     </select>
     <select id="findById" resultType="com.gys.pojo.Device">
         SELECT * FROM t_device WHERE id = #{id}
+    </select>
+    <select id="findByName" resultType="com.gys.pojo.Device">
+        select * from t_device where name = #{name}
     </select>
 </mapper>

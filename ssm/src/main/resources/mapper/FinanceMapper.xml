@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gys.mapper.FinanceMapper">
+    <insert id="save">
+        insert into t_finance(serial_number,type,money,state,module,create_user,create_date,remark,module_serial_number)
+        values(#{serialNumber},#{type},#{money},#{state},#{module},#{createUser},#{createDate},#{remark},#{moduleSerialNumber})
+    </insert>
+    <update id="update">
+        update t_finance set state=#{state},confirmUser=#{confirmUser},confirmDate=#{confirmDate} where id = #{id}
+    </update>
+    <select id="findBySerialNumber" resultType="com.gys.pojo.Finance">
+        select * from t_finance where serial_number = #{serialNumber}
+    </select>
+    <select id="findByQueryParam" resultType="com.gys.pojo.Finance">
+        select * from t_finance
+        <where>
+            <if test="date != null and date != ''">
+                create_date = #{date}
+            </if>
+        </where>
+        order by confirm_date asc,create_date desc
+        limit ${start},${length}
+    </select>
+    <select id="count" resultType="java.lang.Long">
+        select count(*) from t_finance
+    </select>
+    <select id="countByQueryParam" resultType="java.lang.Long">
+        select count(*) from t_finance
+        <where>
+            <if test="date != null and date != ''">
+                create_date = #{date}
+            </if>
+        </where>
+    </select>
+    <select id="findById" resultType="com.gys.pojo.Finance">
+        select * from t_finance where id = #{id}
+    </select>
+    <select id="findByCreateDate" resultType="com.gys.pojo.Finance">
+        select * from t_finance where create_date = #{createDate}
+    </select>
+</mapper>

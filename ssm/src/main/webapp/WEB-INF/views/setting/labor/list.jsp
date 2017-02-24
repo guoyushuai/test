@@ -9,6 +9,7 @@
     <%@ include file="../../include/css.jsp"%>
     <%--<link rel="stylesheet" href="/static/plugins/datatables/dataTables.bootstrap.css">--%>
     <link rel="stylesheet" href="/static/plugins/datatables/jquery.dataTables.min.css">
+
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">

@@ -64,6 +64,7 @@ public class DeviceRentController {
 
     /**
      * 修改合同的状态
+     * 同时需要设备入库
      * @param id
      * @return
      */
@@ -71,7 +72,6 @@ public class DeviceRentController {
     @ResponseBody
     public String changeRentState(Integer id) {
         deviceService.changeRentState(id);
-        //尾款付清
         return "success";
     }
 

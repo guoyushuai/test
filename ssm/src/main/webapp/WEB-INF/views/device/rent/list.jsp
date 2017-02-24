@@ -112,7 +112,7 @@
                 /*{"data":"serialNumber"},*///除了显示增加点击跳转到详情页功能
                 {"data":function (row) {//row当前行的对象
                     if(row.serialNumber) {//有数据显示，没数据显示NUll,
-                        return "<a href='/device/rent/" + row.serialNumber + "'>" + row.serialNumber + "</a>";
+                        return "<a href='/device/rent/" + row.serialNumber + "'>" + row.serialNumber + "</a>";//需要客户端返回流水号以便于点击后能展示相应合同租赁的详情
                     } else {
                         return "";//返回空字符串，避免显示为null
                     }
@@ -163,7 +163,8 @@
                $.post("/device/rent/state/change",{"id":id}).done(function (result) {
                     if(result == "success") {//没有默认值 if(result.state)也可以，只要有值就为true
 
-                        table.ajax.reload();//刷新表格datatable中的方法
+                        /*table.ajax.reload();*///刷新表格datatable中的方法,会返回第一页
+                        table.ajax.reload(false,null);//重新加载当前页
 
                     }
                }).error(function () {

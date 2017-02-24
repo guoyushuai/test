@@ -24,4 +24,10 @@ public interface DeviceMapper {
     Device findById(Integer id);
 
     void updateCurrentNum(Device device);
+
+    Device findByName(String name);
+
+    void update(Device device);
+
+    /*void batchUpdate(List<Device> deviceList);*/
 }

@@ -21,7 +21,7 @@
 
     <%@include file="../include/header.jsp"%>
     <jsp:include page="../include/sidebar.jsp">
-        <jsp:param name="menu" value="pan"/>
+        <jsp:param name="menu" value="business_pan"/>
     </jsp:include>
 
     <!-- Content Wrapper. Contains page content -->

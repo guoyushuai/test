@@ -3,17 +3,12 @@ package com.gys.service.impl;
 import com.google.common.collect.Lists;
 import com.gys.dto.DeviceRentDto;
 import com.gys.exception.ServiceException;
-import com.gys.mapper.DeviceMapper;
-import com.gys.mapper.DeviceRentDetailMapper;
-import com.gys.mapper.DeviceRentDocMapper;
-import com.gys.mapper.DeviceRentMapper;
-import com.gys.pojo.Device;
-import com.gys.pojo.DeviceRent;
-import com.gys.pojo.DeviceRentDetail;
-import com.gys.pojo.DeviceRentDoc;
+import com.gys.mapper.*;
+import com.gys.pojo.*;
 import com.gys.service.DeviceService;
 import com.gys.shiro.ShiroUtil;
 import com.gys.util.SerialNumberUtil;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +27,9 @@ public class DeviceServiceImpl implements DeviceService {
     private DeviceRentDetailMapper rentDetailMapper;
     @Autowired
     private DeviceRentDocMapper rentDocMapper;
+
+    @Autowired
+    private FinanceMapper financeMapper;
 
     @Override
     public void saveNewDevice(Device device) {
@@ -95,7 +93,7 @@ public class DeviceServiceImpl implements DeviceService {
         deviceRent.setPreCost(0F);
         deviceRent.setTotalPrice(0F);
 
-        //获取合同流水号
+        //生成合同流水号
         deviceRent.setSerialNumber(SerialNumberUtil.getSerialNumber());
 
         //deviceRent的状态默认未完成
@@ -167,8 +165,20 @@ public class DeviceServiceImpl implements DeviceService {
 
 
         //4. 写入财务流水
+        Finance finance = new Finance();
+        finance.setSerialNumber(SerialNumberUtil.getSerialNumber());//生成财务流水号
+        finance.setType(Finance.TYPE_INCOME);//收入
+        finance.setMoney(preCost);//预付款
+        finance.setState(Finance.STATE_UNFINISHED);//显示未确认
+        finance.setModule(Finance.MODULE_DEVICE);//来自设备租赁
+        finance.setCreateUser(ShiroUtil.getCurrentUsername());//创建者
+        finance.setCreateDate(DateTime.now().toString("yyyy-MM-dd"));//创建时间，注意格式大小写
+        finance.setRemark(Finance.REMARK_PRECOST);//备注来自预付款
+        finance.setModuleSerialNumber(deviceRent.getSerialNumber());//业务流水号
 
-        //返回序列号
+        financeMapper.save(finance);//保存预付款的财务
+
+        //获取租赁合同流水号
         return deviceRent.getSerialNumber();
     }
 
@@ -208,8 +218,40 @@ public class DeviceServiceImpl implements DeviceService {
         deviceRent.setState("已完成");
         rentMapper.updateState(deviceRent);
 
-        //2财务模块处理
+        //2、合同租用的设备入库
+        /*根据租赁合同id查找到合同中租赁的所有设备详情集合*/
+        List<DeviceRentDetail> rentDetailList = rentDetailMapper.findByRentId(id);
+        /*List<Device> deviceList = Lists.newArrayList();*/
+        for (DeviceRentDetail rentDetail : rentDetailList) {
+            String deviceName = rentDetail.getDeviceName();
+            Integer rentNum = rentDetail.getNum();
 
+            //根据设备名称查找到设备
+            Device device = deviceMapper.findByName(deviceName);
+            device.setCurrentNum(device.getCurrentNum() + rentNum);
+
+            deviceMapper.update(device);
+            /*deviceList.add(device);*/
+        }
+        /*deviceMapper.batchUpdate(deviceList);*/
+
+        //3、财务模块处理
+        //获得合同尾款
+        float lastCost = deviceRent.getLastCost();
+
+        //尾款新的财务流水与预付款无关
+        Finance finance = new Finance();
+        finance.setSerialNumber(SerialNumberUtil.getSerialNumber());//流水号
+        finance.setType(Finance.TYPE_INCOME);//收入
+        finance.setMoney(lastCost);//尾款
+        finance.setState(Finance.STATE_UNFINISHED);//默认未完成
+        finance.setModule(Finance.MODULE_DEVICE);//来自设备租赁
+        finance.setCreateUser(ShiroUtil.getCurrentUsername());//创建者
+        finance.setCreateDate(DateTime.now().toString("yyyy-MM-dd"));//创建时间
+        finance.setRemark(Finance.REMARK_LASTCOST);//备注来自尾款
+        finance.setModuleSerialNumber(deviceRent.getSerialNumber());//业务流水号
+
+        financeMapper.save(finance);
 
     }
 }

@@ -231,7 +231,7 @@
 
         /*租赁日期:默认今天momnet()，格式化format(),赋值val(xxx),取值val();*/
 
-        $("#rentDate").val(moment().format("YYYY-MM-dd"));
+        $("#rentDate").val(moment().format("YYYY-MM-DD"));//注意momentjs与datepicker的格式大小写不同
 
         /*归还日期:$("#backDate").datepicker();
          * format:格式
@@ -389,8 +389,8 @@
 
                 var currentNum = $("#currNum").val();
 
-                //库存数量小于当前设备一次性要租的数量，（不严谨）
-                if(currentNum < $("#rentNum").val()) {
+                //库存数量小于当前设备一次性要租的数量，（不严谨）//不加类型转换时，两个字符串相比，从第一个符号开始
+                if(parseFloat(currentNum) < $("#rentNum").val()) {
                     layer.msg($("#deviceName").val() + "库存不足");
                 } else {
                     //判断数组中是否有当前选择的设备，如果有则当前设备的数量增加,总价更新
