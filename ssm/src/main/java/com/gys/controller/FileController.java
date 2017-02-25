@@ -52,6 +52,8 @@ public class FileController {
 
             //不仅有IOException,还有自定义的RuntimeException
         } catch (Exception e) {
+            //捕获异常后不能没有任何提示或处理
+            e.printStackTrace();
             return new AjaxResult(AjaxResult.ERROR,e.getMessage());
         }
     }
@@ -67,12 +69,12 @@ public class FileController {
 
         if(rent != null) {
 
-            //将文件下载标记为二进制（设置相应的文件头）
-            response.setContentType(MediaType.APPLICATION_OCTET_STREAM.toString());//spring framework框架定义的常量
+            //将文件下载标记为二进制（设置相应的文件头）//spring framework框架定义的常量
+            response.setContentType(MediaType.APPLICATION_OCTET_STREAM.toString());
 
-            //设置弹出的对话框中的文件名称
+            //设置弹出的对话框中的文件名称//注意中文乱码问题
             String filename = rent.getCompanyName() + ".zip";
-            filename = new String(filename.getBytes("UTF-8"),"ISO8859-1");//注意中文乱码问题
+            filename = new String(filename.getBytes("UTF-8"),"ISO8859-1");
             response.setHeader("Content-Disposition","attachment;filename=\"" + filename + "\"");//注意格式 转义引号
 
             OutputStream outputStream = response.getOutputStream();
@@ -143,7 +145,9 @@ public class FileController {
         try {
             fileService.downloadFile(id, response);
         } catch (NoFoundException e) {
-
+            todo
+            //下载文件没有返回信息选项？？
+            捕捉了NoFound又要抛NoFound?
         }
     }*/
 }

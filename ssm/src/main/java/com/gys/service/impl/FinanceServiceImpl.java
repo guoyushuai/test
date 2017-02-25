@@ -1,6 +1,7 @@
 package com.gys.service.impl;
 
 import com.gys.exception.NoFoundException;
+import com.gys.exception.ServiceException;
 import com.gys.mapper.FinanceMapper;
 import com.gys.pojo.Finance;
 import com.gys.service.FinanceService;
@@ -35,7 +36,6 @@ public class FinanceServiceImpl implements FinanceService {
     }
 
     @Override
-    @Transactional
     public void confirmFinanceById(Integer id) {
         Finance finance = financeMapper.findById(id);
         if(finance != null) {
@@ -43,7 +43,7 @@ public class FinanceServiceImpl implements FinanceService {
             finance.setConfirmUser(ShiroUtil.getCurrentUsername());
             finance.setConfirmDate(DateTime.now().toString("yyyy-MM-dd"));
             financeMapper.update(finance);
-        } else {
+        } else {//找不到404，不抛的话，Controller页面不catch,返回给客户端的是成功的AjaxResult
             throw new NoFoundException();
         }
     }
@@ -51,5 +51,10 @@ public class FinanceServiceImpl implements FinanceService {
     @Override
     public List<Finance> findByCreateDate(String createDate) {
         return financeMapper.findByCreateDate(createDate);
+    }
+
+    @Override
+    public List<Map<String, Object>> findPieDataByDate(String date, String type) {
+        return financeMapper.findPieDataByDate(date,type);
     }
 }

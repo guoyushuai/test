@@ -16,4 +16,6 @@ public interface FinanceService {
     void confirmFinanceById(Integer id);
 
     List<Finance> findByCreateDate(String createDate);
+
+    List<Map<String,Object>> findPieDataByDate(String date, String type);
 }

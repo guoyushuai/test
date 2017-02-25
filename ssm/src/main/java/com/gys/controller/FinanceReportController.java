@@ -3,6 +3,8 @@ package com.gys.controller;
 import com.google.common.collect.Maps;
 import com.gys.dto.AjaxResult;
 import com.gys.dto.DataTablesResult;
+import com.gys.exception.NoFoundException;
+import com.gys.exception.ServiceException;
 import com.gys.pojo.Finance;
 import com.gys.service.FinanceService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -48,7 +50,8 @@ public class FinanceReportController {
         String start = request.getParameter("start");
         String length = request.getParameter("length");
 
-        String date = request.getParameter("date");//自定义键值对
+        //自定义键值对
+        String date = request.getParameter("date");
 
         //将参数封装到Map集合中传递到Mybatis中进行查询
         Map<String,Object> queryParam = Maps.newHashMap();
@@ -71,34 +74,36 @@ public class FinanceReportController {
      * 财务确认
      * @param id
      */
-    @PostMapping("/confirm/{id:\\d+}")
+    @GetMapping("/confirm/{id:\\d+}")
     @ResponseBody
-    public AjaxResult confirmFinance(@RequestParam Integer id) {
-        try {
+    public AjaxResult confirmFinance(@PathVariable Integer id) {
+        /*try {*/
             financeService.confirmFinanceById(id);
             return new AjaxResult(AjaxResult.SUCCESS);
-        } catch (RuntimeException e) {
+        /*} catch (NoFoundException e) {//不合适,不用抓也抓不到，service层已经抛了404，service层不抛的话，返回的是AjaxResult
             return new AjaxResult(AjaxResult.ERROR, e.getMessage());
-        }
+        }*/
     }
 
     /**
      * 将指定日期的财务日报导出到Excel表中
-     * @param day
+     * @param date
      * @param response
      */
-    @GetMapping("/export/day/{day}/data.xls")//{day}可以与客户端放入的键名不同，保证与下面方法中的参数名相同即可
-    public void exportDayReport(@PathVariable String day, HttpServletResponse response) throws IOException {
-        List<Finance> financeList = financeService.findByCreateDate(day);
+    @GetMapping("/export/day/{date}/data.xls")//{date}可以与客户端放入的键名不同，保证与下面方法中的参数名相同即可
+    public void exportDayReport(@PathVariable String date, HttpServletResponse response) throws IOException {
+        List<Finance> financeList = financeService.findByCreateDate(date);
 
-        response.setContentType("application/vnd.ms-excel");//xls文件的MIME头
-        response.setHeader("Content-Disposition","attachment;filename=\""+ day +"\".xls");//设置自定义文件头（文件名称）
+        //xls文件的MIME头
+        response.setContentType("application/vnd.ms-excel");
+        //设置自定义文件头（文件名称）
+        response.setHeader("Content-Disposition","attachment;filename=\""+ date +"\".xls");
 
         //1、创建工作表WorkBook
         Workbook workbook = new HSSFWorkbook();
 
         //2、创建sheet页
-        String sheetName = day + ".xls";
+        String sheetName = date + ".xls";
         Sheet sheet = workbook.createSheet(sheetName);
 
         //3、创建行（从0开始）
@@ -125,7 +130,8 @@ public class FinanceReportController {
 
             Finance finance = financeList.get(i);
 
-            Row dataRow = sheet.createRow(i+1);//标题行占一行，数据行从1行开始,依次累加否则下一个对象的数据将覆盖本行数据
+            //标题行占一行，数据行从1行开始,依次累加否则下一个对象的数据将覆盖本行数据
+            Row dataRow = sheet.createRow(i+1);
             dataRow.createCell(0).setCellValue(finance.getSerialNumber());
             dataRow.createCell(1).setCellValue(finance.getType());
             dataRow.createCell(2).setCellValue(finance.getMoney());
@@ -162,4 +168,21 @@ public class FinanceReportController {
         outputStream.close();
 
     }
+
+    /**
+     * 加载当天的饼状图
+     * @param type in收入 out支出
+     * @param date
+     * @return
+     */
+    @GetMapping("/day/{type}/{date}/pie")
+    @ResponseBody
+    public AjaxResult dayPieData(@PathVariable String type,@PathVariable String date) {
+        //三元表达式判断请求url，将两个方法合并
+        type = "in".equals(type) ? "收入" : "支出";
+        List<Map<String,Object>> pieData = financeService.findPieDataByDate(date,type);
+        //springMVC自动将对象转成JSON,在javascript中对象数组
+        return new AjaxResult(pieData);
+}
+
 }

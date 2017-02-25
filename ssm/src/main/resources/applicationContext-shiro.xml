@@ -30,9 +30,11 @@
         权限配置（从上往下匹配）
         anon，不需要认证，不登录页可以访问（上面配置的loginUrl同样不登录也能访问）
         authc，需要认证，访问的url必须要登录才能访问
+        微信初始化匿名可访问
         -->
         <property name="filterChainDefinitions">
             <value>
+                /wx/init = anon
                 /static/** = anon
                 /setting/** = roles[role_admin]
                 /** = authc

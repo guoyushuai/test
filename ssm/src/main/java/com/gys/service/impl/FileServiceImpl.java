@@ -1,6 +1,7 @@
 package com.gys.service.impl;
 
 import com.gys.exception.NoFoundException;
+import com.gys.exception.ServiceException;
 import com.gys.mapper.DeviceRentDocMapper;
 import com.gys.mapper.DeviceRentMapper;
 import com.gys.pojo.DeviceRent;
@@ -50,15 +51,17 @@ public class FileServiceImpl implements FileService {
 
             return newFileName;
         } catch (IOException e) {
+            //上传失败需要给用户做提示，不能直接抛IOException(没有提示)
             logger.error("文件上传异常",e);
-            throw new RuntimeException("文件上传异常",e);
+            throw new ServiceException("文件上传异常",e);
         }
 
     }
 
 
-
-    //对异常的处理有点乱，暂不使用
+    /**
+     * 对异常的处理有点乱，暂不使用
+     */
     @Override
     public void downloadFile(Integer id, HttpServletResponse response) throws IOException {
 

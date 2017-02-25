@@ -27,7 +27,7 @@ public class SettingUserController {
 
     /**
      * get方法，请求该页面时就要显示数据，默认显示不限制名字q_name与角色q_role的第一页p=1数据
-     *@RequestParam (相当于request.getparameter())从表单或者URL中获得参数时，
+     *@RequestParam 与PathVariable从url路径中取值区别(相当于request.getparameter())从表单或者URL中获得参数时，
      *该参数非必需或者有默认值(必须是字符串类型)时才加此注解
      * 表单中name属性名为q_name,q_role分别对应java中的参数名queryName,queryRole
      */

@@ -147,6 +147,7 @@
                 <div class="box-body">
                     <ul id="fileList">
                         <c:forEach items="${docList}" var="doc">
+                            <%--进入页面内就加载的数据，不用做事件委托--%>
                             <li><a href="/file/download/doc?id=${doc.id}">${doc.sourceName}</a></li>
                         </c:forEach>
                     </ul>

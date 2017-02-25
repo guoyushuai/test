@@ -46,7 +46,7 @@
                         <input type="text" class="form-control" id="date">
                     </form>
                     <div class="box-tools pull-right">
-                        <%--不能在这里直接写地址进行跳转，需要导出的是指定日期的数据，需要通过事件获得日期--%>
+                        <%--不能在这里直接写地址进行跳转，需要导出的是指定日期的数据，需要获得日期并告诉服务端--%>
                         <%--<a href="/finance/export/day/$('#date').val()/data.xls"></a>//这里获取不到date框的值--%>
                         <a href="javascript:;" class="btn btn-default" id="exportXls"><i class="fa fa-file-excel-o"></i> 导出Excel</a>
                     </div>
@@ -151,6 +151,8 @@
             table.ajax.reload();//方法中有两个参数（false,null）;重新加载当前页，不会返回首页
             //这里修改日期后，需要重新返回第一页开始浏览当然天的数据（需要借助DataTable插件向服务端发出异步请求）
 
+            loadPie();//修改日期，饼状图同时更新
+
         });
 
         //返回一个对象
@@ -225,12 +227,12 @@
         /*表格中的确认按钮*//*事件委托*/
         $(document).delegate(".confirmBtn","click",function () {
             var id = $(this).attr("rel");//input通过$(this).val();取值
-            $.post("/finance/confirm/" + id).done(function (result) {
+            $.get("/finance/confirm/"+id).done(function(result){
                 if(result.status == "success") {
 
                     table.ajax.reload(null,false);//刷新当前页面，防止自动跳转到默认的第一页
 
-                } else {
+                } else {//else触发不了
                     layer.msg(result.message);
                 }
             }).error(function () {
@@ -246,46 +248,144 @@
             window.location.href = "/finance/export/day/"+day+"/data.xls";//跳转地址get请求，相当于下载页面
         });
 
+
+
+        /*echart*/
+        // 基于准备好的dom，初始化echarts实例
+        var inChart = echarts.init($("#in")[0]);//jquery对象转换成原生的javascript对象
+
+        var outChart = echarts.init($("#out")[0]);
+
+        // 指定图表的配置项和数据（配置项手册）
+        var option = {
+            title : {//标题组件（包含主标题，副标题）
+                left:'center'//标题位置容器左侧中心
+            },
+            tooltip: {},//提示框组件（可不配置）
+            legend:{//图例
+                left:20,//图例位置距容器左侧20像素
+                orient:'vertical',//图例列表的布局朝向。
+                data:[]//图例的数据数组
+            },
+            series:[]//系列列表（数组 同一组数据可能多种图组合）
+            // 每个系列通过 type 决定自己的图表类型
+        };
+
+        // 使用刚指定的配置项和数据显示图表。
+        inChart.setOption(option);
+        outChart.setOption(option);
+
+
+        //从服务端获得数据加载进来
+        function loadPie() {
+            //收入统计
+            $.get("/finance/day/in/" + $("#date").val() + "/pie").done(function (result) {
+                if(result.status == 'success') {
+                    var nameArray = [];//
+
+                    for(var i = 0;i < result.data.length;i++) {
+                        var obj = result.data[i];
+                        nameArray.push(obj.name);//将数据的name值赋值给图例legend中的data数组
+                    }
+
+                    inChart.setOption({//补充配置项中的值
+                        title:{
+                            text : "收入统计"//主标题文本
+                        },
+                        legend:{
+                            data:nameArray//图例的数据数组
+                        },
+                        series:[{
+                            type:'pie',//图表类型
+                            name:"金额",
+                            data:result.data//数据
+                        }]
+                    });
+                } else {
+                    layer.msg(result.message);
+                }
+            }).error(function () {
+                layer.msg("加载饼状图异常");
+            });
+
+            //支出统计
+            $.get("/finance/day/out/"+$("#date").val()+"/pie").done(function(result){
+                if(result.status == 'success') {
+                    var nameArray = [];
+                    for(var i = 0;i < result.data.length;i++) {
+                        var obj = result.data[i];
+                        nameArray.push(obj.name);
+                    }
+                    outChart.setOption({
+                        title:{
+                            text : "支出统计"
+                        },
+                        legend:{
+                            data:nameArray
+                        },
+                        series:[{
+                            type:'pie',
+                            name:"金额",
+                            data:result.data
+                        }]
+                    });
+                } else {
+                    layer.msg(result.message);
+                }
+            }).error(function(){
+                layer.msg("加载饼图异常");
+            });
+        }
+
+        loadPie();//方法执行
     });
 
 
+    /*//不依赖jquery
     // 基于准备好的dom，初始化echarts实例
+    /!*var chart = $("#in")[0];*!///jquery对象转换成原生的javascript对象
     var inChart = echarts.init(document.getElementById('in'));
+
+    // 指定图表的配置项和数据（配置项手册）
     option = {
-        title : {
-            text: '当日收入饼状图',
-            subtext: '只统计收入',
-            x:'center'
+        title : {//标题组件（包含主标题，副标题）
+            text: '当日收入饼状图',//主标题文本
+            /!*subtext: '只统计收入',
+             x:'center'*!/
+            left:"center"//左侧中心
         },
-        tooltip : {
-            trigger: 'item',
-            formatter: "{a} <br/>{b} : {c} ({d}%)"
+        tooltip : {//提示框组件（可不配置）
+            /!*trigger: 'item',
+             formatter: "{a} <br/>{b} : {c} ({d}%)"*!/
         },
-        legend: {
+        legend: {//图例
             orient: 'vertical',
-            left: 'left',
-            data: ['设备租赁','劳务外包','金融借贷','其他']
+            left: 20,//距容器左侧20像素
+            data: []//图例的数据数组
         },
-        series : [
-            {
-                name: '收入',
-                type: 'pie',
-                radius : '55%',
-                center: ['50%', '60%'],
-                data:[
-                    {value:33500, name:'设备租赁'},
-                    {value:12340, name:'劳务外包'},
-                    {value:23400, name:'金融借贷'},
-                    {value:13500, name:'其他'}
-                ],
-                itemStyle: {
-                    emphasis: {
-                        shadowBlur: 10,
-                        shadowOffsetX: 0,
-                        shadowColor: 'rgba(0, 0, 0, 0.5)'
-                    }
-                }
-            }
+        //xy轴(柱状图/折线图)
+        /!*xAxis : {},
+         yAxis : {},*!/
+        series : [//（数组 同一组数据可能多种图组合）系列列表。每个系列通过 type 决定自己的图表类型
+            /!*{
+             name: '收入',
+             type: 'pie',//图表类型
+             radius : '55%',
+             center: ['50%', '60%'],
+             data:[//系列中的数据内容数组 每一条数据对应一个对象 （与legend图例中data对应）name数据项名称，value数据项值
+             {value:33500, name:'设备租赁'},
+             {value:12340, name:'劳务外包'},
+             {value:23400, name:'金融借贷'},
+             {value:13500, name:'其他'}
+             ],
+             itemStyle: {
+             emphasis: {
+             shadowBlur: 10,
+             shadowOffsetX: 0,
+             shadowColor: 'rgba(0, 0, 0, 0.5)'
+             }
+             }
+             }*!/
         ]
     };
 
@@ -335,7 +435,7 @@
     };
 
     // 使用刚指定的配置项和数据显示图表。
-    outChart.setOption(outoption);
+    outChart.setOption(outoption);*/
 </script>
 </body>
 </html>

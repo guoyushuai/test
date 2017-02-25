@@ -81,8 +81,8 @@ public class SettingDeviceController {
         //加入搜索后，过滤后的总记录数,参数放入Map集合中进行传递，虽然只用其中一个参数但便于以后扩展
         Long filteredCount = deviceService.countBySearchParam(searchParam);
 
-        //插件对响应结果的格式有要求，JSON格式(对象{}/数组[])要求为{}对象，
-        // ！！！@ResponseBody springMVC默认将结果自动转换为JSON格式，Map集合转成JSON数据后就是对象（键值对-属性值）
+        /*插件对响应结果的格式有要求，JSON格式(对象{}/数组[])要求为{}对象，
+         ！！！@ResponseBody springMVC默认将结果自动转换为JSON格式，Map集合转成JSON数据后就是对象（键值对-属性值）*/
         Map<String,Object> resultMap = Maps.newHashMap();
         //传过来第几次，返回就是第几次
         resultMap.put("draw",draw);

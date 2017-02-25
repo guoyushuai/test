@@ -1,6 +1,7 @@
 package com.gys.mapper;
 
 import com.gys.pojo.Finance;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -22,4 +23,6 @@ public interface FinanceMapper {
     void update(Finance finance);
 
     List<Finance> findByCreateDate(String createDate);
+
+    List<Map<String,Object>> findPieDataByDate(@Param("date") String date,@Param("type") String type);
 }

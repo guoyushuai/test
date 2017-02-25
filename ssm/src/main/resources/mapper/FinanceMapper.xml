@@ -6,7 +6,7 @@
         values(#{serialNumber},#{type},#{money},#{state},#{module},#{createUser},#{createDate},#{remark},#{moduleSerialNumber})
     </insert>
     <update id="update">
-        update t_finance set state=#{state},confirmUser=#{confirmUser},confirmDate=#{confirmDate} where id = #{id}
+        update t_finance set state = #{state},confirm_user=#{confirmUser},confirm_date=#{confirmDate} where id = #{id}
     </update>
     <select id="findBySerialNumber" resultType="com.gys.pojo.Finance">
         select * from t_finance where serial_number = #{serialNumber}
@@ -38,4 +38,13 @@
     <select id="findByCreateDate" resultType="com.gys.pojo.Finance">
         select * from t_finance where create_date = #{createDate}
     </select>
+
+    <!--name,value是echart中data数据要求的键名-->
+    <select id="findPieDataByDate" resultType="java.util.Map">
+        select tf.module as 'name',sum(tf.money) as 'value' from t_finance as tf
+        where tf.confirm_user is not null and tf.confirm_date = #{date}
+        and tf.type = #{type}
+        group by tf.module;
+    </select>
+    <!--聚合函数只能与聚合函数相互叠加，非聚合列作为分组依据时例外-->
 </mapper>
