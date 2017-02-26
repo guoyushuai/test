@@ -14,6 +14,7 @@ public class User implements Serializable {
     private String username;
     private String password;
     private List<Role> roleList;
+    private String mobile;//与微信中保持一致
 
     public User() {
     }
@@ -23,6 +24,13 @@ public class User implements Serializable {
         this.password = password;
     }
 
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
 
     public List<Role> getRoleList() {
         return roleList;

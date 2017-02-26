@@ -232,6 +232,8 @@
 
                     table.ajax.reload(null,false);//刷新当前页面，防止自动跳转到默认的第一页
 
+                    loadPie();//确认收款后，饼状图同时更新
+
                 } else {//else触发不了
                     layer.msg(result.message);
                 }

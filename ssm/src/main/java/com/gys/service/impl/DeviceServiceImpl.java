@@ -2,10 +2,12 @@ package com.gys.service.impl;
 
 import com.google.common.collect.Lists;
 import com.gys.dto.DeviceRentDto;
+import com.gys.dto.wx.TextMessage;
 import com.gys.exception.ServiceException;
 import com.gys.mapper.*;
 import com.gys.pojo.*;
 import com.gys.service.DeviceService;
+import com.gys.service.WeiXinService;
 import com.gys.shiro.ShiroUtil;
 import com.gys.util.SerialNumberUtil;
 import org.joda.time.DateTime;
@@ -30,6 +32,9 @@ public class DeviceServiceImpl implements DeviceService {
 
     @Autowired
     private FinanceMapper financeMapper;
+
+    @Autowired
+    private WeiXinService weiXinService;
 
     @Override
     public void saveNewDevice(Device device) {
@@ -178,8 +183,18 @@ public class DeviceServiceImpl implements DeviceService {
 
         financeMapper.save(finance);//保存预付款的财务
 
+        //5、用微信给财务部发送消息
+        TextMessage message = new TextMessage();
+        TextMessage.TextBean textBean = new TextMessage.TextBean();//内部类
+        textBean.setContent("设备租赁模块添加一笔财务流水[预付款]，请确认");
+        message.setText(textBean);
+        message.setToparty("5");//财务部ID
+
+        weiXinService.sendTextMessage(message);
+
         //获取租赁合同流水号
         return deviceRent.getSerialNumber();
+
     }
 
     @Override
@@ -252,6 +267,15 @@ public class DeviceServiceImpl implements DeviceService {
         finance.setModuleSerialNumber(deviceRent.getSerialNumber());//业务流水号
 
         financeMapper.save(finance);
+
+        //4、用微信给财务部发送消息
+        TextMessage message = new TextMessage();
+        TextMessage.TextBean textBean = new TextMessage.TextBean();//内部类
+        textBean.setContent("设备租赁模块添加一笔财务流水[尾款]，请确认");
+        message.setText(textBean);
+        message.setToparty("5");//财务部ID
+
+        weiXinService.sendTextMessage(message);
 
     }
 }

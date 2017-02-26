@@ -7,6 +7,7 @@ import com.gys.pojo.Role;
 import com.gys.pojo.User;
 import com.gys.pojo.UserRole;
 import com.gys.service.UserService;
+import com.gys.service.WeiXinService;
 import com.gys.util.db.Page;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -30,6 +32,9 @@ public class UserServiceImpl implements UserService {
     private RoleMapper roleMapper;
     @Autowired
     private UserRoleMapper userRoleMapper;
+
+    @Autowired
+    private WeiXinService weiXinService;
 
     //注入配置文件中定义过的盐值
     @Value("${password.salt}")
@@ -77,6 +82,12 @@ public class UserServiceImpl implements UserService {
             user.setPassword(password);
         }
         userMapper.update(user);
+
+        //同步修改微信企业号中用户信息（主要修改角色）
+        com.gys.dto.wx.User wxUser = new com.gys.dto.wx.User();
+        wxUser.setUserid(user.getId().toString());//微信端userid与数据库中user.id保持一致
+        wxUser.setDepartment(Arrays.asList(roleids));
+        weiXinService.editUser(wxUser);
     }
 
     //重构
@@ -109,6 +120,14 @@ public class UserServiceImpl implements UserService {
         userMapper.save(user);
         //2、保存用户和角色关系
         addUserRole(user, roleids);
+
+        //3、保存到微信
+        com.gys.dto.wx.User wxUser = new com.gys.dto.wx.User();
+        wxUser.setUserid(user.getId().toString());
+        wxUser.setName(user.getUsername());
+        wxUser.setMobile(user.getMobile());
+        wxUser.setDepartment(Arrays.asList(roleids));//部门多个值，集合
+        weiXinService.saveUser(wxUser);
     }
 
     //该方法容易导致数据的重复，同一个人拥有多个角色时

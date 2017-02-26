@@ -5,7 +5,7 @@
 <mapper namespace="com.gys.mapper.UserMapper">
 
     <insert id="save" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO t_user(username,password) VALUES (#{username},#{password})
+        INSERT INTO t_user(username,password,mobile) VALUES (#{username},#{password},#{mobile})
     </insert>
     <update id="update">
         UPDATE t_user

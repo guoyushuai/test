@@ -51,8 +51,12 @@
                             <input type="text" name="username" class="form-control">
                         </div>
                         <div class="form-group">
-                            <label>密码</label>
-                            <input type="password" name="password" class="form-control">
+                            <label>密码(默认000000)</label>
+                            <input type="password" name="password" value="000000" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>手机号(与微信企业号捆绑)</label>
+                            <input type="text" name="mobile" class="form-control">
                         </div>
                         <div class="form-group">
                             <label>角色</label>
