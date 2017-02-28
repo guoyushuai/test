@@ -13,10 +13,10 @@
 
     <!--指明module父子关系,子模块路径-->
     <modules>
-        <module>../ssm-entity</module>
-        <module>../ssm-service</module>
-        <module>../ssm-util</module>
-        <module>../ssm-web</module>
+        <module>ssm-entity</module>
+        <module>ssm-service</module>
+        <module>ssm-util</module>
+        <module>ssm-web</module>
     </modules>
 
     <properties>

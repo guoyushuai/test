@@ -17,7 +17,7 @@
         <groupId>com.gys</groupId>
         <artifactId>ssm-parent</artifactId>
         <version>1.0</version>
-        <relativePath>../ssmparent/pom.xml</relativePath><!--父pom文件的路径-->
+        <relativePath>../pom.xml</relativePath><!--父pom文件的路径-->
     </parent>
 
     <properties>
