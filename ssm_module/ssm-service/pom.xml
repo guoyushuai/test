@@ -1,0 +1,50 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.gys</groupId>
+    <artifactId>ssm-service</artifactId>
+    <version>1.0</version>
+    <packaging>jar</packaging>
+
+    <name>ssm-service</name>
+    <url>http://maven.apache.org</url>
+
+    <!--指明父亲是谁-->
+    <parent>
+        <groupId>com.gys</groupId>
+        <artifactId>ssm-parent</artifactId>
+        <version>1.0</version>
+        <relativePath>../ssmparent/pom.xml</relativePath><!--父pom文件的路径-->
+    </parent>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <dependency><!--maven中继承，子只需要添加依赖，不需要写版本号-->
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit-version}</version><!--子可以直接用也可以重写父定义的依赖-->
+        </dependency>
+
+        <dependency>
+            <groupId>com.gys</groupId>
+            <artifactId>ssm-entity</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.gys</groupId>
+            <artifactId>ssm-util</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

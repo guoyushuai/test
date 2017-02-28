@@ -1,0 +1,50 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.gys</groupId>
+    <artifactId>ssm-web</artifactId>
+    <packaging>war</packaging>
+    <version>1.0</version>
+
+    <!--<name>ssm-web Maven Webapp</name>
+    <url>http://maven.apache.org</url>-->
+
+    <!--指明父亲是谁-->
+    <parent>
+        <groupId>com.gys</groupId>
+        <artifactId>ssm-parent</artifactId>
+        <version>1.0</version>
+        <relativePath>../ssmparent/pom.xml</relativePath><!--父pom文件的路径-->
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.gys</groupId>
+            <artifactId>ssm-service</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope><!--范围-->
+        </dependency>
+        <dependency>
+            <groupId>jstl</groupId>
+            <artifactId>jstl</artifactId>
+        </dependency>
+    </dependencies>
+    <build>
+        <finalName>ssm-web</finalName>
+        <plugins>
+            <!--插件不用写版本号-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>
