@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gys.mapper.LaborDispatchDetailMapper">
+    <insert id="batchSave">
+        insert into t_labor_dispatch_detail(labor_name, labor_unit, labor_price, num, total_price, dispatch_id)
+        VALUES
+        <foreach collection="list" item="obj" separator=",">
+            (#{obj.laborName},#{obj.laborUnit},#{obj.laborPrice},#{obj.num},#{obj.totalPrice},#{obj.dispatchId})
+        </foreach>
+    </insert>
+    <select id="findByDispatchId" resultType="com.gys.pojo.LaborDispatchDetail">
+         SELECT * from t_labor_dispatch_detail where dispatch_id = #{dispatchId}
+    </select>
+</mapper>

@@ -183,6 +183,34 @@ public class FinanceReportController {
         List<Map<String,Object>> pieData = financeService.findPieDataByDate(date,type);
         //springMVC自动将对象转成JSON,在javascript中对象数组
         return new AjaxResult(pieData);
-}
+    }
+
+
+
+
+
+    /**
+     * 点击进入月报界面，只做跳转用
+     * @return
+     */
+    @GetMapping("/month")
+    public String monthHome() {
+        return "finance/month";
+    }
+
+    /**
+     * 通过datatables插件异步加载month.jsp页面的数据
+     * @return
+     */
+    @GetMapping("/month/load")
+    @ResponseBody
+    public AjaxResult loadMonth(HttpServletRequest request) {
+        /*select tf.type,sum(tf.money) from t_finance as tf
+        where tf.confirm_user is not null and tf.confirm_date = '2017-02-25'
+        group by tf.type*/
+
+        return null;
+    }
+
 
 }

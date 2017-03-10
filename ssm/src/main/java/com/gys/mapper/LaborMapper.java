@@ -15,4 +15,14 @@ public interface LaborMapper {
     Long countBySearchParam(Map<String, Object> searchParam);
 
     void del(Integer id);
+
+    List<Labor> findAll();
+
+    Labor findById(Integer id);
+
+    void updateCurrentNum(Labor labor);
+
+    Labor findByName(String laborName);
+
+    void update(Labor labor);
 }

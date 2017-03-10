@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gys.mapper.LaborDispatchMapper">
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_labor_dispatch(company_name, link_man, card_num, tel, address, fax, dispatch_date, back_date, total_days, total_price, last_cost, pre_cost,create_user,serial_number)
+        VALUES
+        (#{companyName},#{linkMan},#{cardNum},#{tel},#{address},#{fax},#{dispatchDate},#{backDate},#{totalDays},#{totalPrice},#{lastCost},#{preCost},#{createUser},#{serialNumber})
+    </insert>
+    <update id="updateCost">
+        UPDATE t_labor_dispatch set total_price = #{total}, last_cost = #{lastCost}, pre_cost = #{preCost} where id = #{id}
+    </update>
+
+    <update id="updateState">
+        UPDATE t_labor_dispatch set state = #{state} where id = #{id}
+    </update>
+
+    <select id="findBySerialNumber" resultType="com.gys.pojo.LaborDispatch">
+        SELECT * FROM t_labor_dispatch where serial_number = #{serialNumber}
+    </select>
+    <select id="findById" resultType="com.gys.pojo.LaborDispatch">
+        SELECT * FROM t_labor_dispatch WHERE id = #{id}
+    </select>
+
+
+    <select id="findByQueryParam" resultType="com.gys.pojo.LaborDispatch">
+        SELECT * FROM t_labor_dispatch ORDER BY id DESC
+        limit ${start},${length}
+    </select>
+    <select id="count" resultType="java.lang.Long">
+         SELECT count(*) FROM t_labor_dispatch
+    </select>
+</mapper>

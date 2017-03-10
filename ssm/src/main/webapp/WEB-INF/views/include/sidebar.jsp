@@ -53,8 +53,8 @@
                             <i class="fa fa-circle-o"></i> <span>设备租赁</span>
                         </a>
                     </li>
-                    <li class="treeview">
-                        <a href="#">
+                    <li class="${param.menu == 'business_labor_dispatch' ? 'active' : ''}">
+                        <a href="/labor/dispatch">
                             <i class="fa fa-circle-o"></i> <span>劳务派遣</span>
                         </a>
                     </li>
@@ -74,13 +74,13 @@
                     <i class="fa fa-credit-card-alt"></i> <span>财务报表</span> <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
-                    <li class="${param.menu == 'finance_report_day' ? 'active' : ''}">
+                    <li class="${param.menu == 'finance_day' ? 'active' : ''}">
                         <a href="/finance/day"><i class="fa fa-globe"></i>日报</a>
                     </li>
-                    <li class="${param.menu == 'finance_report_month' ? 'active' : ''}">
+                    <li class="${param.menu == 'finance_month' ? 'active' : ''}">
                         <a href="/finance/month"><i class="fa fa-moon-o"></i>月报</a>
                     </li>
-                    <li class="${param.menu == 'finance_report_year' ? 'active' : ''}">
+                    <li class="${param.menu == 'finance_year' ? 'active' : ''}">
                         <a href="/finance/year"><i class="fa fa-sun-o"></i>年报</a>
                     </li>
                 </ul>

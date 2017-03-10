@@ -38,7 +38,7 @@
 
 
 
-    <!--托管SqlSessionFactory-->
+    <!--托管SqlSessionFactory工厂-->
     <!--<bean id="sqlSessionFactory"
           class="org.mybatis.spring.SqlSessionFactoryBean">-->
         <!--配置数据库连接池-->

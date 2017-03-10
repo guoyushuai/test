@@ -85,7 +85,7 @@ public class DiskController {
 
     /**
      * 文件下载Spring
-     * @param id 要删除的文件
+     * @param id 要下载的文件
      * @return
      * @throws IOException
      */

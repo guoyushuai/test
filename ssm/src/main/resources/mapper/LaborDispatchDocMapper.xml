@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gys.mapper.LaborDispatchDocMapper">
+    <insert id="batchSave">
+        insert into t_labor_dispatch_doc(source_name,new_name,dispatch_id)
+        values
+        <foreach collection="list" item="obj" separator=",">
+            (#{obj.sourceName},#{obj.newName},#{obj.dispatchId})
+        </foreach>
+    </insert>
+    <select id="findByDispatchId" resultType="com.gys.pojo.LaborDispatchDoc">
+        select * from t_labor_dispatch_doc where dispatch_id = #{rentId} ;
+    </select>
+    <select id="findById" resultType="com.gys.pojo.LaborDispatchDoc">
+        SELECT * from t_labor_dispatch_doc WHERE id = #{id}
+    </select>
+</mapper>

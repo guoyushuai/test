@@ -183,14 +183,14 @@ public class DeviceServiceImpl implements DeviceService {
 
         financeMapper.save(finance);//保存预付款的财务
 
-        //5、用微信给财务部发送消息
+        /*//5、用微信给财务部发送消息
         TextMessage message = new TextMessage();
         TextMessage.TextBean textBean = new TextMessage.TextBean();//内部类
         textBean.setContent("设备租赁模块添加一笔财务流水[预付款]，请确认");
         message.setText(textBean);
         message.setToparty("5");//财务部ID
 
-        weiXinService.sendTextMessage(message);
+        weiXinService.sendTextMessage(message);*/
 
         //获取租赁合同流水号
         return deviceRent.getSerialNumber();
@@ -213,6 +213,8 @@ public class DeviceServiceImpl implements DeviceService {
     public List<DeviceRentDoc> findDeviceRentDocListByRentId(Integer id) {
         return rentDocMapper.findByRentId(id);
     }
+
+
 
 
     @Override
@@ -268,14 +270,14 @@ public class DeviceServiceImpl implements DeviceService {
 
         financeMapper.save(finance);
 
-        //4、用微信给财务部发送消息
+        /*//4、用微信给财务部发送消息
         TextMessage message = new TextMessage();
         TextMessage.TextBean textBean = new TextMessage.TextBean();//内部类
         textBean.setContent("设备租赁模块添加一笔财务流水[尾款]，请确认");
         message.setText(textBean);
         message.setToparty("5");//财务部ID
 
-        weiXinService.sendTextMessage(message);
+        weiXinService.sendTextMessage(message);*/
 
     }
 }

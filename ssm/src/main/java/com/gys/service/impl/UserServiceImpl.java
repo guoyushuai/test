@@ -83,11 +83,11 @@ public class UserServiceImpl implements UserService {
         }
         userMapper.update(user);
 
-        //同步修改微信企业号中用户信息（主要修改角色）
+        /*//同步修改微信企业号中用户信息（主要修改角色）
         com.gys.dto.wx.User wxUser = new com.gys.dto.wx.User();
         wxUser.setUserid(user.getId().toString());//微信端userid与数据库中user.id保持一致
         wxUser.setDepartment(Arrays.asList(roleids));
-        weiXinService.editUser(wxUser);
+        weiXinService.editUser(wxUser);*/
     }
 
     //重构
@@ -121,13 +121,13 @@ public class UserServiceImpl implements UserService {
         //2、保存用户和角色关系
         addUserRole(user, roleids);
 
-        //3、保存到微信
+        /*//3、保存到微信
         com.gys.dto.wx.User wxUser = new com.gys.dto.wx.User();
         wxUser.setUserid(user.getId().toString());
         wxUser.setName(user.getUsername());
         wxUser.setMobile(user.getMobile());
         wxUser.setDepartment(Arrays.asList(roleids));//部门多个值，集合
-        weiXinService.saveUser(wxUser);
+        weiXinService.saveUser(wxUser);*/
     }
 
     //该方法容易导致数据的重复，同一个人拥有多个角色时

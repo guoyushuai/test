@@ -4,8 +4,12 @@ import com.gys.exception.NoFoundException;
 import com.gys.exception.ServiceException;
 import com.gys.mapper.DeviceRentDocMapper;
 import com.gys.mapper.DeviceRentMapper;
+import com.gys.mapper.LaborDispatchDocMapper;
+import com.gys.mapper.LaborDispatchMapper;
 import com.gys.pojo.DeviceRent;
 import com.gys.pojo.DeviceRentDoc;
+import com.gys.pojo.LaborDispatch;
+import com.gys.pojo.LaborDispatchDoc;
 import com.gys.service.FileService;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -35,6 +39,11 @@ public class FileServiceImpl implements FileService {
     @Autowired
     private DeviceRentMapper rentMapper;
 
+    @Autowired
+    private LaborDispatchDocMapper dispatchDocMapper;
+    @Autowired
+    private LaborDispatchMapper dispatchMapper;
+
     @Override
     public String uploadFile(String originalFilename, String contentType, InputStream inputStream) {
         //上传后保存在服务器内的文件名字，保证上传后的文件名唯一
@@ -59,10 +68,11 @@ public class FileServiceImpl implements FileService {
     }
 
 
+
     /**
      * 对异常的处理有点乱，暂不使用
      */
-    @Override
+    /*@Override
     public void downloadFile(Integer id, HttpServletResponse response) throws IOException {
 
         DeviceRentDoc rentDoc = rentDocMapper.findById(id);
@@ -74,25 +84,25 @@ public class FileServiceImpl implements FileService {
             File file = new File(downloadPath,rentDoc.getNewName());
             if(file.exists()) {
 
-                    //获得文件输入流
-                    FileInputStream inputStream = new FileInputStream(file);
+                //获得文件输入流
+                FileInputStream inputStream = new FileInputStream(file);
 
-                    //将文件下载标记为二进制(响应的MIME头)
-                    response.setContentType(MediaType.APPLICATION_OCTET_STREAM.toString());
-                    /*//设置文件的总大小
-                    response.setContentLengthLong(file.length());*/
-                    //更改文件的下载名称(即弹出的对话框中文件的名称),注意中文乱码问题
-                    String fileName = rentDoc.getSourceName();
-                    fileName = new String(fileName.getBytes("UTF-8"),"ISO8859-1");
-                    response.setHeader("Content-Disposition", "attachment;fileName=\"" + fileName + "\"");
+                //将文件下载标记为二进制(响应的MIME头)
+                response.setContentType(MediaType.APPLICATION_OCTET_STREAM.toString());
+                    //设置文件的总大小
+                    //response.setContentLengthLong(file.length());
+                //更改文件的下载名称(即弹出的对话框中文件的名称),注意中文乱码问题
+                String fileName = rentDoc.getSourceName();
+                fileName = new String(fileName.getBytes("UTF-8"),"ISO8859-1");
+                response.setHeader("Content-Disposition", "attachment;fileName=\"" + fileName + "\"");
 
-                    //生成响应输出流
-                    OutputStream outputStream = response.getOutputStream();
+                //生成响应输出流
+                OutputStream outputStream = response.getOutputStream();
 
-                    IOUtils.copy(inputStream,outputStream);
-                    outputStream.flush();
-                    outputStream.close();
-                    inputStream.close();
+                IOUtils.copy(inputStream,outputStream);
+                outputStream.flush();
+                outputStream.close();
+                inputStream.close();
 
             } else {
                 throw new NoFoundException();
@@ -100,10 +110,10 @@ public class FileServiceImpl implements FileService {
         } else {
             throw new NoFoundException();
         }
-    }
+    }*/
 
     @Override
-    public InputStream downloadFile(Integer id) throws IOException {
+    public InputStream downloadRentFile(Integer id) throws IOException {
         //根据id在数据库中查找到相应的文件
         DeviceRentDoc rentDoc = rentDocMapper.findById(id);
 
@@ -122,8 +132,6 @@ public class FileServiceImpl implements FileService {
         } else {
             return null;
         }
-
-
     }
 
     @Override
@@ -137,7 +145,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public void downloadZipFile(DeviceRent rent, ZipOutputStream zipOutputStream) throws IOException {
+    public void downloadRentZipFile(DeviceRent rent, ZipOutputStream zipOutputStream) throws IOException {
         //根据rent_id，查找该份租赁合同所有的文件
         List<DeviceRentDoc> deviceRentDocList = rentDocMapper.findByRentId(rent.getId());//findDeviceRentDocListByRentId
 
@@ -146,7 +154,7 @@ public class FileServiceImpl implements FileService {
             zipOutputStream.putNextEntry(entry);
 
             //找到对应文件，生成输入流
-            InputStream inputStream = downloadFile(rentDoc.getId());//下载单个文件是定义的方法
+            InputStream inputStream = downloadRentFile(rentDoc.getId());//下载单个文件是定义的方法
 
             IOUtils.copy(inputStream,zipOutputStream);
             inputStream.close();
@@ -157,4 +165,63 @@ public class FileServiceImpl implements FileService {
         zipOutputStream.flush();
         zipOutputStream.close();
     }
+
+
+
+
+
+    @Override
+    public InputStream downloadDispatchFile(Integer id) throws IOException {
+        //根据id在数据库中查找到相应的文件
+        LaborDispatchDoc dispatchDoc = dispatchDocMapper.findById(id);
+
+        //下载的目标源路径与上传的路径相同
+        String downloadPath = uploadPath;
+
+        if(dispatchDoc != null) {
+            //根据路径查找要下载的文件是否存在
+            File file = new File(new File(downloadPath),dispatchDoc.getNewName());
+            if(file.exists()) {
+                //获得文件输入流
+                return new FileInputStream(file);
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public LaborDispatchDoc findLaborDispatchDocById(Integer id) {
+        return dispatchDocMapper.findById(id);
+    }
+
+    @Override
+    public LaborDispatch findLaborDispatchById(Integer id) {
+        return dispatchMapper.findById(id);
+    }
+
+    @Override
+    public void downloadDispatchZipFile(LaborDispatch dispatch, ZipOutputStream zipOutputStream) throws IOException {
+        //根据dispatch_id，查找该份雇佣合同所有的文件
+        List<LaborDispatchDoc> laborDispatchDocList = dispatchDocMapper.findByDispatchId(dispatch.getId());//findDeviceRentDocListByRentId
+
+        for(LaborDispatchDoc dispatchDoc : laborDispatchDocList) {
+            ZipEntry entry = new ZipEntry(dispatchDoc.getSourceName());
+            zipOutputStream.putNextEntry(entry);
+
+            //找到对应文件，生成输入流
+            InputStream inputStream = downloadDispatchFile(dispatchDoc.getId());//下载单个文件是定义的方法
+
+            IOUtils.copy(inputStream,zipOutputStream);
+            inputStream.close();
+            /*循环内不能关闭输出流*/
+        }
+
+        zipOutputStream.closeEntry();
+        zipOutputStream.flush();
+        zipOutputStream.close();
+    }
+
 }

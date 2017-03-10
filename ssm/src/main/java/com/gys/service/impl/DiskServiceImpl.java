@@ -128,6 +128,8 @@ public class DiskServiceImpl implements DiskService {
     @Override
     @Transactional
     public void delById(Integer id) {
+        File file1 = new File("");
+        File[] files = file1.listFiles();
 
         //根据id查找对应文件/文件夹
         Disk disk = diskMapper.findById(id);
