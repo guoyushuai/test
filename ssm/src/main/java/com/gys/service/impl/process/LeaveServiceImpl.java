@@ -53,4 +53,9 @@ public class LeaveServiceImpl implements LeaveService {
         leave.setProcessInstanceId(instance.getProcessInstanceId());
         leaveMapper.update(leave);
     }
+
+    @Override
+    public Leave findLeaveById(String id) {
+        return leaveMapper.findById(id);
+    }
 }

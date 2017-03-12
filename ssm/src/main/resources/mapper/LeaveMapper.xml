@@ -36,5 +36,8 @@
         </set>
         WHERE ID = #{id}
     </update>
+    <select id="findById" resultType="com.gys.pojo.process.Leave">
+        select * from t_leave where id = #{id}
+    </select>
 
 </mapper>

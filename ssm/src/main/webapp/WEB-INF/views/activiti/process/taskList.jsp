@@ -6,9 +6,9 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <%@include file="../../include/css.jsp"%>
-
     <title>待办列表</title>
+
+    <%@include file="../../include/css.jsp"%>
 
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
@@ -52,13 +52,16 @@
                                 <td>${process.applyTime}</td>
                                 <td>
                                     <c:choose>
-                                        <c:when test="${not empty process.task.assignee}">
-                                            <a href="">办理</a>
 
+                                        <c:when test="${not empty process.task.assignee}">
+                                            <%--不同的流程点击办理的显示和处理页面应该是不同的，前台需要做出判断--%>
+                                            <a href="/leave/task/view/${process.task.id}">办理</a>
                                         </c:when>
+
                                         <c:otherwise>
-                                            <a href="">签收</a>
+                                            <a href="/process/task/claim/${process.task.id}">签收</a>
                                         </c:otherwise>
+
                                     </c:choose>
 
                                 </td>

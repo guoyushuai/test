@@ -7,4 +7,6 @@ public interface LeaveMapper {
     void save(Leave leave);
 
     void update(Leave leave);
+
+    Leave findById(String id);
 }

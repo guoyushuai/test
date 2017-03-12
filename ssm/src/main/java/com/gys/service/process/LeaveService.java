@@ -7,4 +7,6 @@ import java.util.Map;
 
 public interface LeaveService {
     void startProcess(Leave leave, User user, String processDefKey, Map<String, Object> variables);
+
+    Leave findLeaveById(String id);
 }
