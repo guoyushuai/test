@@ -58,4 +58,9 @@ public class LeaveServiceImpl implements LeaveService {
     public Leave findLeaveById(String id) {
         return leaveMapper.findById(id);
     }
+
+    @Override
+    public void update(Leave leave) {
+        leaveMapper.update(leave);
+    }
 }

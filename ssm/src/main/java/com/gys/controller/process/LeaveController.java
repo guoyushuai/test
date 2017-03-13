@@ -4,6 +4,7 @@ import com.gys.pojo.User;
 import com.gys.pojo.process.Leave;
 import com.gys.service.process.LeaveService;
 import com.gys.shiro.ShiroUtil;
+import com.sun.javafx.collections.MappingChange;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.RuntimeService;
@@ -85,6 +86,7 @@ public class LeaveController {
         }
 
         //启动流程后返回的还是请假申请页面？？
+        // TODO: 2017/3/13
         return "activiti/leave/leaveApply";
     }
 
@@ -126,7 +128,13 @@ public class LeaveController {
 
         model.addAttribute("leave",leave);
 
-        return "activiti/leave/taskVerify";
+        if(task.getTaskDefinitionKey().equals("modifyApply")) {
+            //调整申请进入的页面，不能再与完成任务页面（审批页面、销假页面）共用
+            return "activiti/leave/applyModify";
+        } else {
+            //办理任务进入的页面（同一流程的不同阶段都进入该界面（部门经理审批/人事审批））
+            return "activiti/leave/taskVerify";
+        }
 
     }
 
@@ -148,7 +156,7 @@ public class LeaveController {
             String realityEndTime = req.getParameter("realityEndTime");
 
             //真实开始结束时间留给监听器做或者在此直接入库
-            //设置的监听器是在任务完成以后触发调用LeaveBackTaskListenerImpl
+            //设置的监听器是在销假任务完成以后触发调用LeaveBackTaskListenerImpl
             variables.put("realityStartTime",realityStartTime);
             variables.put("realityEndTime",realityEndTime);
 
@@ -180,6 +188,40 @@ public class LeaveController {
         }
         //重定向
         return "redirect:/process/task/list";
+    }
+
+    /**
+     * 调整申请
+     */
+    @PostMapping("/task/modify/{taskId}")
+    public String leaveTaskModify(@PathVariable String taskId,
+                                  Leave leave,
+                                  HttpServletRequest req,
+                                  RedirectAttributes attributes) {
+        String reApply = req.getParameter("reApply");
+        Boolean value = BooleanUtils.toBoolean(reApply);
+
+        Map<String,Object> variables = new HashMap<>();
+        variables.put("modifyApply",value);
+
+        try {
+            taskService.complete(taskId,variables);
+
+            //只有销假任务完成时做了监听器用以修改t_leave表的真实开始结束时间
+            if(value) {//调整申请时，更新数据库中的t_leave表，
+                leaveService.update(leave);
+            } else {//放弃请假时 t_leave表怎么办？
+                //todo
+            }
+
+            attributes.addFlashAttribute("调整申请成功");
+        } catch (ActivitiException e) {
+            attributes.addFlashAttribute("调整申请失败");
+        }
+
+        //启动流程后返回的还是请假申请页面？？
+        // TODO: 2017/3/13
+        return "activiti/leave/leaveApply";
     }
 
 }

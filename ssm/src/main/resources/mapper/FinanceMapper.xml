@@ -39,6 +39,8 @@
         select * from t_finance where create_date = #{createDate}
     </select>
 
+
+
     <!--name,value是echart中data数据要求的键名-->
     <select id="findPieDataByDate" resultType="java.util.Map">
         select tf.module as 'name',sum(tf.money) as 'value' from t_finance as tf
