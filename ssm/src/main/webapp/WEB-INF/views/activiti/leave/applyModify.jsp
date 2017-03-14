@@ -14,7 +14,7 @@
 
     <%@include file="../../include/header.jsp"%>
     <jsp:include page="../../include/sidebar.jsp">
-        <jsp:param name="menu" value="process_list"/>
+        <jsp:param name="menu" value="process_apply"/>
     </jsp:include>
 
     <!-- Content Wrapper. Contains page content -->

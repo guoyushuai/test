@@ -114,6 +114,13 @@
             <version>1.3.1</version>
         </dependency>
 
+        <!--gson-->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.0</version>
+        </dependency>
+
         <!--JSON-->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -149,8 +156,6 @@
             <version>2.9.4</version>
         </dependency>
 
-
-
         <!--日志-->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -162,12 +167,9 @@
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.7.22</version>
         </dependency>
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.8.0</version>
-        </dependency>
 
+
+        <!--activiti-->
         <dependency>
             <groupId>org.activiti</groupId>
             <artifactId>activiti-engine</artifactId>

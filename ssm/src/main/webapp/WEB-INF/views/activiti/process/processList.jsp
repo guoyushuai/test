@@ -91,5 +91,8 @@
         </section>
     </div>
 </div>
+
+<%@include file="../../include/js.jsp"%>
+
 </body>
 </html>

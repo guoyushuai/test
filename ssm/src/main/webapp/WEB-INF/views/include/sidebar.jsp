@@ -76,8 +76,14 @@
                     <li class="${param.menu == 'process_apply' ? 'active' : ''}">
                         <a href="/process/apply"><i class="fa fa-circle-o"></i>发起流程</a>
                     </li>
-                    <li class="${param.menu == 'process_list' ? 'active' : ''}">
+                    <li class="${param.menu == 'process_task' ? 'active' : ''}">
                         <a href="/process/task/list"><i class="fa fa-circle-o"></i>我的待办</a>
+                    </li>
+                    <li class="${param.menu == 'process_running' ? 'active' : ''}">
+                        <a href="/process/running/list"><i class="fa fa-circle-o"></i>进行中工作流</a>
+                    </li>
+                    <li class="${param.menu == 'process_finished' ? 'active' : ''}">
+                        <a href="/process/finished/list"><i class="fa fa-circle-o"></i>已完成工作流</a>
                     </li>
                 </ul>
             </li>
