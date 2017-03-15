@@ -19,6 +19,19 @@
         <module>ssm-web</module>
     </modules>
 
+    <distributionManagement>
+        <repository>
+            <id>kaishengit-release</id><!--与settings.xml中的<server>中的id保持一致-->
+            <name>release</name><!--无所谓-->
+            <url>http://localhost:8081/repository/kaishengit-release/</url><!--私服中相应库的url-->
+        </repository>
+        <snapshotRepository>
+            <id>kaishengit-snapshot</id>
+            <name>snapshot</name>
+            <url>http://localhost:8081/repository/kaishengit-snapshot/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit-version>4.12</junit-version>
