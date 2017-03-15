@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.gys.pojo">
+
+    <class name="Employee" table="t_employee">
+        <id name="id">
+            <generator class="native"/>
+        </id>
+        <property name="empname" column="empname"/>
+        <!--
+            lazy:false 关闭懒加载
+            fetch:join 获取相应属性时采用链接查询，避免N+1
+        -->
+        <many-to-one name="dept" class="Dept" column="deptid" fetch="join"/><!--外键-->
+    </class>
+
+</hibernate-mapping>
