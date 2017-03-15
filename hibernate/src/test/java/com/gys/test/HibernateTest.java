@@ -135,7 +135,7 @@ public class HibernateTest {
     }
 
     /**
-     * 根据条件查找（费主键）
+     * 根据条件查找（非主键）
      */
     @Test
     public void findByUsername() {
@@ -157,7 +157,6 @@ public class HibernateTest {
         /*Integer ad = query.getMaxResults();*/
         /*String[] ad = query.getReturnAliases();
         System.out.println(ad);*/
-
 
         List<Admin> adminList = query.list();
         for (Admin admin : adminList) {
